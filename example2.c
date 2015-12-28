@@ -1,8 +1,7 @@
 
 // PIC18F8722 Configuration Bit Settings
 
-//#include <p18F8722.h>
-#include <p18cxxx.h>
+#include <p18f8722.h>
 
 // CONFIG1H
 #pragma config OSC = HSPLL      // Oscillator Selection bits (HS oscillator, PLL enabled (Clock Frequency = 4 x FOSC1))

@@ -32,7 +32,7 @@
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="default" type="2">
+    <conf name="default" type="3">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC18F8722</targetDevice>
@@ -52,7 +52,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
@@ -112,9 +112,9 @@
         <property key="extended-mode-mcc18" value="true"/>
         <property key="extended-mode-mpasm" value="true"/>
         <property key="extended-mode-mplink" value="true"/>
-        <property key="stack-analysis" value="true"/>
-        <property key="stack-analysis-mcc18" value="true"/>
-        <property key="stack-analysis-mplink" value="true"/>
+        <property key="stack-analysis" value="false"/>
+        <property key="stack-analysis-mcc18" value="false"/>
+        <property key="stack-analysis-mplink" value="false"/>
       </C18LanguageToolchain>
       <ICD3PlatformTool>
         <property key="AutoSelectMemRanges" value="auto"/>
