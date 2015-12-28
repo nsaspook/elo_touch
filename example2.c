@@ -285,24 +285,21 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				}
 
 				if ((TOUCH) && (UNTOUCH == FALSE)) { // return on touch stream and reset index i
+					i = 0; // need single-point mode so don't process more touch streams
+				} else {
+					for (i = 0; i < 6; i++) { // send buffered data, move data index to a variable.
+						while (Busy1USART()) {
+						}; // wait until the usart is clear
+						TXREG1 = elobuf[i];
+					}
 					i = 0;
-					return; // need single-point mode so return on touch streams
-				}
-
-				for (i = 0; i < 6; i++) { // send buffered data, move data index to a variable.
-					while (Busy1USART()) {
-					}; // wait until the usart is clear
-					TXREG1 = elobuf[i];
-				}
-
-				i = 0;
-				TOUCH = TRUE; // first touch sequence has been sent
-
-				if (UNTOUCH) { // After untouch is sent dump buffer and clear all.
-					TOUCH = FALSE;
-					UNTOUCH = FALSE;
-					CATCH = FALSE;
-					i = 0;
+					TOUCH = TRUE; // first touch sequence has been sent
+					if (UNTOUCH) { // After untouch is sent dump buffer and clear all.
+						TOUCH = FALSE;
+						UNTOUCH = FALSE;
+						CATCH = FALSE;
+						i = 0;
+					}
 				}
 			}
 
@@ -420,6 +417,7 @@ void elocmdout(const rom unsigned char *elostr)
 		}; // wait until the usart is clear
 		elo_char = elostr[e];
 		putc2USART(elo_char); // send to LCD touch
+		LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 		LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 		LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 		wdtdelay(10000); // inter char delay
