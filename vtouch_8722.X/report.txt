@@ -10,7 +10,6 @@ FN_END		0xc	191
 FN_START	0x28	196	"/fred/vtouch18f8722/example2.c"	"rxtx_handler"	"external"	
 ADJUST		0x80	196	20
 CALL		0xac	212	"/fred/vtouch18f8722/example2.c"	"__pa_4"	0
-ADJUST		0xc0	219	-1
 ADJUST		0xd4	230	1
 ADJUST		0xd8	230	1
 CALL		0xdc	230	"C:\MCC18\v3_39\src\pmc_common\Timers\t0write.c"	"WriteTimer0"	0
@@ -188,18 +187,16 @@ FN_END		0x824	426
 FN_START	0x826	424	"/fred/vtouch18f8722/example2.c"	"__pa_4"	"static"	
 FN_END		0x82c	425	
 FN_START	0x82e	357	"/fred/vtouch18f8722/example2.c"	"__pa_5"	"static"	
-CALL		0x82e	357	"mulFP.O"	"__mulFP"	0
 CALL		0x82e	357	"/fred/vtouch18f8722/example2.c"	"__pa_0"	0
-ADJUST		0x834	357	-1
+ADJUST		0x832	357	-1
+CALL		0x836	357	"mulFP.O"	"__mulFP"	0
 FN_END		0x836	357	
 FN_START	0x838	359	"/fred/vtouch18f8722/example2.c"	"__pa_6"	"static"	
-ADJUST		0x83a	359	1
-CALL		0x83c	359	"/fred/vtouch18f8722/example2.c"	"wdtdelay"	0
+CALL		0x838	359	"/fred/vtouch18f8722/example2.c"	"wdtdelay"	0
+ADJUST		0x83c	359	-4
 CALL		0x83c	359	"/fred/vtouch18f8722/example2.c"	"__pa_0"	0
-ADJUST		0x83e	359	-4
-ADJUST		0x840	360	1
-CALL		0x842	360	"/fred/vtouch18f8722/example2.c"	"wdtdelay"	0
-ADJUST		0x846	360	-4
+CALL		0x83e	359	"/fred/vtouch18f8722/example2.c"	"wdtdelay"	0
+ADJUST		0x842	360	-4
 FN_END		0x846	360	
 FN_START	0x848	285	"/fred/vtouch18f8722/example2.c"	"__pa_7"	"static"	
 CALL		0x84a	285	"/fred/vtouch18f8722/example2.c"	"__pa_1"	0
