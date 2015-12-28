@@ -562,7 +562,7 @@ void main(void)
 			}
 			j = 0;
 			ClrWdt(); // reset the WDT timer
-			if (SCREEN_INIT && !PIE1bits.TX1IE) { // if this flag is set send elo commands
+			if ((screen_type == DELL_E224864) && SCREEN_INIT && !PIE1bits.TX1IE) { // if this flag is set send elo commands
 				INTCONbits.GIEH = 0;
 				elocmdout(elocodes_s); // send touchscreen setup data, causes a frame size report to be send from screen
 				INTCONbits.GIEH = 1;
