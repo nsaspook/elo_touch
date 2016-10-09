@@ -109,6 +109,7 @@
  * V1.08	Set Z to 1 and remove multi-touch testing
  * V2.00        Code rewrite
  * V3.00	add code for smartset again
+ * V3.01	mode checks and lamps
  *
  *
  *
@@ -150,7 +151,7 @@ void rxtx_handler(void);
 #define	LCD_CHK_TIME	36			// LCD heartbeat timeout
 #define TOUCH_SKIP		0		// max touchs to skip before a untouch.
 
-const rom char version[] = "VERSION 3.00";
+const rom char version[] = "VERSION 3.01";
 volatile unsigned char CATCH = FALSE, LED_UP = TRUE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE, comm_check = 0, init_check = 0,
 	SCREEN_INIT = FALSE;
 
@@ -179,7 +180,7 @@ const rom unsigned char elocodes[ELO_SEQ][ELO_SIZE_I] = {// elo 2210/2216 progra
 	'U', 'N', '1', '7', '0', '0', '0', '0', '0', '0' // nvram save
 }; // initial intelli-touch codes												//
 
-const rom char *build_date = __DATE__, *build_time = __TIME__, build_version[] = " V3.00 8722 Varian touch-screen converter. Fred Brooks, Microchip Inc.";
+const rom char *build_date = __DATE__, *build_time = __TIME__, build_version[] = " V3.01 8722 Varian touch-screen converter. Fred Brooks, Microchip Inc.";
 #pragma idata
 
 #pragma code rx_interrupt = 0x8
@@ -246,10 +247,13 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				TXREG2 = 0x37; // send frame size request to LCD touch
 			}
 			if (screen_type == SMARTSET) {
+				LATF = 0xff;
 			}
 			LATEbits.LATE1 = !LATEbits.LATE1; // flash  led
 			LATEbits.LATE2 = 1; // connect  led OFF
 		}
+		LATEbits.LATE6 = 1;
+		LATEbits.LATE5 = 1;
 	}
 
 	if (screen_type == SMARTSET) { // This is for a future SCREEN
@@ -264,41 +268,53 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 			tchar = c;
 
 			if (((tchar & 0xc0) == 0xc0) || CATCH) { // start of touch sequence
+				LATFbits.LATF0 = 0;
 				CATCH = TRUE; // found elo touch command start of sequence
 				j = 0; // reset led timer
 				elobuf[i++] = c; // start stuffing the command buffer
 			}
 			if (i == CMD_SIZE) { // see if we should send it
 				i = 0; // reset i to start of cmd
+				LATFbits.LATF1 = 0;
 				CATCH = FALSE; // reset buffering now
 				tchar = elobuf[i]; // just save it for now
 				uchar = elobuf[i + 5]; // check the Z data for 0 , load into uchar
 
-				if (uchar == 0x00) {
-					UNTOUCH = TRUE; // untouch seqence found
-					elobuf[i] = 0xc0; // restuff the buffer with varian untouch sequence
-					elobuf[i + 1] = 0x80;
-					elobuf[i + 2] = 0x40;
-					elobuf[i + 3] = 0x00;
-					elobuf[i + 4] = 0x00;
-					elobuf[i + 5] = 0x00;
-				}
+				UNTOUCH = TRUE; // untouch seqence found
+				elobuf[6] = 0xc0; // restuff the buffer with varian untouch sequence
+				elobuf[7] = 0x80;
+				elobuf[8] = 0x40;
+				elobuf[9] = 0x00;
+				elobuf[10] = 0x00;
+				elobuf[11] = 0x0f;
+
+				TOUCH = TRUE;
 
 				if ((TOUCH) && (UNTOUCH == FALSE)) { // return on touch stream and reset index i
 					i = 0; // need single-point mode so don't process more touch streams
+					LATFbits.LATF2 = 0;
 				} else {
-					for (i = 0; i < 6; i++) { // send buffered data, move data index to a variable.
-						while (Busy1USART()) {
-						}; // wait until the usart is clear
-						TXREG1 = elobuf[i];
-					}
+					LATFbits.LATF3 = 0;
+					data_ptr = elobuf;
+					data_pos = 0;
+					data_len = HOST_CMD_SIZE + HOST_CMD_SIZE;
+					PIE1bits.TX1IE = 1; // start sending data
+
 					i = 0;
 					TOUCH = TRUE; // first touch sequence has been sent
+
+					LCD_OK = TRUE; // looks like a screen controller is connected
+					SCREEN_INIT = FALSE; // command code has been received by lcd controller
+					LATEbits.LATE3 = 1; // init  led OFF
+					init_check = 0; // reset init code timer
+					LATEbits.LATE2 = 0; // connect  led ON
+
 					if (UNTOUCH) { // After untouch is sent dump buffer and clear all.
 						TOUCH = FALSE;
 						UNTOUCH = FALSE;
 						CATCH = FALSE;
 						i = 0;
+						LATFbits.LATF4 = 0;
 					}
 				}
 			}
@@ -312,6 +328,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 			}
 
 			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
+			LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
 			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 		}
 	}
@@ -327,6 +344,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 			tchar = c2;
 
 			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
+			LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
 			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 
 			// touch 'FE X Y FF',    untouch 'FD X Y FF' from screen,    'F4 X Y FF' frame size report
@@ -395,6 +413,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				CATCH = FALSE;
 				TOUCH = FALSE;
 				UNTOUCH = FALSE;
+				LATF = 0xff;
 			}
 		}
 	}
@@ -523,6 +542,8 @@ void main(void)
 	INTCON3bits.INT1IE = 0;
 	INTCON3bits.INT2IE = 0;
 	INTCON3bits.INT3IE = 0;
+	PIR1bits.RCIF = 0;
+	PIR3bits.RC2IF = 0;
 	INTCONbits.GIEL = 0; // disable low ints
 	INTCONbits.GIEH = 1; // enable high ints
 
