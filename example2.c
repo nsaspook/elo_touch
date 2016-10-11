@@ -87,7 +87,7 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * Fred Brooks, Microchip Inc , Feb 2013
+ * Fred Brooks, Microchip Inc , Oct 2016
  * Gresham, Oregon
  *
  *
@@ -109,7 +109,8 @@
  * V1.08	Set Z to 1 and remove multi-touch testing
  * V2.00        Code rewrite
  * V3.00	add code for smartset again
- * V3.01	mode checks and lamps
+ * V3.01	mode checks and lamps for proper smartset to emulation operation
+ * V3.10	Intellitouch version
  *
  *
  *
@@ -126,32 +127,53 @@
 #include <stdlib.h>
 #include <EEP.h>
 
+#include <GenericTypeDefs.h>
+
+#ifdef INTTYPES
+#include <stdint.h>
+#else
+#define INTTYPES
+/*unsigned types*/
+typedef unsigned char uint8_t;
+typedef unsigned int uint16_t;
+typedef unsigned long uint32_t;
+typedef unsigned long long uint64_t;
+/*signed types*/
+typedef signed char int8_t;
+typedef signed int int16_t;
+typedef signed long int32_t;
+typedef signed long long int64_t;
+#endif
+
 void rxtx_handler(void);
 
 #define BUF_SIZE 16
 #define	CMD_SIZE 4					// size of command in bytes from touch screen
+#define	CMD_SIZE_SS 6
 #define	HOST_CMD_SIZE	6
-#define	CMD_OVERFLOW	CMD_SIZE*2
+#define	CMD_OVERFLOW	HOST_CMD_SIZE*2
 #define ELO_SEQ 10
-#define ELO_SIZE 14					// number of bytes to send from elocodes_s configuration string
+#define ELO_SIZE 14				// number of bytes to send from elocodes_s configuration string
 #define ELO_SIZE_I 10
 #define FALSE	0
 #define TRUE	1
 #define	BLINK_RATE	35000
 #define	X_SCALE	1.90				// scaling factor to host screen X logical coords
 #define	Y_SCALE 1.75				// scaling factor to host screen Y logical coords
-#define	X_LOGICAL	119				// LCD touchscreen logical X frame coords
-#define	Y_LOGICAL	94				// LCD touchscreen logical Y frame coords
-#define	X_TOOL	202
-#define	Y_TOOL	164
+#define	X_SCALE_SS	0.917			// scaling factor to host screen X logical coords
+#define	Y_SCALE_SS	0.65			// scaling factor to host screen Y logical coords
+#define	X_LOGICAL	119			// LCD touchscreen logical X frame coords
+#define	Y_LOGICAL	94			// LCD touchscreen logical Y frame coords
+#define	X_TOOL		202
+#define	Y_TOOL		164
 
 #define	TIMEROFFSET	26474			// timer0 16bit counter value for 1 second to overflow
 #define	TIMERFAST	58974			// fast flash or testing
 #define	COMM_CHK_TIME	30			// LCD comm heartbeat
 #define	LCD_CHK_TIME	36			// LCD heartbeat timeout
-#define TOUCH_SKIP		0		// max touchs to skip before a untouch.
+#define TOUCH_SKIP	0			// max touchs to skip before a untouch.
 
-const rom char version[] = "VERSION 3.01";
+const rom char version[] = "VERSION 3.10";
 volatile unsigned char CATCH = FALSE, LED_UP = TRUE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE, comm_check = 0, init_check = 0,
 	SCREEN_INIT = FALSE;
 
@@ -161,7 +183,7 @@ enum screen_type_t {
 
 long alive_led = 0;
 volatile long j = 0;
-volatile float xs = X_SCALE, ys = Y_SCALE; // defaults
+volatile float xs = X_SCALE, ys = Y_SCALE, xs_ss = X_SCALE_SS, ys_ss = Y_SCALE_SS; // defaults
 volatile unsigned int timer0_off = TIMEROFFSET;
 
 #pragma idata bigdata
@@ -172,15 +194,17 @@ const rom unsigned char elocodes_s[] = {
 }; // initial carrol-touch config codes, tracking, add end point modifier, get frame size report
 
 const rom unsigned char elocodes[ELO_SEQ][ELO_SIZE_I] = {// elo 2210/2216 program codes
-	'U', 'M', 0x00, 0x85, 0x08, '0', '0', '0', '0', '0', // initial touch,Single Point,untouch,Z-axis,scaling
-	'U', 'S', 'x', 0xf6, 0xff, 0x04, 0x01, 0xff, 0x0f, '0', // scale x
-	'U', 'S', 'y', 0xf6, 0xff, 0xc3, 0x00, 0xff, 0x0f, '0', // scale y
-	'U', 'S', 'z', 0x01, 0x00, 0x0e, 0x00, 0xff, 0x00, '0', // scale z
+	'U', 'M', 0x00, 0x87, 0x40, '0', '0', '0', '0', '0', // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
+	'U', 'S', 'X', 0x00, 0x0ff, 0x00, 0x01, '0', '0', '0', // scale x
+	'U', 'S', 'Y', 0x00, 0x0ff, 0x00, 0x01, '0', '0', '0', // scale y
+	'U', 'S', 'Z', 0x00, 0x01, 0x00, 0x0f, '0', '0', '0', // scale z
+	'U', 'B', 5, 20, 0x00, 0x00, 0x0f, '0', '0', '0', // packet delays
 	'U', 'E', '1', '6', '0', '0', '0', '0', '0', '0', // emulation E281A-4002 Binary (Z=0 on untouch)
-	'U', 'N', '1', '7', '0', '0', '0', '0', '0', '0' // nvram save
+	'U', 'N', '1', '7', '0', '0', '0', '0', '0', '0', // nvram save
+	'U', 'R', '2', '0', '0', '0', '0', '0', '0', '0', // nvram reset
 }; // initial intelli-touch codes												//
 
-const rom char *build_date = __DATE__, *build_time = __TIME__, build_version[] = " V3.01 8722 Varian touch-screen converter. Fred Brooks, Microchip Inc.";
+const rom char *build_date = __DATE__, *build_time = __TIME__, build_version[] = " V3.10 8722 Varian touch-screen converter. Fred Brooks, Microchip Inc.";
 #pragma idata
 
 #pragma code rx_interrupt = 0x8
@@ -197,6 +221,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 {
 	static unsigned char c1 = 0, c2 = 0, c = 0, *data_ptr,
 		i = 0, data_pos, data_len, tchar, uchar;
+	uint16_t x_tmp, y_tmp, uvalx, lvalx, uvaly, lvaly;
 
 	/* start with data_ptr pointed to address of data, data_len to length of data in bytes, data_pos to 0 to start at the beginning of data block */
 	/* then enable the interrupt and wait for the interrupt enable flag to clear
@@ -207,10 +232,10 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				PIE1bits.TX1IE = 0; // stop data xmit
 			}
 		} else {
-			TXREG1 = *data_ptr; // send data and clear PIR1bits.TX1IF
 			LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
+			TXREG1 = *data_ptr; // send data and clear PIR1bits.TX1IF
 			data_pos++; // move the data pointer
 			data_ptr++; // move the buffer pointer position
 		}
@@ -231,6 +256,9 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 		LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 		LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 		LATEbits.LATE7 = LATEbits.LATE0; // flash external led
+
+		if (LCD_OK)
+			LATF = 0xff;
 
 		if (!LCD_OK && (init_check++ >LCD_CHK_TIME)) {
 			init_check = 0; // reset screen init code counter
@@ -256,7 +284,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 		LATEbits.LATE5 = 1;
 	}
 
-	if (screen_type == SMARTSET) { // This is for a future SCREEN
+	if (screen_type == SMARTSET) { // This is for the newer SMARTSET intellitouch screens
 		if (PIR3bits.RC2IF) { // is data from screen COMM2
 			if (RCSTA2bits.OERR) {
 				RCSTA2bits.CREN = 0; //	clear overrun
@@ -273,36 +301,63 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				j = 0; // reset led timer
 				elobuf[i++] = c; // start stuffing the command buffer
 			}
-			if (i == CMD_SIZE) { // see if we should send it
+			if (i == CMD_SIZE_SS) { // see if we should send it
+				LATFbits.LATF5 = !LATFbits.LATF5;
 				i = 0; // reset i to start of cmd
+				uchar = 0; /* check for proper touch format */
+				if ((elobuf[0]& 0xc0) == 0xc0) /* binary start code? */
+					uchar = 1;
+
 				LATFbits.LATF1 = 0;
 				CATCH = FALSE; // reset buffering now
-				tchar = elobuf[i]; // just save it for now
-				uchar = elobuf[i + 5]; // check the Z data for 0 , load into uchar
 
-				UNTOUCH = TRUE; // untouch seqence found
-				elobuf[6] = 0xc0; // restuff the buffer with varian untouch sequence
-				elobuf[7] = 0x80;
-				elobuf[8] = 0x40;
-				elobuf[9] = 0x00;
-				elobuf[10] = 0x00;
-				elobuf[11] = 0x0f;
-
-				TOUCH = TRUE;
-
-				if ((TOUCH) && (UNTOUCH == FALSE)) { // return on touch stream and reset index i
-					i = 0; // need single-point mode so don't process more touch streams
-					LATFbits.LATF2 = 0;
-				} else {
-					LATFbits.LATF3 = 0;
-					data_ptr = elobuf;
-					data_pos = 0;
-					data_len = HOST_CMD_SIZE + HOST_CMD_SIZE;
-					PIE1bits.TX1IE = 1; // start sending data
-
-					i = 0;
+				/* munge the data for proper Varian format */
+				if (elobuf[5]) { // TOUCH
 					TOUCH = TRUE; // first touch sequence has been sent
+					uvalx = elobuf[0]&0x3f;
+					lvalx = elobuf[1]&0x3f;
+					uvaly = elobuf[2]&0x3f;
+					lvaly = elobuf[3]&0x3f;
+					x_tmp = lvalx | (uvalx << 6); // X value
+					y_tmp = lvaly | (uvaly << 6); // Y value
+					x_tmp = 4095 - x_tmp; // FLIP X
+					y_tmp = 4095 - y_tmp; // FLIP Y	
+					x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X scale
+					y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y scale
+					x_tmp = (x_tmp >> (uint16_t) 4); // rescale x
+					y_tmp = (y_tmp >> (uint16_t) 4); // rescale y				
+					elobuf_in[1] = x_tmp; // X scaled
+					elobuf_in[2] = y_tmp; // Y scaled
+					elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
+					elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
+					elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
+					elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
+					elobuf_out[4] = 0x00;
+					elobuf_out[5] = 0x0f;
+					LATFbits.LATF6 = 0;
+				}
 
+				if (!elobuf[5]) { //UNTOUCH
+					UNTOUCH = TRUE; // untouch seqence found
+					elobuf_out[0] = 0xc0; // restuff the buffer with varian untouch sequence
+					elobuf_out[1] = 0x80;
+					elobuf_out[2] = 0x40;
+					elobuf_out[3] = 0x00;
+					elobuf_out[4] = 0x00;
+					elobuf_out[5] = 0x00;
+					LATFbits.LATF7 = 0;
+				}
+
+				if (TOUCH || !UNTOUCH) {
+					LATFbits.LATF2 = 0;
+					if (uchar) { /* only send valid data */
+						LATFbits.LATF3 = 0;
+						data_ptr = elobuf_out;
+						data_pos = 0;
+						data_len = HOST_CMD_SIZE;
+						PIE1bits.TX1IE = 1; // start sending data
+					}
+					i = 0;
 					LCD_OK = TRUE; // looks like a screen controller is connected
 					SCREEN_INIT = FALSE; // command code has been received by lcd controller
 					LATEbits.LATE3 = 1; // init  led OFF
@@ -315,6 +370,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 						CATCH = FALSE;
 						i = 0;
 						LATFbits.LATF4 = 0;
+						WriteTimer0(timer0_off);
 					}
 				}
 			}
@@ -325,6 +381,7 @@ void rxtx_handler(void) // all serial data transform functions are handled here
 				CATCH = FALSE;
 				TOUCH = FALSE;
 				UNTOUCH = FALSE;
+				LATF = 0xff;
 			}
 
 			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
@@ -525,13 +582,16 @@ void main(void)
 		elocmdout(elocodes_s); // send touchscreen setup data, causes a frame size report to be send from screen
 	}
 	if (screen_type == SMARTSET) {
+		elocmdout(&elocodes[7][0]); // reset;
+		wdtdelay(700000); // wait for LCD touch controller reset
 		/* program the display */
 		elocmdout(&elocodes[0][0]);
-		elocmdout(&elocodes[1][0]);
-		elocmdout(&elocodes[2][0]);
-		elocmdout(&elocodes[3][0]);
+		//elocmdout(&elocodes[1][0]);
+		//elocmdout(&elocodes[2][0]);
+		//elocmdout(&elocodes[3][0]);
 		elocmdout(&elocodes[4][0]);
 		elocmdout(&elocodes[5][0]);
+		elocmdout(&elocodes[6][0]);
 	}
 	LATEbits.LATE3 = 1; // init  led OFF
 
