@@ -190,6 +190,7 @@
 //				E1.24		adjust newer screen size for better touch fit
 //				V3.30		converted to unified driver
 //				V3.31		bug fixes, cleanup
+//				V3.32		PORT G jumpers for smartset configuation.
 //				***
 
 #include <usart.h>
@@ -228,7 +229,7 @@ void rxtx_handler(void);
 #define ELO_SEQ 10
 #define ELO_REV_H	4096
 #define ELO_SS_H_SCALE	0.483
-#define ELO_SS_V_SCALE	0.370
+#define ELO_SS_V_SCALE	0.380
 #define	BLINK_RATE_E220	20000
 #define AUTO_RESTART	FALSE
 #define SINGLE_TOUCH	FALSE
@@ -269,7 +270,7 @@ void rxtx_handler(void);
 #define	LCD_CHK_TIME	36			// LCD heartbeat timeout
 
 const rom int8_t *build_date = __DATE__, *build_time = __TIME__,
-	build_version[] = " V3.31 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
+	build_version[] = " V3.32 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
 
 typedef struct reporttype {
 	uint8_t headder, status;
@@ -296,12 +297,15 @@ volatile uint8_t CATCH = FALSE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE,
 	LEARN2 = FALSE, CORNER1 = FALSE, CORNER2 = FALSE, CAM = FALSE, ACK = FALSE, INPACKET = FALSE;
 
 enum screen_type_t {
-	DELL_E224864, DELL_E215546, OTHER
-} screen_type;
+	DELL_E224864 = 0, DELL_E215546 = 1, OTHER_SCREEN = 2
+};
 
 enum emulat_type_t {
-	VIISION, E220, OTHER
-} emulat_type;
+	VIISION = 1, E220 = 2, OTHER_MECH = 3
+};
+
+volatile enum screen_type_t screen_type;
+volatile enum emulat_type_t emulat_type;
 
 volatile int32_t j = 0;
 volatile float xs = X_SCALE, ys = Y_SCALE, xs_ss = X_SCALE_SS, ys_ss = Y_SCALE_SS; // defaults
@@ -513,13 +517,15 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 				}
 			} else {
 				if (screen_type == DELL_E215546) {
+					LATFbits.LATF0 = 0;
+					LATFbits.LATF5 = !LATFbits.LATF5;
 					ssbuf[idx] = c;
 					switch (idx++) {
 					case 0: // start of touch controller packet, save data and compute checksum
 						sum = 0xaa;
 						if (c != 'U') {
 							idx = 0;
-							LATEbits.LATE6 = !LATEbits.LATE6;
+							LATFbits.LATF1 = 0;
 						}
 						break;
 					case 9: // end of touch controller packet
@@ -527,21 +533,20 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 						LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 						idx = 0;
 						if (c != sum) { // bad checksum
-							LATEbits.LATE6 = !LATEbits.LATE6;
+							LATF = 0xff;
 							break;
 						}
 						if (ssbuf[1] == 'T') {
-							LATEbits.LATE4 = !LATEbits.LATE4;
+							LATFbits.LATF6 = 0;
 							status.restart_delay = 0;
 							CATCH = TRUE;
 							if (!ssreport.tohost) {
 								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> 4;
 								ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
 							}
-							LATF = ssreport.y_cord;
 						} else if (ssbuf[1] == 'A') {
 							status.restart_delay = 0;
-							LATJbits.LATJ6 = 0; // led 6 touch-screen connected
+							LATEbits.LATE2 = 0; // connect  led ON
 							speedup = -10000;
 						}
 						break;
@@ -599,85 +604,184 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 		}
 	}
 
-	if (emulat_type == VIISION && screen_type == DELL_E215546) { // This is for the newer SMARTSET intellitouch screens
-		if (PIR3bits.RC2IF) { // is data from screen COMM2
-			if (RCSTA2bits.OERR) {
-				RCSTA2bits.CREN = 0; //	clear overrun
-				RCSTA2bits.CREN = 1; // re-enable
-			}
+	if (emulat_type == VIISION) {
+		if (screen_type == DELL_E215546) { // This is for the newer SMARTSET intellitouch screens
+			LATFbits.LATF5 = !LATFbits.LATF5;
+			if (PIR3bits.RC2IF) { // is data from screen COMM2
+				if (RCSTA2bits.OERR) {
+					RCSTA2bits.CREN = 0; //	clear overrun
+					RCSTA2bits.CREN = 1; // re-enable
+				}
 
-			/* Get the character received from the USART */
-			c = RCREG2;
+				/* Get the character received from the USART */
+				c = RCREG2;
 
-			if (((c & 0xc0) == 0xc0) || CATCH) { // start of touch sequence
-				LATFbits.LATF0 = 0;
-				CATCH = TRUE; // found elo touch command start of sequence
-				j = 0; // reset led timer
-				elobuf[i++] = c; // start stuffing the command buffer
+				if (((c & 0xc0) == 0xc0) || CATCH) { // start of touch sequence
+					LATFbits.LATF0 = 0;
+					CATCH = TRUE; // found elo touch command start of sequence
+					j = 0; // reset led timer
+					elobuf[i++] = c; // start stuffing the command buffer
+				}
+				if (i == CMD_SIZE_SS_V80) { // see if we should send it
+					LATFbits.LATF5 = !LATFbits.LATF5;
+					i = FALSE; // reset i to start of cmd
+					uchar = 0; /* check for proper touch format */
+					if ((elobuf[0]& 0xc0) == 0xc0) /* binary start code? */
+						uchar = TRUE;
+
+					LATFbits.LATF1 = 0;
+					CATCH = FALSE; // reset buffering now
+
+					/* munge the data for proper Varian format */
+					if (elobuf[5]) { // TOUCH
+						TOUCH = TRUE; // first touch sequence has been sent
+						uvalx = elobuf[0]&0x3f; // prune the data to 6-bits
+						lvalx = elobuf[1]&0x3f;
+						uvaly = elobuf[2]&0x3f;
+						lvaly = elobuf[3]&0x3f;
+						x_tmp = lvalx | (uvalx << 6); // 12-bit X value
+						y_tmp = lvaly | (uvaly << 6); // 12-bit Y value
+						x_tmp = 4095 - x_tmp; // FLIP X
+						y_tmp = 4095 - y_tmp; // FLIP Y	
+						x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
+						y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
+						x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
+						y_tmp = (y_tmp >> (uint16_t) 4); // rescale y				
+						elobuf_in[1] = x_tmp; // X to 8-bit var
+						elobuf_in[2] = y_tmp; // Y 
+						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
+						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
+						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
+						elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
+						elobuf_out[4] = 0x00;
+						elobuf_out[5] = 0x0f;
+						LATFbits.LATF6 = 0;
+					}
+
+					if (!elobuf[5]) { //UNTOUCH
+						UNTOUCH = TRUE; // untouch seqence found
+						elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
+						elobuf_out[1] = 0x80;
+						elobuf_out[2] = 0x40;
+						elobuf_out[3] = 0x00;
+						elobuf_out[4] = 0x00;
+						elobuf_out[5] = 0x00;
+						LATFbits.LATF7 = 0;
+					}
+
+					if (TOUCH || UNTOUCH) { // send both
+						LATFbits.LATF2 = 0;
+						if (uchar) { /* only send valid data */
+							LATFbits.LATF3 = 0;
+							data_ptr = elobuf_out;
+							data_pos = 0;
+							data_len = HOST_CMD_SIZE_V80;
+							PIE1bits.TX1IE = 1; // start sending data
+						}
+						LCD_OK = TRUE; // looks like a screen controller is connected
+						SCREEN_INIT = FALSE; // command code has been received by lcd controller
+						LATEbits.LATE3 = 1; // init  led OFF
+						status.init_check = 0; // reset init code timer
+						LATEbits.LATE2 = 0; // connect  led ON
+
+						if (UNTOUCH) { // After untouch is sent dump buffer and clear all.
+							TOUCH = FALSE;
+							UNTOUCH = FALSE;
+							CATCH = FALSE;
+							LATFbits.LATF4 = 0;
+							WriteTimer0(timer0_off);
+						}
+					}
+				}
+
+				/* Clear the interrupt flag */
+				if (i > CMD_OVERFLOW_V80) {
+					i = 0; // just incase i is greater than CMD_SIZE*2 somehow
+					CATCH = FALSE;
+					TOUCH = FALSE;
+					UNTOUCH = FALSE;
+					LATF = 0xff;
+				}
+
+				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
+				LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
+				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 			}
-			if (i == CMD_SIZE_SS_V80) { // see if we should send it
+		}
+
+		if (screen_type == DELL_E224864) { // This is for the DELL ELO Carroltouch screen.
+			if (PIR3bits.RC2IF) { // is data from touchscreen COMM2
+				if (RCSTA2bits.OERR) {
+					RCSTA2bits.CREN = 0; //	clear overrun
+					RCSTA2bits.CREN = 1; // re-enable
+				}
+				/* Get the character received from the USART */
+				c = RCREG2;
 				LATFbits.LATF5 = !LATFbits.LATF5;
-				i = FALSE; // reset i to start of cmd
-				uchar = 0; /* check for proper touch format */
-				if ((elobuf[0]& 0xc0) == 0xc0) /* binary start code? */
-					uchar = TRUE;
 
-				LATFbits.LATF1 = 0;
-				CATCH = FALSE; // reset buffering now
+				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
+				LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
+				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 
-				/* munge the data for proper Varian format */
-				if (elobuf[5]) { // TOUCH
-					TOUCH = TRUE; // first touch sequence has been sent
-					uvalx = elobuf[0]&0x3f; // prune the data to 6-bits
-					lvalx = elobuf[1]&0x3f;
-					uvaly = elobuf[2]&0x3f;
-					lvaly = elobuf[3]&0x3f;
-					x_tmp = lvalx | (uvalx << 6); // 12-bit X value
-					y_tmp = lvaly | (uvaly << 6); // 12-bit Y value
-					x_tmp = 4095 - x_tmp; // FLIP X
-					y_tmp = 4095 - y_tmp; // FLIP Y	
-					x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
-					y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
-					x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
-					y_tmp = (y_tmp >> (uint16_t) 4); // rescale y				
-					elobuf_in[1] = x_tmp; // X to 8-bit var
-					elobuf_in[2] = y_tmp; // Y 
-					elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
-					elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
-					elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
-					elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
-					elobuf_out[4] = 0x00;
-					elobuf_out[5] = 0x0f;
-					LATFbits.LATF6 = 0;
+				// touch 'FE X Y FF',    untouch 'FD X Y FF' from screen,    'F4 X Y FF' frame size report
+
+				if (CATCH || (c == 0xFE) || (c == 0xFD) || (c == 0xF4)) { // in frame or start of touch or untouch sequence or frame size report
+					LATFbits.LATF0 = 0;
+					CATCH = TRUE; // found elo CT touch command start of sequence, we hope
+					elobuf_in[i++] = c; // start stuffing the command buffer
+					j = 0; // reset led timer
 				}
 
-				if (!elobuf[5]) { //UNTOUCH
-					UNTOUCH = TRUE; // untouch seqence found
-					elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
-					elobuf_out[1] = 0x80;
-					elobuf_out[2] = 0x40;
-					elobuf_out[3] = 0x00;
-					elobuf_out[4] = 0x00;
-					elobuf_out[5] = 0x00;
-					LATFbits.LATF7 = 0;
-				}
+				if ((i == CMD_SIZE_V80) && (elobuf_in[3] == 0xFF)) { // see if we should send it, right size and end char
+					LATFbits.LATF5 = !LATFbits.LATF5;
+					i = 0; // reset i to start of cmd frame
+					CATCH = FALSE; // reset buffering now
+					uchar = elobuf_in[i]; //  load into uchar
 
-				if (TOUCH || UNTOUCH) { // send both
-					LATFbits.LATF2 = 0;
-					if (uchar) { /* only send valid data */
-						LATFbits.LATF3 = 0;
+					if (uchar == 0xFE) { // touch sequence found restuff the buffer with varian touch sequence
+						TOUCH = TRUE; // set TOUCH flag after first touch
+						elobuf_in[2] = yl - elobuf_in[2]; // FLIP Y
+						elobuf_in[1] = (uint8_t) ((float) elobuf_in[1]* (float) xs); // X scale
+						elobuf_in[2] = (uint8_t) ((float) elobuf_in[2]* (float) ys); // Y scale
+						elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
+						elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
+						elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
+						elobuf_out[i + 3] = 0x00 + (elobuf_in[2]&0x3f);
+						elobuf_out[i + 4] = 0x00;
+						elobuf_out[i + 5] = 0x15; // Z value = 15 "hard touch"
+						LATFbits.LATF6 = 0;
+					}
+
+					if (uchar == 0xFD) { // this is a untouch command
+						UNTOUCH = TRUE; // untouch sequence found
+						elobuf_out[i] = 0xc0; // restuff the buffer with varian binary 4002 untouch sequence
+						elobuf_out[i + 1] = 0x80;
+						elobuf_out[i + 2] = 0x40;
+						elobuf_out[i + 3] = 0x00;
+						elobuf_out[i + 4] = 0x00;
+						elobuf_out[i + 5] = 0x00;
+						LATFbits.LATF7 = 0;
+					}
+
+					if (!TOUCH && !UNTOUCH) { // check for proper touch frames
+						if (uchar == 0xF4) { // check for frame size report
+							LCD_OK = TRUE; // looks like a screen controller is connected
+							SCREEN_INIT = FALSE; // command code has been received by lcd controller
+							LATEbits.LATE3 = 1; // init  led OFF
+							status.init_check = 0; // reset init code timer
+							LATEbits.LATE2 = 0; // connect  led ON
+						}
+					}
+
+					if (TOUCH || UNTOUCH) { // send both
+						LATFbits.LATF2 = 0;
 						data_ptr = elobuf_out;
 						data_pos = 0;
 						data_len = HOST_CMD_SIZE_V80;
 						PIE1bits.TX1IE = 1; // start sending data
 					}
-					LCD_OK = TRUE; // looks like a screen controller is connected
-					SCREEN_INIT = FALSE; // command code has been received by lcd controller
-					LATEbits.LATE3 = 1; // init  led OFF
-					status.init_check = 0; // reset init code timer
-					LATEbits.LATE2 = 0; // connect  led ON
 
-					if (UNTOUCH) { // After untouch is sent dump buffer and clear all.
+					if (UNTOUCH) { // cleanup and reset for next touch
 						TOUCH = FALSE;
 						UNTOUCH = FALSE;
 						CATCH = FALSE;
@@ -685,118 +789,23 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 						WriteTimer0(timer0_off);
 					}
 				}
-			}
 
-			/* Clear the interrupt flag */
-			if (i > CMD_OVERFLOW_V80) {
-				i = 0; // just incase i is greater than CMD_SIZE*2 somehow
-				CATCH = FALSE;
-				TOUCH = FALSE;
-				UNTOUCH = FALSE;
-				LATF = 0xff;
-			}
-
-			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-			LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
-			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
-		}
-	}
-
-	if (emulat_type == VIISION && screen_type == DELL_E224864) { // This is for the DELL ELO Carroltouch screen.
-		if (PIR3bits.RC2IF) { // is data from touchscreen COMM2
-			if (RCSTA2bits.OERR) {
-				RCSTA2bits.CREN = 0; //	clear overrun
-				RCSTA2bits.CREN = 1; // re-enable
-			}
-			/* Get the character received from the USART */
-			c = RCREG2;
-
-			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-			LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
-			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
-
-			// touch 'FE X Y FF',    untouch 'FD X Y FF' from screen,    'F4 X Y FF' frame size report
-
-			if (CATCH || (c == 0xFE) || (c == 0xFD) || (c == 0xF4)) { // in frame or start of touch or untouch sequence or frame size report
-				LATFbits.LATF0 = 0;
-				CATCH = TRUE; // found elo CT touch command start of sequence, we hope
-				elobuf_in[i++] = c; // start stuffing the command buffer
-				j = 0; // reset led timer
-			}
-
-			if ((i == CMD_SIZE_V80) && (elobuf_in[3] == 0xFF)) { // see if we should send it, right size and end char
-				LATFbits.LATF5 = !LATFbits.LATF5;
-				i = 0; // reset i to start of cmd frame
-				CATCH = FALSE; // reset buffering now
-				uchar = elobuf_in[i]; //  load into uchar
-
-				if (uchar == 0xFE) { // touch sequence found restuff the buffer with varian touch sequence
-					TOUCH = TRUE; // set TOUCH flag after first touch
-					elobuf_in[2] = yl - elobuf_in[2]; // FLIP Y
-					elobuf_in[1] = (uint8_t) ((float) elobuf_in[1]* (float) xs); // X scale
-					elobuf_in[2] = (uint8_t) ((float) elobuf_in[2]* (float) ys); // Y scale
-					elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
-					elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
-					elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
-					elobuf_out[i + 3] = 0x00 + (elobuf_in[2]&0x3f);
-					elobuf_out[i + 4] = 0x00;
-					elobuf_out[i + 5] = 0x15; // Z value = 15 "hard touch"
-					LATFbits.LATF6 = 0;
-				}
-
-				if (uchar == 0xFD) { // this is a untouch command
-					UNTOUCH = TRUE; // untouch sequence found
-					elobuf_out[i] = 0xc0; // restuff the buffer with varian binary 4002 untouch sequence
-					elobuf_out[i + 1] = 0x80;
-					elobuf_out[i + 2] = 0x40;
-					elobuf_out[i + 3] = 0x00;
-					elobuf_out[i + 4] = 0x00;
-					elobuf_out[i + 5] = 0x00;
-					LATFbits.LATF7 = 0;
-				}
-
-				if (!TOUCH && !UNTOUCH) { // check for proper touch frames
-					if (uchar == 0xF4) { // check for frame size report
-						LCD_OK = TRUE; // looks like a screen controller is connected
-						SCREEN_INIT = FALSE; // command code has been received by lcd controller
-						LATEbits.LATE3 = 1; // init  led OFF
-						status.init_check = 0; // reset init code timer
-						LATEbits.LATE2 = 0; // connect  led ON
-					}
-				}
-
-				if (TOUCH || UNTOUCH) { // send both
-					LATFbits.LATF2 = 0;
-					data_ptr = elobuf_out;
-					data_pos = 0;
-					data_len = HOST_CMD_SIZE_V80;
-					PIE1bits.TX1IE = 1; // start sending data
-				}
-
-				if (UNTOUCH) { // cleanup and reset for next touch
+				if (i > CMD_OVERFLOW_V80) {
+					i = 0; // just incase i is greater than overflow somehow
+					CATCH = FALSE;
 					TOUCH = FALSE;
 					UNTOUCH = FALSE;
-					CATCH = FALSE;
-					LATFbits.LATF4 = 0;
-					WriteTimer0(timer0_off);
+					LATF = 0xff;
 				}
-			}
 
-			if (i > CMD_OVERFLOW_V80) {
-				i = 0; // just incase i is greater than overflow somehow
-				CATCH = FALSE;
-				TOUCH = FALSE;
-				UNTOUCH = FALSE;
-				LATF = 0xff;
+				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
+				LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
+				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 			}
-
-			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-			LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
-			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 		}
 	}
 
-	if (emulat_type == OTHER) {
+	if (emulat_type == OTHER_SCREEN) {
 		if (PIR3bits.RC2IF) { // is data from touchscreen COMM2
 			if (RCSTA2bits.OERR) {
 				RCSTA2bits.CREN = 0; //	clear overrun
@@ -804,12 +813,9 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 			}
 			/* Get the character received from the USART */
 			c = RCREG2;
-
 			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 			LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
 			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
-
-
 		}
 	}
 }
@@ -1023,6 +1029,9 @@ void main(void)
 	/* Configure  PORT pins for output */
 	TRISA = 0;
 	LATA = 0;
+	TRISG = 0;
+	LATG = 0;
+	LATGbits.LATG0 = 1;
 	/* check for touchscreen configuration data and setup switch on port B */
 	INTCON2bits.RBPU = 0;
 	TRISB = 0xff; // inputs
@@ -1051,6 +1060,7 @@ void main(void)
 		if (z == 0b11111110) {
 			screen_type = DELL_E215546;
 			emulat_type = VIISION;
+			z = 0b11111110;
 		}
 		if (z == 0b11111010) {
 			screen_type = DELL_E224864;
@@ -1059,6 +1069,7 @@ void main(void)
 		if (z == 0b11111101) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
+			z = 0b11111101;
 		}
 		if (z == 0b11111001) {
 			screen_type = DELL_E224864;
@@ -1066,11 +1077,11 @@ void main(void)
 		}
 		if (z == 0b11111100) {
 			screen_type = DELL_E215546;
-			emulat_type = OTHER;
+			emulat_type = OTHER_MECH;
 		}
 		if (z == 0b11111000) {
 			screen_type = DELL_E224864;
-			emulat_type = OTHER;
+			emulat_type = OTHER_MECH;
 		}
 	}
 
@@ -1083,8 +1094,6 @@ void main(void)
 	LATE = 0xFF;
 	TRISF = 0;
 	LATF = 0xFF;
-	TRISG = 0;
-	LATG = 0;
 	TRISH = 0;
 	LATH = 0;
 	TRISJ = 0;
@@ -1100,7 +1109,7 @@ void main(void)
 	wdtdelay(700000); // wait for LCD controller reset on power up
 	LATEbits.LATE3 = 1; // init  led OFF
 
-	if (emulat_type == OTHER) {
+	if (emulat_type == OTHER_MECH) {
 		/*
 		 * Open the USART configured as
 		 * 8N1, 9600 baud, in /transmit/receive INT mode
@@ -1204,6 +1213,7 @@ void main(void)
 	PIR1bits.RCIF = 0;
 	PIR3bits.RC2IF = 0;
 	PIR1bits.TX1IF = 0;
+	PIE1bits.TX1IE = 0;
 	PIR3bits.TX2IF = 0;
 	INTCONbits.GIEL = 0; // disable low ints
 	INTCONbits.GIEH = 1; // enable high ints
@@ -1262,8 +1272,6 @@ void main(void)
 					}
 				}
 				status.cam_time++;
-				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 				/*		For the auto-restart switch						*/
 				if (AUTO_RESTART) { // enable auto-restarts
 					if ((status.restart_delay++ >= (uint16_t) 60) && (!TSTATUS)) { // try and reinit lcd after delay
@@ -1367,6 +1375,7 @@ void main(void)
 
 	if (emulat_type == VIISION) {
 		PORTD = 0x00;
+		INTCONbits.GIEH = 1;
 		/* Loop forever */
 		PORTB = 0x0f;
 		while (TRUE) { // busy loop BSG style
@@ -1383,19 +1392,28 @@ void main(void)
 					timer0_off = TIMERFAST;
 				}
 				j = 0;
-				if ((screen_type == DELL_E224864) && SCREEN_INIT && !PIE1bits.TX1IE) { // if this flag is set send elo commands
-					INTCONbits.GIEH = 0;
+				if ((screen_type == DELL_E224864) && (SCREEN_INIT && !PIE1bits.TX1IE)) { // if this flag is set send elo commands
 					elocmdout_v80(elocodes_s_v); // send touchscreen setup data, causes a frame size report to be send from screen
-					INTCONbits.GIEH = 1;
 					SCREEN_INIT = FALSE; // commands sent, now wait for reply to set LCD_OK flag
 					LATEbits.LATE3 = 1; // init  led OFF
 				}
+			}
+			/*	check for port errors and clear if needed	*/
+			if (RCSTA1bits.OERR) {
+				LATF = 0xFF; // all leds off with error
+				RCSTA1bits.CREN = 0;
+				RCSTA1bits.CREN = 1;
+			}
+			if (RCSTA2bits.OERR) {
+				LATF = 0xFF; // all leds off with error
+				RCSTA2bits.CREN = 0;
+				RCSTA2bits.CREN = 1;
 			}
 			ClrWdt(); // reset the WDT timer
 		}
 	}
 
-	if (emulat_type == OTHER) {
+	if (emulat_type == OTHER_MECH) {
 		PORTD = 0x00;
 		/* Loop forever */
 		PORTB = 0x0f;
@@ -1404,9 +1422,19 @@ void main(void)
 				LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
-				INTCONbits.GIEH = 0;
 				Cylon_Eye((screen_type == DELL_E224864));
 				j = 0;
+			}
+			/*	check for port errors and clear if needed	*/
+			if (RCSTA1bits.OERR) {
+				LATF = 0xFF; // all leds off with error
+				RCSTA1bits.CREN = 0;
+				RCSTA1bits.CREN = 1;
+			}
+			if (RCSTA2bits.OERR) {
+				LATF = 0xFF; // all leds off with error
+				RCSTA2bits.CREN = 0;
+				RCSTA2bits.CREN = 1;
 			}
 			ClrWdt(); // reset the WDT timer
 		}
