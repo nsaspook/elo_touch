@@ -290,18 +290,21 @@ typedef struct statustype {
 
 volatile uint16_t c_idx = 0, speedup = 0;
 
+typedef struct flag_var_t {
+	uint8_t CATCH : 1, TOUCH : 1;
+} volatile F;
+
 volatile uint8_t CATCH = FALSE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE,
 	SCREEN_INIT = FALSE,
 	CATCH46 = FALSE, CATCH37 = FALSE, TSTATUS = FALSE, NEEDSETUP = FALSE,
-	DATA1 = FALSE, DATA2 = FALSE, LEARN1 = FALSE,
-	LEARN2 = FALSE, CORNER1 = FALSE, CORNER2 = FALSE, CAM = FALSE, ACK = FALSE, INPACKET = FALSE;
+	DATA1 = FALSE, DATA2 = FALSE, CAM = FALSE;
 
 enum screen_type_t {
-	DELL_E224864 = 0, DELL_E215546 = 1, OTHER_SCREEN = 2
+	DELL_E224864, DELL_E215546, OTHER_SCREEN
 };
 
 enum emulat_type_t {
-	VIISION = 1, E220 = 2, OTHER_MECH = 3
+	VIISION, E220, OTHER_MECH
 };
 
 volatile enum screen_type_t screen_type;
@@ -431,11 +434,11 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 				}; // wait until the usart is clear
 				TXREG2 = host_rec[host_ptr];
 				host_ptr++;
-				LATJbits.LATJ1 = !LATJbits.LATJ1; // flash  led
+				LATFbits.LATF1 = !LATFbits.LATF1; // flash  led
 			} else {
 				tchar = RCREG1; // read from host
 				status.host_write = TRUE;
-				LATJbits.LATJ3 = !LATJbits.LATJ3; // flash  led
+				LATFbits.LATF3 = !LATFbits.LATF3; // flash  led
 			}
 		} else {
 			tchar = RCREG1; // read from host
@@ -477,15 +480,13 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 			}; // wait until the usart is clear
 			if (screen_type == DELL_E224864) {
 				TXREG2 = 0x37; // send frame size request to LCD touch
+				LATF = 0xff;
 			}
 			if (screen_type == DELL_E215546) {
 				LATF = 0xff;
 			}
-			LATEbits.LATE1 = !LATEbits.LATE1; // flash  led
-			LATEbits.LATE2 = 1; // connect  led OFF
+
 		}
-		LATEbits.LATE6 = 1;
-		LATEbits.LATE5 = 1;
 	}
 
 	if (emulat_type == E220) {
@@ -510,15 +511,14 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 					}; // wait until the usart is clear
 					TXREG1 = scrn_rec[scrn_ptr];
 					scrn_ptr++;
-					LATJbits.LATJ2 = !LATJbits.LATJ2; // flash  led
+					LATFbits.LATF2 = !LATFbits.LATF2; // flash  led
 				} else {
 					status.scrn_write = TRUE;
-					LATJbits.LATJ4 = !LATJbits.LATJ4; // flash  led
+					LATFbits.LATF4 = !LATFbits.LATF4; // flash  led
 				}
 			} else {
 				if (screen_type == DELL_E215546) {
 					LATFbits.LATF0 = 0;
-					LATFbits.LATF5 = !LATFbits.LATF5;
 					ssbuf[idx] = c;
 					switch (idx++) {
 					case 0: // start of touch controller packet, save data and compute checksum
@@ -529,8 +529,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 						}
 						break;
 					case 9: // end of touch controller packet
-						LATEbits.LATE0 = 1; // flash external led
-						LATEbits.LATE7 = LATEbits.LATE0; // flash external led
+						LATFbits.LATF0 = 1;
 						idx = 0;
 						if (c != sum) { // bad checksum
 							LATF = 0xff;
@@ -556,36 +555,32 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 
 				}
 				if (screen_type == DELL_E224864) {
+					LATFbits.LATF0 = 0;
 					status.touch_good++; // chars received before a status report
-					LATEbits.LATE0 = 1; // flash external led
-					LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 					DATA2 = TRUE; // usart is connected to data
 					if (TOUCH) {
 						elobuf[c_idx++] = c;
-						LATEbits.LATE0 = 1; // flash external led
-						LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 						if (c == 0xFF && TOUCH) { // end of report
+							LATFbits.LATF1 = 0;
 							CATCH = TRUE;
 							status.restart_delay = 0;
 							TOUCH = FALSE; // stop buffering touchscreen data.
 						};
 					};
 					if (c == 0xFE && (!CATCH)) { // looks like a touch report
+						LATFbits.LATF6 = 0;
 						TOUCH = TRUE;
 						TSTATUS = TRUE;
 						status.restart_delay = 0;
 						CATCH = FALSE;
 						c_idx = 0;
-						LATEbits.LATE0 = 1; // flash external led
-						LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 					};
 					if (c == 0xF5) { // looks like a status report
+						LATFbits.LATF3 = 0;
 						TSTATUS = TRUE;
 						status.restart_delay = 0;
-						LATJbits.LATJ6 = 0; // led 6 touch-screen connected
+						LATFbits.LATF6 = 0; // led 6 touch-screen connected
 						speedup = -10000;
-						LATEbits.LATE0 = 1; // flash external led
-						LATEbits.LATE7 = LATEbits.LATE0; // flash external led
 					};
 					if (c_idx > (BUF_SIZE - 2)) {
 						c_idx = 0; // stop buffer-overflow
@@ -593,8 +588,6 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 						CATCH = FALSE;
 					};
 					if (status.touch_good > GOOD_MAX) { // check for max count and no host to get touch data
-						LATEbits.LATE0 = 1; // LED off
-						LATEbits.LATE7 = LATEbits.LATE0;
 						while (TRUE) { // lockup for reboot
 							status.touch_good++;
 						};
@@ -606,7 +599,6 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 
 	if (emulat_type == VIISION) {
 		if (screen_type == DELL_E215546) { // This is for the newer SMARTSET intellitouch screens
-			LATFbits.LATF5 = !LATFbits.LATF5;
 			if (PIR3bits.RC2IF) { // is data from screen COMM2
 				if (RCSTA2bits.OERR) {
 					RCSTA2bits.CREN = 0; //	clear overrun
@@ -717,7 +709,6 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 				}
 				/* Get the character received from the USART */
 				c = RCREG2;
-				LATFbits.LATF5 = !LATFbits.LATF5;
 
 				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 				LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
@@ -798,9 +789,9 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 					LATF = 0xff;
 				}
 
-				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-				LATEbits.LATE6 = !LATEbits.LATE6; // flash external led
-				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
+				LATEbits.LATE0 = !LATEbits.LATE0;
+				LATEbits.LATE6 = !LATEbits.LATE6;
+				LATEbits.LATE7 = LATEbits.LATE0;
 			}
 		}
 	}
@@ -813,16 +804,15 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 			}
 			/* Get the character received from the USART */
 			c = RCREG2;
-			LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
-			LATEbits.LATE5 = !LATEbits.LATE5; // flash external led
-			LATEbits.LATE7 = LATEbits.LATE0; // flash external led
+			LATEbits.LATE0 = !LATEbits.LATE0;
+			LATEbits.LATE5 = !LATEbits.LATE5;
+			LATEbits.LATE7 = LATEbits.LATE0;
 		}
 	}
 }
 
 void touch_cam(void)
 {
-
 	//	check for corner presses
 	if (CATCH) {
 		if ((elobuf[0] <= (uint8_t) 0x06) && (elobuf[1] >= (uint8_t) 0x5a)) { // check for left bottom corner
@@ -857,7 +847,7 @@ void wdtdelay(uint32_t delay)
 
 void elocmdout(uint8_t * elostr)
 {
-	LATJbits.LATJ5 = !LATJbits.LATJ5; // touch screen commands led
+	LATFbits.LATF5 = !LATFbits.LATF5; // touch screen commands led
 	while (Busy2USART()) {
 	}; // wait until the usart is clear
 	putc2USART(elostr[0]);
@@ -871,7 +861,7 @@ void elocmdout(uint8_t * elostr)
 
 void eloSScmdout(uint8_t elostr)
 {
-	LATJbits.LATJ5 = !LATJbits.LATJ5; // touch screen commands led
+	LATFbits.LATF5 = !LATFbits.LATF5; // touch screen commands led
 	while (Busy2USART()) {
 	}; // wait until the usart is clear
 	putc2USART(elostr);
@@ -899,7 +889,6 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 		default:
 			sum += (c = strptr[i]);
 		}
-
 		eloSScmdout(c);
 	};
 	if (slow) wdtdelay(30000);
@@ -933,7 +922,8 @@ void setup_lcd(void)
 		elopacketout(elocodes_e0, ELO_SEQ, 0); // set touch packet spacing and timing
 		elopacketout(elocodes_e2, ELO_SEQ, 0); // nvram save
 	} else {
-		if (TS_TYPE == 1) single_t = FALSE;
+		if (TS_TYPE == 1)
+			single_t = FALSE;
 		for (code_count = 0; code_count < ELO_SIZE_V80; code_count++) {
 			if (single_t) {
 				elocmdout(&elocodes_s_e[code_count]);
@@ -942,7 +932,6 @@ void setup_lcd(void)
 			}
 		};
 	}
-
 	NEEDSETUP = FALSE;
 }
 
@@ -968,7 +957,7 @@ void start_delay(void)
 uint8_t Test_Screen(void)
 {
 	while (Busy2USART()) {
-	}; // wait until the usart is clear
+	}; // wait until the USART is clear
 	if (screen_type == DELL_E224864) return TRUE;
 	putc2(0x46);
 	wdtdelay(30000);
@@ -987,7 +976,7 @@ void Cylon_Eye(uint8_t invert)
 	static int32_t alive_led = 0xfe;
 
 	if (invert) { // screen status feedback
-		LATD = ~cylon; // roll leds cylon style
+		LATD = ~cylon; // roll LEDs cylon style
 	} else {
 		LATD = cylon; // roll leds cylon style (inverted)
 	}
@@ -1031,7 +1020,8 @@ void main(void)
 	LATA = 0;
 	TRISG = 0;
 	LATG = 0;
-	LATGbits.LATG0 = 1;
+	LATGbits.LATG3 = 1;
+	LATGbits.LATG4 = 1;
 	/* check for touchscreen configuration data and setup switch on port B */
 	INTCON2bits.RBPU = 0;
 	TRISB = 0xff; // inputs
@@ -1057,7 +1047,7 @@ void main(void)
 	if (check_byte == 0x57) {
 		Busy_eep();
 		z = Read_b_eep(1);
-		if (z == 0b11111110) {
+		if (z == 0b11111110 || (!LATGbits.LATG3)) {
 			screen_type = DELL_E215546;
 			emulat_type = VIISION;
 			z = 0b11111110;
@@ -1066,7 +1056,7 @@ void main(void)
 			screen_type = DELL_E224864;
 			emulat_type = VIISION;
 		}
-		if (z == 0b11111101) {
+		if (z == 0b11111101 || (!LATGbits.LATG4)) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
@@ -1217,19 +1207,18 @@ void main(void)
 	PIR3bits.TX2IF = 0;
 	INTCONbits.GIEL = 0; // disable low ints
 	INTCONbits.GIEH = 1; // enable high ints
+	PORTD = 0x00;
 
 	if (emulat_type == E220) {
-		LATJ = 0xff; // set leds to off at powerup/reset
 		DATA1 = FALSE; // reset COMM flags.
 		DATA2 = FALSE; // reset touch COMM flag
 		// leds from outputs to ground via resistor.
 		while (status.do_cap) {
 			ClrWdt();
-			LATJbits.LATJ6 = !LATJbits.LATJ6; // flash  led
+			LATFbits.LATF5 = !LATFbits.LATF5; // flash  led
 			if (status.host_write || status.scrn_write) {
 				eep_ptr = 0;
 				while (eep_ptr <= 255) {
-					LATJbits.LATJ0 = !LATJbits.LATJ0; // flash  led
 					INTCONbits.GIE = 0; // global int enable
 					INTCONbits.PEIE = 0; // enable all unmasked int
 					Busy_eep();
@@ -1242,18 +1231,12 @@ void main(void)
 					INTCONbits.PEIE = 1; // enable all unmasked int
 					ClrWdt(); // reset the WDT timer
 					eep_ptr++;
-				}
-				INTCONbits.GIE = 0; // global int enable
-				INTCONbits.PEIE = 0; // enable all unmasked int
-				while (status.do_cap) {
-					LATJ = 0x00; // all on
 					ClrWdt(); // reset the WDT timer
 				}
 			}
 		}
 
 		Test_Screen();
-		LATD = 0xff;
 		/* Loop forever */
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + speedup)) { // delay a bit ok
@@ -1290,11 +1273,11 @@ void main(void)
 				j = 0;
 			}
 
-			LATJbits.LATJ4 = !LATJbits.LATJ4; // toggle bits program run led
+			LATFbits.LATF4 = !LATFbits.LATF4; // toggle bits program run led
 			touch_cam(); // always check the cam touch
 
 			if (CATCH46) { // flag to send report to host
-				LATJbits.LATJ0 = 1; // flash status led
+				LATFbits.LATF0 = 1; // flash status led
 				if (CATCH) { // send the buffered touch report
 					Delay10KTCYx(75); // 75 ms
 					putc1(0xFE); // send position report header to host
@@ -1332,7 +1315,7 @@ void main(void)
 			};
 
 			if (CATCH37) { // send screen size codes
-				LATJbits.LATJ7 = 0; // off blink for rez codes sent
+				LATFbits.LATF7 = 0; // off blink for rez codes sent
 				Delay10KTCYx(75); // 75 ms
 				rez_scale_h = 1.0; // LCD touch screen real H/V rez
 				rez_scale_v = 1.0;
@@ -1360,12 +1343,12 @@ void main(void)
 			if (NEEDSETUP) setup_lcd(); // send lcdsetup codes to screen
 			/*	check for port errors and clear if needed	*/
 			if (RCSTA1bits.OERR) {
-				LATJ = 0xFF; // all leds off with error
+				LATF = 0xFF; // all leds off with error
 				RCSTA1bits.CREN = 0;
 				RCSTA1bits.CREN = 1;
 			}
 			if (RCSTA2bits.OERR) {
-				LATJ = 0xFF; // all leds off with error
+				LATF = 0xFF;
 				RCSTA2bits.CREN = 0;
 				RCSTA2bits.CREN = 1;
 			}
@@ -1374,10 +1357,7 @@ void main(void)
 	}
 
 	if (emulat_type == VIISION) {
-		PORTD = 0x00;
-		INTCONbits.GIEH = 1;
 		/* Loop forever */
-		PORTB = 0x0f;
 		while (TRUE) { // busy loop BSG style
 			if (j++ >= BLINK_RATE_V80) { // delay a bit ok
 				LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
@@ -1400,12 +1380,12 @@ void main(void)
 			}
 			/*	check for port errors and clear if needed	*/
 			if (RCSTA1bits.OERR) {
-				LATF = 0xFF; // all leds off with error
+				LATF = 0xFF;
 				RCSTA1bits.CREN = 0;
 				RCSTA1bits.CREN = 1;
 			}
 			if (RCSTA2bits.OERR) {
-				LATF = 0xFF; // all leds off with error
+				LATF = 0xFF;
 				RCSTA2bits.CREN = 0;
 				RCSTA2bits.CREN = 1;
 			}
@@ -1414,9 +1394,7 @@ void main(void)
 	}
 
 	if (emulat_type == OTHER_MECH) {
-		PORTD = 0x00;
 		/* Loop forever */
-		PORTB = 0x0f;
 		while (TRUE) { // busy loop BSG style
 			if (j++ >= BLINK_RATE_OTHER) { // delay a bit ok
 				LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
@@ -1427,12 +1405,12 @@ void main(void)
 			}
 			/*	check for port errors and clear if needed	*/
 			if (RCSTA1bits.OERR) {
-				LATF = 0xFF; // all leds off with error
+				LATF = 0xFF;
 				RCSTA1bits.CREN = 0;
 				RCSTA1bits.CREN = 1;
 			}
 			if (RCSTA2bits.OERR) {
-				LATF = 0xFF; // all leds off with error
+				LATF = 0xFF;
 				RCSTA2bits.CREN = 0;
 				RCSTA2bits.CREN = 1;
 			}
