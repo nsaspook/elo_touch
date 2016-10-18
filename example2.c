@@ -557,7 +557,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 				if (screen_type == DELL_E224864) {
 					LATFbits.LATF0 = 0;
 					status.touch_good++; // chars received before a status report
-					DATA2 = TRUE; // usart is connected to data
+					DATA2 = TRUE; // USART is connected to data
 					if (TOUCH) {
 						elobuf[c_idx++] = c;
 						if (c == 0xFF && TOUCH) { // end of report
