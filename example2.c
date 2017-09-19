@@ -252,13 +252,13 @@ void rxtx_handler(void);
 #define ELO_SIZE_I_V80 10			// max smartset sequence size
 #define FALSE	0
 #define TRUE	1
-#define	BLINK_RATE_V80	25000			// BSG timing
+#define	BLINK_RATE_V80	25000		// BSG timing
 #define	X_SCALE	1.90				// scaling factor to host screen X logical coords
 #define	Y_SCALE 1.75				// scaling factor to host screen Y logical coords
 #define	X_SCALE_SS	0.905			// scaling factor to host screen X logical coords
 #define	Y_SCALE_SS	0.650			// scaling factor to host screen Y logical coords
-#define	X_LOGICAL	119			// LCD touchscreen logical X frame coords
-#define	Y_LOGICAL	94			// LCD touchscreen logical Y frame coords
+#define	X_LOGICAL	119				// LCD touchscreen logical X frame coords
+#define	Y_LOGICAL	94				// LCD touchscreen logical Y frame coords
 #define	X_TOOL		202
 #define	Y_TOOL		164
 
@@ -422,7 +422,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 		}
 	}
 
-	if (PIR1bits.RCIF) { // is data from host COMM1
+	if (PIR1bits.RCIF) { // is data from host COMM1, only from E220/E500 machines
 		if (RCSTA1bits.OERR) {
 			RCSTA1bits.CREN = 0; //	clear overrun
 			RCSTA1bits.CREN = 1; // re-enable
