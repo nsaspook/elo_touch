@@ -191,6 +191,7 @@
 //				V3.30		converted to unified driver
 //				V3.31		bug fixes, cleanup
 //				V3.32		PORT G jumpers for smartset configuation.
+//				V3.33		display screen/machine config on LATJ with data 8 bit config on PORTB
 //				***
 
 #include <usart.h>
@@ -270,7 +271,7 @@ void rxtx_handler(void);
 #define	LCD_CHK_TIME	36			// LCD heartbeat timeout
 
 const rom int8_t *build_date = __DATE__, *build_time = __TIME__,
-	build_version[] = " V3.32 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
+	build_version[] = " V3.33 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
 
 typedef struct reporttype {
 	uint8_t headder, status;
@@ -299,8 +300,21 @@ volatile uint8_t CATCH = FALSE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE,
 	CATCH46 = FALSE, CATCH37 = FALSE, TSTATUS = FALSE, NEEDSETUP = FALSE,
 	DATA1 = FALSE, DATA2 = FALSE, CAM = FALSE;
 
+
+/*
+ * Old monitors
+ * E757389	CarrollTouch
+ * E224864	CarrollTouch
+ * E779866	SecureTouch
+ * E215546	IntelliTouch
+ * NEW REPLACEMENT MONITORS 1990L 1991L
+ * E328700	IntelliTouch
+ * E328487	IntelliTouch
+ * E483757	remote OSD
+ * E005277	power brick
+ */
 enum screen_type_t {
-	DELL_E224864, DELL_E215546, OTHER_SCREEN
+	DELL_E224864, DELL_E215546, OTHER_SCREEN, E757389, E328700, E328487
 };
 
 enum emulat_type_t {
@@ -1087,7 +1101,7 @@ void main(void)
 	TRISH = 0;
 	LATH = 0;
 	TRISJ = 0;
-	LATJ = 0;
+	LATJ = z;
 
 	CAM_RELAY_TIME = 0;
 	CAM_RELAY = 0;
