@@ -81,9 +81,9 @@
 /*
  Viision terminal code */
 /*
- * This program converts the rs-232 output from a ELO 1939L E224864 CarrollTouch controller type LCD monitor 
+ * This program converts the rs-232 output from a ELO controller type LCD monitor 
  * to a format that can be used with the Varian Viision 80 Implanter with ADYIN CRT monitor
- * The Carroll touchscreen will be  programmed to the correct touch response and configuration at program start
+ * The LCD touchscreen will be  programmed to the correct touch response and configuration at program start
  *
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
@@ -113,7 +113,7 @@
  * V3.01	mode checks and lamps for proper smartset to emulation operation
  * V3.10	working Intellitouch version
  * V3.20	code cleanup
- * V3.30	unified Viision/E220/E500 driver
+ * V3.30	unified Viision/E220/E500 driver, see vtouch_build.h
  *
  *
  *
@@ -127,7 +127,7 @@
 
 /* E220/E500 terminal code
  /*
- * This program converts the rs-232 output from a ELO Carroll-Touch& accutouch SmartSet touch-screen controller
+ * This program converts the rs-232 output from a ELO touch-screen controller
  * to a format that can be used with the Varian E220/E500 Implanter
  * The touch controller must be first programmed
  * USART1 is the host comm port
@@ -157,42 +157,7 @@
  * Pin		8 - gnd, wire tag 0, to RELAY output	pin 2 on connector for RA1, RE1 PORT OUTPUT
  * Pin		1 + 5vdc,		Power PIN	pin 9 connector for RA or RE PORT VCC		 
  */
-//				***
-//				E0.94		Clean up the code and comments
-//				E0.95		Add startup delay for remote service terminals
-//				E0.96		status reporting and monitor testing
-//				E0.97		port bit testing
-//				E0.98		fix cylon led roll.
-//				E0.99		debug 1,2 Screen size code results changed with portD bit 0,1
-//				E1.00
-//				E1.01		debug 8 on single/tracking touch modes portD bit 7
-//				E1.02		debug 7 on flash LCD while processing. portD bit 6
-//				E1.03		code fixes/updates
-//				E1.04		add delay in status/touched host send routines
-//				E1.05		add interlocks for touch input from screen
-//				E1.06		add WDT counter test switch input and checks for valid ts inputs.
-//				E1.07		screen connect restart code via WDT timeout.
-//				E1.08		Learn touchs and set with special touch sequence.
-//				E1.09		Code for 2 special touchs and remove the delay switch. bit3 learn1, bit2 learn2
-//				E1.10		External output to led/relay on PORTE, RE0,RE7 mirrors HA0 led
-//				E1.11		add JB define for switch board missing.
-//				E1.12-13	fix LCD display
-//				E1.14		fix rs-232 flags
-//				E1.15		Small coding  cleanups
-//				E1.16		remove WDT calls in ISR, check for proper comms with the touch screen and controller.
-//				E1.17		auto init touchscreen code.
-//				E1.18		Code for new LCD screens and debug capture.
-//				E1.19		recode ISR to remove library define functions
-//				E1.20		VGA/CAM switcher code.
-//				E1.21		Timed camera for left press, software smells
-//				E1.22		Support for SmartSet commands on newer touch panels
-//				E1.23		refactor
-//				E1.24		adjust newer screen size for better touch fit
-//				V3.30		converted to unified driver
-//				V3.31		bug fixes, cleanup
-//				V3.32		PORT G jumpers for smartset configuation.
-//				V3.33		display screen/machine config on LATJ with data 8 bit config on PORTB
-//				***
+
 
 #include <usart.h>
 #include <delays.h>
@@ -229,7 +194,7 @@ typedef struct flag_var_t {
 
 volatile uint8_t CATCH = FALSE, TOUCH = FALSE, UNTOUCH = FALSE, LCD_OK = FALSE,
 	SCREEN_INIT = FALSE,
-	CATCH46 = FALSE, CATCH37 = FALSE, TSTATUS = FALSE, NEEDSETUP = FALSE,
+	CATCH46 = FALSE, CATCH37 = FALSE, TSTATUS = FALSE,
 	DATA1 = FALSE, DATA2 = FALSE, CAM = FALSE;
 
 /*
@@ -397,7 +362,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 				status.touch_good = 0;
 			}
 			if ((tchar == (uint8_t) 0x3C)) { // touch reset from host
-				NEEDSETUP = FALSE;
+				// a possible setup command
 			}
 		};
 	}
@@ -836,7 +801,8 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 		}
 		eloSScmdout(c);
 	};
-	if (slow) wdtdelay(30000);
+	if (slow)
+		wdtdelay(30000);
 }
 
 void elocmdout_v80(const rom uint8_t * elostr)
@@ -877,7 +843,6 @@ void setup_lcd(void)
 			}
 		};
 	}
-	NEEDSETUP = FALSE;
 }
 
 void putc1(uint16_t c)
@@ -903,16 +868,12 @@ uint8_t Test_Screen(void)
 {
 	while (Busy2USART()) {
 	}; // wait until the USART is clear
-	if (screen_type == DELL_E224864) return TRUE;
+	if (screen_type == DELL_E224864)
+		return TRUE;
 	putc2(0x46);
 	wdtdelay(30000);
-	if (DATA2) {
-		setup_lcd(); // send lcd touch controller setup codes
-		return TRUE;
-	} else {
-		setup_lcd(); // send lcd touch controller setup codes
-		return FALSE;
-	}
+	setup_lcd(); // send lcd touch controller setup codes
+	return DATA2;
 }
 
 void Cylon_Eye(uint8_t invert)
@@ -958,6 +919,7 @@ void main(void)
 	INTCON3bits.INT1IE = 0;
 	INTCON3bits.INT2IE = 0;
 	INTCON3bits.INT3IE = 0;
+	// default interface
 	screen_type = DELL_E215546;
 	emulat_type = VIISION;
 	/* Configure  PORT pins for output */
@@ -971,7 +933,7 @@ void main(void)
 	INTCON2bits.RBPU = 0;
 	TRISB = 0xff; // inputs
 	LATB = 0xff;
-	z = PORTB;
+	z = PORTB; // read the config switches
 	wdtdelay(7000);
 	if (z != PORTB) // glitch check
 		z = 0xff;
@@ -979,7 +941,7 @@ void main(void)
 	Busy_eep();
 	check_byte = Read_b_eep(0);
 
-	if (z != 0xff) {
+	if (z != 0xff) { // some config switches read logic zero
 		Busy_eep();
 		Write_b_eep(0, 0x57);
 		Busy_eep();
@@ -989,7 +951,7 @@ void main(void)
 
 	Busy_eep();
 	check_byte = Read_b_eep(0);
-	if (check_byte == 0x57) {
+	if (check_byte == 0x57) { // change config from default settings if needed
 		Busy_eep();
 		z = Read_b_eep(1);
 		if (z == 0b11111110 || (!LATGbits.LATG3)) {
@@ -1020,7 +982,7 @@ void main(void)
 		}
 	}
 
-	TRISB = 0; // outputs
+	TRISB = 0; // turn config inputs to outputs
 	TRISC = 0;
 	LATC = 0;
 	TRISD = 0;
@@ -1032,7 +994,6 @@ void main(void)
 	TRISH = 0;
 	LATH = 0;
 	TRISJ = 0;
-	LATJ = z;
 
 	CAM_RELAY_TIME = 0;
 	CAM_RELAY = 0;
@@ -1181,7 +1142,7 @@ void main(void)
 			}
 		}
 
-		Test_Screen();
+		Test_Screen(); // send touch init commands
 		/* Loop forever */
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + speedup)) { // delay a bit ok
@@ -1200,7 +1161,9 @@ void main(void)
 					}
 				}
 				status.cam_time++;
+
 				/*		For the auto-restart switch						*/
+				//FIXME
 				if (AUTO_RESTART) { // enable auto-restarts
 					if ((status.restart_delay++ >= (uint16_t) 60) && (!TSTATUS)) { // try and reinit lcd after delay
 						start_delay();
@@ -1285,7 +1248,6 @@ void main(void)
 				// do nothing now.
 			};
 
-			if (NEEDSETUP) setup_lcd(); // send lcdsetup codes to screen
 			/*	check for port errors and clear if needed	*/
 			if (RCSTA1bits.OERR) {
 				LATF = 0xFF; // all leds off with error
