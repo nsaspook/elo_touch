@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 	const rom int8_t *build_date = __DATE__, *build_time = __TIME__,
-		build_version[] = " V3.33 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
+		build_version[] = " V3.34 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
 
 	//				***
 	//				E0.94		Clean up the code and comments
@@ -50,6 +50,7 @@ extern "C" {
 	//				V3.31		bug fixes, cleanup
 	//				V3.32		PORT G jumpers for smartset configuation.
 	//				V3.33		display screen/machine config on LATJ with data 8 bit config on PORTB, program structure rewrite
+	//				V3.34		subroutine clean up		
 	//				***
 
 #ifdef	__cplusplus
