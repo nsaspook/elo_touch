@@ -20,7 +20,7 @@ extern "C" {
 	//				E0.95		Add startup delay for remote service terminals
 	//				E0.96		status reporting and monitor testing
 	//				E0.97		port bit testing
-	//				E0.98		fix cylon led roll.
+	//				E0.98		fix Cylon led roll.
 	//				E0.99		debug 1,2 Screen size code results changed with portD bit 0,1
 	//				E1.00
 	//				E1.01		debug 8 on single/tracking touch modes portD bit 7
@@ -30,8 +30,8 @@ extern "C" {
 	//				E1.05		add interlocks for touch input from screen
 	//				E1.06		add WDT counter test switch input and checks for valid ts inputs.
 	//				E1.07		screen connect restart code via WDT timeout.
-	//				E1.08		Learn touchs and set with special touch sequence.
-	//				E1.09		Code for 2 special touchs and remove the delay switch. bit3 learn1, bit2 learn2
+	//				E1.08		Learn touches and set with special touch sequence.
+	//				E1.09		Code for 2 special touches and remove the delay switch. bit3 learn1, bit2 learn2
 	//				E1.10		External output to led/relay on PORTE, RE0,RE7 mirrors HA0 led
 	//				E1.11		add JB define for switch board missing.
 	//				E1.12-13	fix LCD display
