@@ -921,7 +921,7 @@ void main(void)
 	INTCON3bits.INT3IE = 0;
 	// default interface
 	screen_type = DELL_E215546;
-	emulat_type = VIISION;
+	emulat_type = E220;
 	/* Configure  PORT pins for output */
 	TRISA = 0;
 	LATA = 0;
