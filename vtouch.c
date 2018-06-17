@@ -116,6 +116,8 @@
  * V3.31	bug fixes, cleanup
  * V3.32	PORT G jumpers for smartset configuation.
  * V3.33	display screen/machine config on LATJ with data 8 bit config on PORTB, program structure
+ * V3.34	merge state machine refactor update
+ * V3.35	"" ""
  *
  *
  *
