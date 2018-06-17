@@ -77,18 +77,17 @@
 // CONFIG7H
 #pragma config EBTRB = OFF      // Boot Block Table Read Protection bit (Boot Block (000000-007FFF, 000FFF or 001FFFh) not protected from table reads executed in other blocks)
 
-
 /*
  Viision terminal code */
 /*
- * This program converts the rs-232 output from a ELO controller type LCD monitor 
+ * This program converts the rs-232 output from a ELO controller type LCD monitor
  * to a format that can be used with the Varian Viision 80 Implanter with ADYIN CRT monitor
  * The LCD touchscreen will be  programmed to the correct touch response and configuration at program start
  *
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * Fred Brooks, Microchip Inc , Oct 2016
+ * Microchip Inc , Oct 2016
  * Gresham, Oregon
  *
  *
@@ -114,6 +113,9 @@
  * V3.10	working Intellitouch version
  * V3.20	code cleanup
  * V3.30	unified Viision/E220/E500 driver, see vtouch_build.h
+ * V3.31	bug fixes, cleanup
+ * V3.32	PORT G jumpers for smartset configuation.
+ * V3.33	display screen/machine config on LATJ with data 8 bit config on PORTB, program structure
  *
  *
  *
@@ -123,6 +125,15 @@
  * LCD  RS-232  5-1     uC port2
  * Male         2-3-rx
  *              3-2-tx
+ *
+ * HFBR-0501Z light link converter
+ * Move jumper 15 to I/O, sending TTL signals to 10 pin port socket
+ *
+ * RC[0..7]
+ * pin 7 to TXD pin on HFBR
+ * pin 8 to RXD pin on HFBR
+ * pin 9 to tx/rx VCC jacks
+ * pin 10 to tx/rx GND jacks
  */
 
 /* E220/E500 terminal code
@@ -138,7 +149,7 @@
  * PORTH0		run flasher led onboard.
  * 8 led status lights.
  *
- * Fred Brooks, Microchip Inc , Aug 2009,2016
+ * Microchip Inc , Aug 2009,2016
  * Gresham, Oregon
  *
  *
@@ -150,14 +161,13 @@
  * LCD  RS-232  5-1     uC port2
  * Male         2-3-rx
  *              3-2-tx
- * 
+ *
  * VGA converter box relay
- * Omron 
+ * Omron
  * G6k-2P bottom view
  * Pin		8 - gnd, wire tag 0, to RELAY output	pin 2 on connector for RA1, RE1 PORT OUTPUT
- * Pin		1 + 5vdc,		Power PIN	pin 9 connector for RA or RE PORT VCC		 
+ * Pin		1 + 5vdc,		Power PIN	pin 9 connector for RA or RE PORT VCC
  */
-
 
 #include <usart.h>
 #include <delays.h>
@@ -286,7 +296,7 @@ uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 #pragma idata sddata
 volatile uint8_t host_rec[CAP_SIZE] = "H";
 volatile uint8_t scrn_rec[CAP_SIZE] = "S";
-#pragma idata 
+#pragma idata
 
 #pragma code touch_int = 0x8
 
@@ -534,7 +544,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 					LATFbits.LATF1 = 0;
 					CATCH = FALSE; // reset buffering now
 
-					/* munge the data for proper Varian format */
+					/* munge the data for proper CRT Varian format */
 					if (elobuf[5]) { // TOUCH
 						TOUCH = TRUE; // first touch sequence has been sent
 						uvalx = elobuf[0]&0x3f; // prune the data to 6-bits
@@ -544,13 +554,13 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 						x_tmp = lvalx | (uvalx << 6); // 12-bit X value
 						y_tmp = lvaly | (uvaly << 6); // 12-bit Y value
 						x_tmp = 4095 - x_tmp; // FLIP X
-						y_tmp = 4095 - y_tmp; // FLIP Y	
+						y_tmp = 4095 - y_tmp; // FLIP Y
 						x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
 						y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
 						x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
-						y_tmp = (y_tmp >> (uint16_t) 4); // rescale y				
+						y_tmp = (y_tmp >> (uint16_t) 4); // rescale y
 						elobuf_in[1] = x_tmp; // X to 8-bit var
-						elobuf_in[2] = y_tmp; // Y 
+						elobuf_in[2] = y_tmp; // Y
 						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> 6); // stuff into binary 4002 format
 						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
 						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> 6);
@@ -735,7 +745,7 @@ void touch_cam(void)
 		};
 	};
 
-	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses 
+	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses
 		CAM = TRUE;
 		status.cam_time = 0;
 		CAM_RELAY_TIME = 1;
@@ -1089,7 +1099,7 @@ void main(void)
 			USART_BRGH_LOW, 64);
 
 		OpenTimer0(TIMER_INT_ON & T0_16BIT & T0_SOURCE_INT & T0_PS_1_1);
-		WriteTimer0(TIMERPACKET); //	start timer0 
+		WriteTimer0(TIMERPACKET); //	start timer0
 
 		setup_lcd(); // send lcd touch controller setup codes
 	}
