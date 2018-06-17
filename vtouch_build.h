@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 	const rom int8_t *build_date = __DATE__, *build_time = __TIME__,
-		build_version[] = " V3.33 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
+		build_version[] = " V3.34 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
 
 #ifdef	__cplusplus
 }
