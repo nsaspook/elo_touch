@@ -171,6 +171,8 @@
  * Pin		1 + 5vdc,		Power PIN	pin 9 connector for RA or RE PORT VCC
  */
 
+//#define DEBUG_CAM
+
 #include <usart.h>
 #include <delays.h>
 #include <timers.h>
@@ -1015,6 +1017,7 @@ void main(void)
 
 	CAM_RELAY_TIME = 0;
 	CAM_RELAY = 0;
+	CAM_RELAY_AUX = 0;
 	status.touch_count = 0;
 	S.CAM = 0;
 	ssreport.tohost = TRUE;
@@ -1164,6 +1167,9 @@ void main(void)
 		/* Loop forever */
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
+#ifdef	DEBUG_CAM
+				CAM_RELAY= !CAM_RELAY;
+#endif
 				LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
 				LATEbits.LATE7 = LATEbits.LATE0; // flash external led
@@ -1172,7 +1178,6 @@ void main(void)
 					CAM_RELAY_TIME = 0;
 					if (touch_corner_timed) {
 						touch_corner_timed = FALSE;
-						CAM_RELAY_TIME = 0;
 						CAM_RELAY_AUX = 0; // clear video switch
 						CAM_RELAY = 0; // clear video switch
 						S.CAM = FALSE;
