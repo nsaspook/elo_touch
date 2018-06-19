@@ -87,7 +87,7 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * Microchip Inc , Oct 2016
+ * Microchip Inc , Oct 2018
  * Gresham, Oregon
  *
  *
@@ -146,12 +146,12 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * PRORTA, PORTE Camera, aux switching with touchs in target box
+ * PRORTA, PORTE Camera, aux switching with touch in target box
  * PORTJ		LED bar display
  * PORTH0		run flasher led onboard.
  * 8 led status lights.
  *
- * Microchip Inc , Aug 2009,2016
+ * Microchip Inc , Aug 2009,2018
  * Gresham, Oregon
  *
  *
@@ -167,8 +167,8 @@
  * VGA converter box relay
  * Omron
  * G6k-2P bottom view
- * Pin		8 - gnd, wire tag 0, to RELAY output	pin 2 on connector for RA1, RE1 PORT OUTPUT
- * Pin		1 + 5vdc,		Power PIN	pin 9 connector for RA or RE PORT VCC
+ * Pin		8 - gnd, wire tag 0/stripe,	RELAY output	pin 10 on connector SIG COMMON
+ * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector for RA1 or RE1 PORT SIGNAL
  */
 
 //#define DEBUG_CAM
@@ -315,7 +315,7 @@ void touch_int(void)
 
 #pragma interrupt rxtx_handler
 
-void rxtx_handler(void) // all timer & serial data transform functions are handled here
+void rxtx_handler(void) // timer & serial data transform functions are handled here
 {
 	static union Timers timer0;
 	static uint8_t junk = 0, c = 0, *data_ptr,
@@ -578,7 +578,7 @@ void rxtx_handler(void) // all timer & serial data transform functions are handl
 					}
 
 					if (!elobuf[5]) { //S.UNTOUCH
-						S.UNTOUCH = TRUE; // untouch seqence found
+						S.UNTOUCH = TRUE; // untouch sequence found
 						elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
 						elobuf_out[1] = 0x80;
 						elobuf_out[2] = 0x40;
