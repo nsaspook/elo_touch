@@ -543,7 +543,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 				}
 				if (i == CMD_SIZE_SS_V80) { // see if we should send it
 					LATFbits.LATF5 = !LATFbits.LATF5;
-					i = FALSE; // reset i to start of cmd
+					i = 0; // reset i to start of cmd
 					uchar = 0; /* check for proper touch format */
 					if ((elobuf[0]& 0xc0) == 0xc0) /* binary start code? */
 						uchar = TRUE;
