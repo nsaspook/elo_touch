@@ -14,7 +14,7 @@
 #pragma config BORV = 3         // Brown-out Voltage bits (Minimum setting)
 
 // CONFIG2H
-#pragma config WDT = ON         // Watchdog Timer (WDT enabled)
+#pragma config WDT = OFF         // Watchdog Timer (WDT enabled)
 #pragma config WDTPS = 128      // Watchdog Timer Postscale Select bits (1:128)
 
 // CONFIG3L
@@ -329,6 +329,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 	if (INTCONbits.RBIF) {
 		junk = PORTB;
 		INTCONbits.RBIF = 0;
+		LATAbits.LATA2 = !LATAbits.LATA2;
 	}
 
 	/* start with data_ptr pointed to address of data, data_len to length of data in bytes, data_pos to 0 to start at the beginning of data block */
@@ -709,7 +710,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 				}
 
 				if (i > CMD_OVERFLOW_V80) {
-					i = 0; // just incase i is greater than overflow somehow
+					i = 0; // just incase i is greater than overflow somehow// enable all unmasked int
 					S.CATCH = FALSE;
 					S.TOUCH = FALSE;
 					S.UNTOUCH = FALSE;
@@ -944,20 +945,15 @@ void main(void)
 	emulat_type = E220;
 	/* Configure  PORT pins for output */
 	TRISA = 0;
-	LATA = 0;
+	LATA = 0xff;
 	TRISG = 0;
 	LATG = 0;
 	LATGbits.LATG3 = 1;
 	LATGbits.LATG4 = 1;
-	/* check for touchscreen configuration data and setup switch on port B */
+	/* check for touchscreen configuration data and setup switch on port J */
 	INTCON2bits.RBPU = 0;
-	TRISB = 0xff; // inputs
-	LATB = 0xff;
-	z = PORTB; // read the config switches
 	wdtdelay(7000);
-	if (z != PORTB) // glitch check
-		z = 0xff;
-	TRISB = 0; // outputs
+	z = 0xff;
 	Busy_eep();
 	check_byte = Read_b_eep(0);
 
@@ -1002,7 +998,8 @@ void main(void)
 		}
 	}
 
-	TRISB = 0; // turn config inputs to outputs
+	TRISB = 0x70; // inputs
+	INTCON2bits.RBIP = 1;
 	TRISC = 0;
 	LATC = 0;
 	TRISD = 0;
@@ -1132,7 +1129,10 @@ void main(void)
 	PIR1bits.TX1IF = 0;
 	PIE1bits.TX1IE = 0;
 	PIR3bits.TX2IF = 0;
-	INTCONbits.GIEL = 0; // disable low ints
+	z = PORTB;
+	INTCONbits.RBIF = 0;
+	INTCONbits.RBIE = 1; // check for port B pin changes
+	INTCONbits.GIEL = 0;
 	INTCONbits.GIEH = 1; // enable high ints
 	PORTD = 0x00;
 
@@ -1146,8 +1146,8 @@ void main(void)
 			if (status.host_write || status.scrn_write) {
 				eep_ptr = 0;
 				while (eep_ptr <= 255) {
-					INTCONbits.GIE = 0; // global int enable
-					INTCONbits.PEIE = 0; // enable all unmasked int
+					INTCONbits.GIE = 0;
+					INTCONbits.PEIE = 0;
 					Busy_eep();
 					Write_b_eep(eep_ptr, host_rec[eep_ptr]); //  data
 					ClrWdt(); // reset the WDT timer
@@ -1168,7 +1168,7 @@ void main(void)
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
 #ifdef	DEBUG_CAM
-				CAM_RELAY= !CAM_RELAY;
+				CAM_RELAY = !CAM_RELAY;
 #endif
 				LATHbits.LATH0 = !LATHbits.LATH0; // flash onboard led
 				LATEbits.LATE0 = !LATEbits.LATE0; // flash external led
