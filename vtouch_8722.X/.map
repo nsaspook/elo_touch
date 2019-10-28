@@ -1,0 +1,1402 @@
+MPLINK 4.40, Linker
+Linker Map File - Created Sun Jun 24 10:57:25 2018
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+               _entry_scn       code   0x000000    program   0x000006
+           .code___init.o       code   0x000006    program   0x000002
+                touch_int       code   0x000008    program   0x000006
+                   .cinit    romdata   0x00000e    program   0x000026
+           .code_vtouch.o       code   0x000034    program   0x001628
+                     PROG       code   0x00165c    program   0x00057a
+        .romdata_vtouch.o    romdata   0x001bd6    program   0x0000bc
+               _cinit_scn       code   0x001c92    program   0x00009e
+           .code_u2open.o       code   0x001d30    program   0x000084
+           .code_u1open.o       code   0x001db4    program   0x00007a
+          .code_u1putrs.o       code   0x001e2e    program   0x00005c
+          .code_write_B.o       code   0x001e8a    program   0x00004e
+           .code_read_B.o       code   0x001ed8    program   0x000042
+           .code_u2read.o       code   0x001f1a    program   0x00003e
+           .code_u1read.o       code   0x001f58    program   0x00003e
+             D10KTCYXCODE       code   0x001f96    program   0x000036
+           .code_t0open.o       code   0x001fcc    program   0x000036
+          .code_t0write.o       code   0x002002    program   0x000030
+          .code_u2write.o       code   0x002032    program   0x00002e
+          .code_u1write.o       code   0x002060    program   0x00002e
+                    .code       code   0x00208e    program   0x000020
+             _startup_scn       code   0x0020ae    program   0x00001a
+             .stringtable    romdata   0x0020c8    program   0x000015
+       .romdata_u1putrs.o    romdata   0x0020dd    program   0x000000
+        .romdata_u2read.o    romdata   0x0020dd    program   0x000000
+        .idata_read_B.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_read_B.o    romdata   0x0020dd    program   0x000000
+       .idata_u1putrs.o_i    romdata   0x0020dd    program   0x000000
+        .romdata___init.o    romdata   0x0020dd    program   0x000000
+        .idata_u1defs.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_u1defs.o    romdata   0x0020dd    program   0x000000
+        .idata_u2defs.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_u2defs.o    romdata   0x0020dd    program   0x000000
+       .idata_u1write.o_i    romdata   0x0020dd    program   0x000000
+       .romdata_u1write.o    romdata   0x0020dd    program   0x000000
+       .idata_u2write.o_i    romdata   0x0020dd    program   0x000000
+       .romdata_u2write.o    romdata   0x0020dd    program   0x000000
+       .idata_t0write.o_i    romdata   0x0020dd    program   0x000000
+       .romdata_t0write.o    romdata   0x0020dd    program   0x000000
+       .idata_write_B.o_i    romdata   0x0020dd    program   0x000000
+       .romdata_write_B.o    romdata   0x0020dd    program   0x000000
+        .idata___init.o_i    romdata   0x0020dd    program   0x000000
+       .idata_c018i_e.o_i    romdata   0x0020dd    program   0x000000
+       .romdata_c018i_e.o    romdata   0x0020dd    program   0x000000
+      .idata_busy_eep.o_i    romdata   0x0020dd    program   0x000000
+      .romdata_busy_eep.o    romdata   0x0020dd    program   0x000000
+        .idata_u1open.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_u1open.o    romdata   0x0020dd    program   0x000000
+        .idata_u2read.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_u1read.o    romdata   0x0020dd    program   0x000000
+        .idata_u1read.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_t0open.o    romdata   0x0020dd    program   0x000000
+        .idata_u2open.o_i    romdata   0x0020dd    program   0x000000
+        .romdata_u2open.o    romdata   0x0020dd    program   0x000000
+        .idata_t0open.o_i    romdata   0x0020dd    program   0x000000
+          .code_c018i_e.o       code   0x0020de    program   0x000000
+         .code_busy_eep.o       code   0x0020de    program   0x000006
+           .code_u2defs.o       code   0x0020de    program   0x000000
+           .code_u1defs.o       code   0x0020de    program   0x000000
+                 sddata_i    romdata   0x0020e4    program   0x000200
+                bigdata_i    romdata   0x0022e4    program   0x00007e
+        .idata_vtouch.o_i    romdata   0x002362    program   0x00003a
+  .config_300001_vtouch.o    romdata   0x300001    program   0x000001
+  .config_300002_vtouch.o    romdata   0x300002    program   0x000001
+  .config_300003_vtouch.o    romdata   0x300003    program   0x000001
+  .config_300004_vtouch.o    romdata   0x300004    program   0x000001
+  .config_300005_vtouch.o    romdata   0x300005    program   0x000001
+  .config_300006_vtouch.o    romdata   0x300006    program   0x000001
+  .config_300008_vtouch.o    romdata   0x300008    program   0x000001
+  .config_300009_vtouch.o    romdata   0x300009    program   0x000001
+  .config_30000a_vtouch.o    romdata   0x30000a    program   0x000001
+  .config_30000b_vtouch.o    romdata   0x30000b    program   0x000001
+  .config_30000c_vtouch.o    romdata   0x30000c    program   0x000001
+  .config_30000d_vtouch.o    romdata   0x30000d    program   0x000001
+          .idata_vtouch.o      idata   0x000000       data   0x00003a
+         .udata_c018i_e.o      udata   0x00003a       data   0x00000a
+                 .tmpdata      udata   0x000044       data   0x000008
+         rxtx_handler_tmp      udata   0x00004c       data   0x000005
+                MATH_DATA      udata   0x000051       data   0x000004
+                DELAYDAT2      udata   0x000055       data   0x000001
+                DELAYDAT1      udata   0x000056       data   0x000001
+          .udata_u2defs.o      udata   0x000057       data   0x000001
+          .udata_u1defs.o      udata   0x000058       data   0x000001
+          .idata_read_B.o      idata   0x000059       data   0x000000
+          .idata_u1defs.o      idata   0x000059       data   0x000000
+          .idata_u2defs.o      idata   0x000059       data   0x000000
+         .udata_u1write.o      udata   0x000059       data   0x000000
+         .idata_u1write.o      idata   0x000059       data   0x000000
+         .udata_u2write.o      udata   0x000059       data   0x000000
+         .idata_u2write.o      idata   0x000059       data   0x000000
+         .udata_t0write.o      udata   0x000059       data   0x000000
+         .idata_t0write.o      idata   0x000059       data   0x000000
+         .udata_write_B.o      udata   0x000059       data   0x000000
+         .idata_write_B.o      idata   0x000059       data   0x000000
+          .udata___init.o      udata   0x000059       data   0x000000
+          .idata___init.o      idata   0x000059       data   0x000000
+         .udata_u1putrs.o      udata   0x000059       data   0x000000
+         .idata_u1putrs.o      idata   0x000059       data   0x000000
+         .idata_c018i_e.o      idata   0x000059       data   0x000000
+        .udata_busy_eep.o      udata   0x000059       data   0x000000
+        .idata_busy_eep.o      idata   0x000059       data   0x000000
+          .udata_u1open.o      udata   0x000059       data   0x000000
+          .idata_u1open.o      idata   0x000059       data   0x000000
+          .udata_u2open.o      udata   0x000059       data   0x000000
+          .idata_u2open.o      idata   0x000059       data   0x000000
+          .udata_t0open.o      udata   0x000059       data   0x000000
+          .idata_t0open.o      idata   0x000059       data   0x000000
+          .udata_u1read.o      udata   0x000059       data   0x000000
+          .idata_u1read.o      idata   0x000059       data   0x000000
+          .udata_u2read.o      udata   0x000059       data   0x000000
+          .idata_u2read.o      idata   0x000059       data   0x000000
+          .udata_read_B.o      udata   0x000059       data   0x000000
+          .udata_vtouch.o      udata   0x000100       data   0x0000cf
+                  bigdata      idata   0x000400       data   0x00007e
+                   sddata      idata   0x000800       data   0x000200
+                   .stack      udata   0x000e00       data   0x000100
+            SFR_UNBANKED0      udata   0x000f62       data   0x00009e
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0020dc      
+                            0x0020de    0x00239b      
+                            0x300001    0x300006      
+                            0x300008    0x30000d      
+            9127 out of 132120 program addresses used, program memory utilization is 6%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 Busy_eep   0x0020de    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\busy_eep.c
+                Cylon_Eye   0x000b1a    program     extern /fred/vtouch18f8722/vtouch.c
+                   D10K_1   0x001fa6    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                    D10Kl   0x001fb4    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                    D10Kx   0x001fa2    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                   D3232S   0x001936    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                D3232SNEG   0x001944    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 D3232SOK   0x001940    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                D3232SPOS   0x001962    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  D3232SX   0x001998    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  DA3232S   0x001920    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+             Delay10KTCYx   0x001f96    program     extern C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+               Open1USART   0x001db4    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1open.c
+               Open2USART   0x001d30    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2open.c
+               OpenTimer0   0x001fcc    program     extern C:\MCC18\v3_39\src\pmc_common\Timers\t0open.c
+                  RESTORE   0x001bc8    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                  RESTORE   0x00198a    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+              RETQUOTIENT   0x001bb8    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+              RETQUOTIENT   0x00197a    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+               Read1USART   0x001f58    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1read.c
+               Read2USART   0x001f1a    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2read.c
+               Read_b_eep   0x001ed8    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\read_B.c
+                  SETSIGN   0x001906    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 SETUPSTK   0x001b32    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                 SETUPSTK   0x0018e6    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+              Test_Screen   0x000af8    program     extern /fred/vtouch18f8722/vtouch.c
+              Write1USART   0x002060    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1write.c
+              Write2USART   0x002032    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2write.c
+              WriteTimer0   0x002002    program     extern C:\MCC18\v3_39\src\pmc_common\Timers\t0write.c
+              Write_b_eep   0x001e8a    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\write_B.c
+       _D10KTCYXCODE_0014   0x001faa    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+       _D10KTCYXCODE_0022   0x001fb8    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                 __FpPack   0x001696    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+            __FpReturnNaN   0x001718    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+         __FpReturnNegInf   0x00172a    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnNegZero   0x001742    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+         __FpReturnPosInf   0x001730    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnPosZero   0x00174a    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnSignInf   0x001726    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+       __FpReturnSignZero   0x00173e    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+              __FpReturnW   0x0016ee    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+              __FpUnPackA   0x001804    program     extern C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+              __FpUnPackB   0x001834    program     extern C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+         ___else_lbl00199   0x00107e    program     static                          
+         ___else_lbl00203   0x0011d0    program     static                          
+         ___else_lbl00205   0x0012d6    program     static                          
+         ___else_lbl00217   0x001426    program     static                          
+          ___for_lbl00104   0x0008b8    program     static                          
+          ___for_lbl00105   0x0008ce    program     static                          
+          ___for_lbl00106   0x0008a4    program     static                          
+           ___if_lbl00163   0x000c5e    program     static                          
+           ___if_lbl00164   0x000ca0    program     static                          
+           ___if_lbl00166   0x000ce4    program     static                          
+           ___if_lbl00167   0x000cf2    program     static                          
+           ___if_lbl00169   0x000d0e    program     static                          
+           ___if_lbl00170   0x000d1e    program     static                          
+           ___if_lbl00171   0x000d30    program     static                          
+           ___if_lbl00172   0x000d40    program     static                          
+           ___if_lbl00173   0x000d40    program     static                          
+           ___if_lbl00174   0x000dca    program     static                          
+           ___if_lbl00175   0x000e1e    program     static                          
+           ___if_lbl00176   0x000e86    program     static                          
+           ___if_lbl00177   0x000e86    program     static                          
+           ___if_lbl00178   0x000ec6    program     static                          
+           ___if_lbl00188   0x000faa    program     static                          
+           ___if_lbl00191   0x00104c    program     static                          
+           ___if_lbl00192   0x00104c    program     static                          
+           ___if_lbl00197   0x00109a    program     static                          
+           ___if_lbl00198   0x00109a    program     static                          
+           ___if_lbl00200   0x00109a    program     static                          
+           ___if_lbl00201   0x0010a4    program     static                          
+           ___if_lbl00202   0x0012b4    program     static                          
+           ___if_lbl00204   0x001308    program     static                          
+           ___if_lbl00206   0x001308    program     static                          
+           ___if_lbl00207   0x001344    program     static                          
+           ___if_lbl00208   0x001382    program     static                          
+           ___if_lbl00209   0x00139e    program     static                          
+           ___if_lbl00210   0x0013a4    program     static                          
+           ___if_lbl00211   0x0013ae    program     static                          
+           ___if_lbl00212   0x0013b8    program     static                          
+           ___if_lbl00213   0x0013bc    program     static                          
+           ___if_lbl00216   0x00143a    program     static                          
+           ___if_lbl00220   0x00146e    program     static                          
+           ___if_lbl00221   0x00146e    program     static                          
+           ___if_lbl00222   0x001478    program     static                          
+           ___if_lbl00223   0x001482    program     static                          
+           ___if_lbl00224   0x001486    program     static                          
+           ___if_lbl00227   0x0014f4    program     static                          
+           ___if_lbl00228   0x0014fe    program     static                          
+           ___if_lbl00229   0x001508    program     static                          
+           ___if_lbl00230   0x00150c    program     static                          
+       ___return_lbl00000   0x001f0e    program     static                          
+       ___return_lbl00000   0x00000c    program     static                          
+       ___return_lbl00000   0x000004    program     static                          
+       ___return_lbl00001   0x0020c6    program     static                          
+       ___return_lbl00002   0x001d2e    program     static                          
+       ___return_lbl00103   0x0008ce    program     static                          
+       ___return_lbl00162   0x00150c    program     static                          
+        ___while_lbl00179   0x000ed8    program     static                          
+        ___while_lbl00180   0x000ee4    program     static                          
+        ___while_lbl00181   0x000ee4    program     static                          
+        ___while_lbl00182   0x000ef0    program     static                          
+        ___while_lbl00183   0x000f12    program     static                          
+        ___while_lbl00184   0x000fac    program     static                          
+        ___while_lbl00186   0x000f34    program     static                          
+        ___while_lbl00187   0x000faa    program     static                          
+        ___while_lbl00189   0x000fae    program     static                          
+        ___while_lbl00190   0x0013bc    program     static                          
+        ___while_lbl00194   0x00107a    program     static                          
+        ___while_lbl00195   0x00107c    program     static                          
+        ___while_lbl00214   0x0013c2    program     static                          
+        ___while_lbl00215   0x001486    program     static                          
+        ___while_lbl00225   0x00148e    program     static                          
+        ___while_lbl00226   0x00150c    program     static                          
+              __cast08sFP   0x001660    program     extern C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+              __cast08uFP   0x00165c    program     extern C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+              __cast16sFP   0x001754    program     extern C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+              __cast16uFP   0x001750    program     extern C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+               __castFP08   0x001792    program     extern C:\MCC18\v3_39\src\extended\math\castFP08.asm
+               __castFP16   0x001860    program     extern C:\MCC18\v3_39\src\extended\math\castFP16.asm
+               __config_0   0x300001    program     static /fred/vtouch18f8722/vtouch.c
+               __config_1   0x300002    program     static /fred/vtouch18f8722/vtouch.c
+              __config_10   0x30000c    program     static /fred/vtouch18f8722/vtouch.c
+              __config_11   0x30000d    program     static /fred/vtouch18f8722/vtouch.c
+               __config_2   0x300003    program     static /fred/vtouch18f8722/vtouch.c
+               __config_3   0x300004    program     static /fred/vtouch18f8722/vtouch.c
+               __config_4   0x300005    program     static /fred/vtouch18f8722/vtouch.c
+               __config_5   0x300006    program     static /fred/vtouch18f8722/vtouch.c
+               __config_6   0x300008    program     static /fred/vtouch18f8722/vtouch.c
+               __config_7   0x300009    program     static /fred/vtouch18f8722/vtouch.c
+               __config_8   0x30000a    program     static /fred/vtouch18f8722/vtouch.c
+               __config_9   0x30000b    program     static /fred/vtouch18f8722/vtouch.c
+                 __div32s   0x0018fe    program     extern C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 __div32u   0x001b4a    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+                   __init   0x000006    program     extern C:\MCC18\v3_39\src\extended\stdclib\__init.c
+                 __mod32s   0x001904    program     extern C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 __mod32u   0x001b50    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+                  __mul32   0x0019a2    program     extern C:\MCC18\v3_39\src\extended\math\mul32.asm
+                  __mulFP   0x001a44    program     extern C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                   __pa_0   0x001514    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_1   0x001520    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_10   0x0015b4    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_11   0x0015c6    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_12   0x0015d8    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_13   0x0015ea    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_14   0x0015f4    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_15   0x001602    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_16   0x001610    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_17   0x001618    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_18   0x001622    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_19   0x00162c    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_2   0x001528    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_20   0x00163c    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_21   0x001646    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_22   0x001652    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_3   0x001532    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_4   0x00154e    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_5   0x00155e    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_6   0x001566    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_7   0x00157a    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_8   0x00158e    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_9   0x0015a2    program     static /fred/vtouch18f8722/vtouch.c
+               __string_0   0x0020d1    program     static /fred/vtouch18f8722/vtouch.c
+               __string_1   0x0020c8    program     static /fred/vtouch18f8722/vtouch.c
+              __tmplbl_30   0x0008b4    program     static                          
+              __tmplbl_35   0x000cd6    program     static                          
+              __tmplbl_36   0x000cd0    program     static                          
+              __tmplbl_37   0x000cfe    program     static                          
+              __tmplbl_38   0x000cf8    program     static                          
+              __tmplbl_39   0x000f30    program     static                          
+              __tmplbl_40   0x000f26    program     static                          
+              __tmplbl_41   0x001012    program     static                          
+              __tmplbl_42   0x001074    program     static                          
+              __tmplbl_43   0x00106e    program     static                          
+              __tmplbl_44   0x001090    program     static                          
+              __tmplbl_45   0x00108a    program     static                          
+              __tmplbl_46   0x0013f8    program     static                          
+              __tmplbl_47   0x001456    program     static                          
+              __tmplbl_48   0x00144a    program     static                          
+              __tmplbl_49   0x001450    program     static                          
+              __tmplbl_50   0x0014c4    program     static                          
+              __tmplbl_51   0x0014e0    program     static                          
+              __tmplbl_52   0x0014dc    program     static                          
+              __tmplbl_80   0x00155e    program     static                          
+              __tmplbl_83   0x00155e    program     static                          
+              __tmplbl_84   0x001610    program     static                          
+              __tmplbl_87   0x001610    program     static                          
+              __tmplbl_88   0x001610    program     static                          
+              __tmplbl_90   0x00155e    program     static                          
+              __tmplbl_92   0x00155e    program     static                          
+              __tmplbl_94   0x00155e    program     static                          
+            __zero_memory   0x00208e    program     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                _do_cinit   0x001c92    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+            _early32uexit   0x001b54    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+                   _entry   0x000000    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                   _false   0x001b98    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                 _startup   0x0020ae    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+            build_version   0x001bd6    program     extern /fred/vtouch18f8722/vtouch_build.h
+                compare_l   0x0020a4    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                copy_loop   0x001d04    program     static                          
+            copy_one_byte   0x001d0a    program     static                          
+                divmod32u   0x001b56    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                     done   0x001d2e    program     static                          
+             done_copying   0x001d18    program     static                          
+              eloSScmdout   0x00090c    program     extern /fred/vtouch18f8722/vtouch.c
+                elocmdout   0x0008d6    program     extern /fred/vtouch18f8722/vtouch.c
+            elocmdout_v80   0x000996    program     extern /fred/vtouch18f8722/vtouch.c
+                 elocodes   0x001c2e    program     extern /fred/vtouch18f8722/vtouch.c
+             elocodes_s_v   0x001c20    program     extern /fred/vtouch18f8722/vtouch.c
+             elopacketout   0x000940    program     extern /fred/vtouch18f8722/vtouch.c
+                 jANotInf   0x001a76    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                     jBeg   0x001756    program     static C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+                     jBeg   0x001662    program     static C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+              jBothFinite   0x001a84    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+             jBothNotZero   0x001a90    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                    jDone   0x0017f2    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jDone   0x0018d0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jExit   0x0018d8    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jExit   0x0017f6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jExit   0x00170a    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+                jHaveZero   0x001a8c    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                    jLoop   0x0017da    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jLoop   0x0018b0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                jLoopExit   0x0017e8    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                jLoopExit   0x0018c0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                     jMax   0x0017b6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                     jMax   0x001884    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jMaxNeg   0x001892    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jMaxNeg   0x0017c0    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jMaxPos   0x001888    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jMaxPos   0x0017ba    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jNotInf   0x0018a0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jNotInf   0x0017ca    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jNotNeg   0x001682    program     static C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+                  jNotNeg   0x00177c    program     static C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+                  jPkLoop   0x0016a4    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+             jPkRoundDone   0x0016ee    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+               jPkRoundIt   0x0016d6    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+             jPkShiftDone   0x0016c0    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+           jReturnPosInf0   0x001734    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+                  jUnpkA1   0x00180e    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkA2   0x001826    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkANZ   0x00181c    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkB1   0x00183e    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkB2   0x001856    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkBNZ   0x00184c    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkNaN   0x001830    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                    jZero   0x0017c6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jZero   0x00189a    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+               jZero1and2   0x001738    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+                     loop   0x001b64    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                     loop   0x0020bc    program     static                          
+                   loop_h   0x00209c    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   loop_l   0x0020a6    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     main   0x000bc8    program     extern /fred/vtouch18f8722/vtouch.c
+                    putc1   0x000ab8    program     extern /fred/vtouch18f8722/vtouch.c
+                    putc2   0x000ad0    program     extern /fred/vtouch18f8722/vtouch.c
+              putrs1USART   0x001e2e    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1putrs.c
+             rxtx_handler   0x000034    program     extern /fred/vtouch18f8722/vtouch.c
+                setup_lcd   0x000a24    program     extern /fred/vtouch18f8722/vtouch.c
+              start_delay   0x000ae8    program     extern /fred/vtouch18f8722/vtouch.c
+                     test   0x001cac    program     static                          
+                touch_cam   0x00082e    program     extern /fred/vtouch18f8722/vtouch.c
+                touch_int   0x000008    program     extern /fred/vtouch18f8722/vtouch.c
+                 wdtdelay   0x000890    program     extern /fred/vtouch18f8722/vtouch.c
+               zero_block   0x00209c    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON0   0x000fc2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON0bits   0x000fc2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON1   0x000fc1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON1bits   0x000fc1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON2   0x000fc0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON2bits   0x000fc0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    ADRES   0x000fc3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADRESH   0x000fc4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADRESL   0x000fc3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  BAUDCON   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 BAUDCON1   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             BAUDCON1bits   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 BAUDCON2   0x000f7c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             BAUDCON2bits   0x000f7c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              BAUDCONbits   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      BSR   0x000fe0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP1CON   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP1CONbits   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP2CON   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP2CONbits   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP3CON   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP3CONbits   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP4CON   0x000f73       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP4CONbits   0x000f73       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP5CON   0x000f70       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP5CONbits   0x000f70       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR1   0x000fbe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR1H   0x000fbf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR1L   0x000fbe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR2   0x000fbb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR2H   0x000fbc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR2L   0x000fbb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR3   0x000fb8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR3H   0x000fb9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR3L   0x000fb8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR4   0x000f74       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR4H   0x000f75       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR4L   0x000f74       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR5   0x000f71       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR5H   0x000f72       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR5L   0x000f71       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CMCON   0x000fb4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                CMCONbits   0x000fb4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CVRCON   0x000fb5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               CVRCONbits   0x000fb5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRA   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRAbits   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRB   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRBbits   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRC   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRCbits   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRD   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRDbits   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRE   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDREbits   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRF   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRFbits   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRG   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRGbits   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRH   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRHbits   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRJ   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRJbits   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+            DelayCounter1   0x000056       data     extern C:\MCC18\v3_39\src\extended\delays\delayd1.asm
+            DelayCounter2   0x000055       data     extern C:\MCC18\v3_39\src\extended\delays\delayd2.asm
+                  ECCP1AS   0x000fb6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP1ASbits   0x000fb6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP1CON   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP1CONbits   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP1DEL   0x000f79       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP1DELbits   0x000f79       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  ECCP2AS   0x000f68       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP2ASbits   0x000f68       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP2CON   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP2CONbits   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP2DEL   0x000f67       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP2DELbits   0x000f67       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  ECCP3AS   0x000f6a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP3ASbits   0x000f6a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP3CON   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP3CONbits   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP3DEL   0x000f69       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP3DELbits   0x000f69       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    EEADR   0x000fa9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EEADRH   0x000faa       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EECON1   0x000fa6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               EECON1bits   0x000fa6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EECON2   0x000fa7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EEDATA   0x000fa8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR0   0x000fe9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR0H   0x000fea       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR0L   0x000fe9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR1   0x000fe1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR1H   0x000fe2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR1L   0x000fe1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR2   0x000fd9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR2H   0x000fda       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR2L   0x000fd9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  HLVDCON   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              HLVDCONbits   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF0   0x000fef       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF1   0x000fe7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF2   0x000fdf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   INTCON   0x000ff2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  INTCON2   0x000ff1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              INTCON2bits   0x000ff1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  INTCON3   0x000ff0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              INTCON3bits   0x000ff0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               INTCONbits   0x000ff2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR1   0x000f9f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR1bits   0x000f9f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR2   0x000fa2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR2bits   0x000fa2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR3   0x000fa5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR3bits   0x000fa5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATA   0x000f89       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATAbits   0x000f89       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATB   0x000f8a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATBbits   0x000f8a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATC   0x000f8b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATCbits   0x000f8b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATD   0x000f8c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATDbits   0x000f8c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATE   0x000f8d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATEbits   0x000f8d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATF   0x000f8e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATFbits   0x000f8e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATG   0x000f8f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATGbits   0x000f8f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATH   0x000f90       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATHbits   0x000f90       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATJ   0x000f91       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATJbits   0x000f91       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   LED_UP   0x000035       data     static /fred/vtouch18f8722/vtouch.c
+                   LVDCON   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               LVDCONbits   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   MEMCON   0x000f9c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               MEMCONbits   0x000f9c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   OSCCON   0x000fd3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               OSCCONbits   0x000fd3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  OSCTUNE   0x000f9b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              OSCTUNEbits   0x000f9b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                       PC   0x000ff9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PCL   0x000ff9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PCLATH   0x000ffa       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PCLATU   0x000ffb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE1   0x000f9d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE1bits   0x000f9d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE2   0x000fa0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE2bits   0x000fa0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE3   0x000fa3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE3bits   0x000fa3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR1   0x000f9e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR1bits   0x000f9e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR2   0x000fa1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR2bits   0x000fa1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR3   0x000fa4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR3bits   0x000fa4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW0   0x000feb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW1   0x000fe3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW2   0x000fdb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTA   0x000f80       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTAbits   0x000f80       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTB   0x000f81       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTBbits   0x000f81       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTC   0x000f82       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTCbits   0x000f82       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTD   0x000f83       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTDbits   0x000f83       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTE   0x000f84       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTEbits   0x000f84       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTF   0x000f85       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTFbits   0x000f85       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTG   0x000f86       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTGbits   0x000f86       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTH   0x000f87       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTHbits   0x000f87       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTJ   0x000f88       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTJbits   0x000f88       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC0   0x000fed       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC1   0x000fe5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC2   0x000fdd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC0   0x000fee       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC1   0x000fe6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC2   0x000fde       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PR2   0x000fcb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PR4   0x000f77       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC0   0x000fec       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC1   0x000fe4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC2   0x000fdc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PROD   0x000ff3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PRODH   0x000ff4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PRODL   0x000ff3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PSPCON   0x000fb0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               PSPCONbits   0x000fb0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     RCON   0x000fd0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 RCONbits   0x000fd0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    RCREG   0x000fae       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCREG1   0x000fae       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCREG2   0x000f6e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    RCSTA   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCSTA1   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               RCSTA1bits   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCSTA2   0x000f6b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               RCSTA2bits   0x000f6b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                RCSTAbits   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                        S   0x000006       data     extern /fred/vtouch18f8722/vtouch.c
+                    SPBRG   0x000faf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRG1   0x000faf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRG2   0x000f6f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRGH   0x000f7f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SPBRGH1   0x000f7f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SPBRGH2   0x000f7d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP1ADD   0x000fc8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP1BUF   0x000fc9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1CON1   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1CON1bits   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1CON2   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1CON2bits   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1STAT   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1STATbits   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP2ADD   0x000f65       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP2BUF   0x000f66       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP2CON1   0x000f63       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2CON1bits   0x000f63       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP2CON2   0x000f62       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2CON2bits   0x000f62       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP2STAT   0x000f64       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2STATbits   0x000f64       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SSPADD   0x000fc8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SSPBUF   0x000fc9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPCON1   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPCON1bits   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPCON2   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPCON2bits   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPSTAT   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPSTATbits   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   STATUS   0x000fd8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               STATUSbits   0x000fd8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   STKPTR   0x000ffc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               STKPTRbits   0x000ffc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T0CON   0x000fd5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T0CONbits   0x000fd5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T1CON   0x000fcd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T1CONbits   0x000fcd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T2CON   0x000fca       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T2CONbits   0x000fca       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T3CON   0x000fb1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T3CONbits   0x000fb1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T4CON   0x000f76       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T4CONbits   0x000f76       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TABLAT   0x000ff5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TBLPTR   0x000ff6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRH   0x000ff7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRL   0x000ff6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRU   0x000ff8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR0H   0x000fd7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR0L   0x000fd6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR1H   0x000fcf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR1L   0x000fce       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TMR2   0x000fcc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR3H   0x000fb3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR3L   0x000fb2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TMR4   0x000f78       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      TOS   0x000ffd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSH   0x000ffe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSL   0x000ffd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSU   0x000fff       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISA   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISAbits   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISB   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISBbits   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISC   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISCbits   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISD   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISDbits   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISE   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISEbits   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISF   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISFbits   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISG   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISGbits   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISH   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISHbits   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISJ   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISJbits   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TXREG   0x000fad       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXREG1   0x000fad       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXREG2   0x000f6d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TXSTA   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXSTA1   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               TXSTA1bits   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXSTA2   0x000f6c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               TXSTA2bits   0x000f6c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TXSTAbits   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+            USART1_Status   0x000058       data     extern C:\MCC18\v3_39\src\pmc_common\USART\u1defs.c
+            USART2_Status   0x000057       data     extern C:\MCC18\v3_39\src\pmc_common\USART\u2defs.c
+                   WDTCON   0x000fd1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               WDTCONbits   0x000fd1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     WREG   0x000fe8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                __RETVAL0   0x000051       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL1   0x000052       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL2   0x000053       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL3   0x000054       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                  __tmp_0   0x000044       data     static /fred/vtouch18f8722/vtouch.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\USART\u1open.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\EEP\write_B.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\USART\u2open.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\EEP\read_B.c
+                  __tmp_1   0x00004c       data     static /fred/vtouch18f8722/vtouch.c
+                alive_led   0x000036       data     static /fred/vtouch18f8722/vtouch.c
+               build_date   0x000000       data     extern /fred/vtouch18f8722/vtouch_build.h
+               build_time   0x000003       data     extern /fred/vtouch18f8722/vtouch_build.h
+                        c   0x00002c       data     static /fred/vtouch18f8722/vtouch.c
+                curr_byte   0x00003d       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+               curr_entry   0x00003f       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                    cylon   0x000034       data     static /fred/vtouch18f8722/vtouch.c
+                 data_len   0x0001cc       data     static /fred/vtouch18f8722/vtouch.c
+                 data_pos   0x0001cb       data     static /fred/vtouch18f8722/vtouch.c
+                 data_ptr   0x0001c9       data     static /fred/vtouch18f8722/vtouch.c
+                 data_ptr   0x000041       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                   elobuf   0x000102       data     extern /fred/vtouch18f8722/vtouch.c
+                elobuf_in   0x000152       data     extern /fred/vtouch18f8722/vtouch.c
+               elobuf_out   0x000142       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e0   0x00041a       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e1   0x000426       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e2   0x000432       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e3   0x00043e       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e4   0x00044a       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e5   0x000456       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e6   0x000462       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e7   0x00046e       data     extern /fred/vtouch18f8722/vtouch.c
+             elocodes_m_e   0x000402       data     extern /fred/vtouch18f8722/vtouch.c
+             elocodes_s_e   0x00040e       data     extern /fred/vtouch18f8722/vtouch.c
+              emulat_type   0x000101       data     extern /fred/vtouch18f8722/vtouch.c
+                 host_ptr   0x000030       data     static /fred/vtouch18f8722/vtouch.c
+                 host_rec   0x000800       data     extern /fred/vtouch18f8722/vtouch.c
+                        i   0x00002d       data     static /fred/vtouch18f8722/vtouch.c
+                      idx   0x000033       data     static /fred/vtouch18f8722/vtouch.c
+                        j   0x000015       data     extern /fred/vtouch18f8722/vtouch.c
+                     junk   0x00002b       data     static /fred/vtouch18f8722/vtouch.c
+                     prom   0x00003a       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+              screen_type   0x000100       data     extern /fred/vtouch18f8722/vtouch.c
+                 scrn_ptr   0x00002e       data     static /fred/vtouch18f8722/vtouch.c
+                 scrn_rec   0x000900       data     extern /fred/vtouch18f8722/vtouch.c
+                    ssbuf   0x000162       data     extern /fred/vtouch18f8722/vtouch.c
+                 ssreport   0x0001a2       data     extern /fred/vtouch18f8722/vtouch.c
+                   status   0x0001ac       data     extern /fred/vtouch18f8722/vtouch.c
+                      sum   0x000032       data     static /fred/vtouch18f8722/vtouch.c
+                    tchar   0x0001cd       data     static /fred/vtouch18f8722/vtouch.c
+                   timer0   0x0001c7       data     static /fred/vtouch18f8722/vtouch.c
+               timer0_off   0x000029       data     extern /fred/vtouch18f8722/vtouch.c
+            touch_corner1   0x00047a       data     extern /fred/vtouch18f8722/vtouch.c
+       touch_corner_timed   0x00047c       data     extern /fred/vtouch18f8722/vtouch.c
+                    uchar   0x0001ce       data     static /fred/vtouch18f8722/vtouch.c
+                       xl   0x000400       data     extern /fred/vtouch18f8722/vtouch.c
+                       xs   0x000019       data     extern /fred/vtouch18f8722/vtouch.c
+                    xs_ss   0x000021       data     extern /fred/vtouch18f8722/vtouch.c
+                       yl   0x000401       data     extern /fred/vtouch18f8722/vtouch.c
+                       ys   0x00001d       data     extern /fred/vtouch18f8722/vtouch.c
+                    ys_ss   0x000025       data     extern /fred/vtouch18f8722/vtouch.c
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   _entry   0x000000    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+       ___return_lbl00000   0x000004    program     static                          
+                   __init   0x000006    program     extern C:\MCC18\v3_39\src\extended\stdclib\__init.c
+                touch_int   0x000008    program     extern /fred/vtouch18f8722/vtouch.c
+       ___return_lbl00000   0x00000c    program     static                          
+             rxtx_handler   0x000034    program     extern /fred/vtouch18f8722/vtouch.c
+                touch_cam   0x00082e    program     extern /fred/vtouch18f8722/vtouch.c
+                 wdtdelay   0x000890    program     extern /fred/vtouch18f8722/vtouch.c
+          ___for_lbl00106   0x0008a4    program     static                          
+              __tmplbl_30   0x0008b4    program     static                          
+          ___for_lbl00104   0x0008b8    program     static                          
+          ___for_lbl00105   0x0008ce    program     static                          
+       ___return_lbl00103   0x0008ce    program     static                          
+                elocmdout   0x0008d6    program     extern /fred/vtouch18f8722/vtouch.c
+              eloSScmdout   0x00090c    program     extern /fred/vtouch18f8722/vtouch.c
+             elopacketout   0x000940    program     extern /fred/vtouch18f8722/vtouch.c
+            elocmdout_v80   0x000996    program     extern /fred/vtouch18f8722/vtouch.c
+                setup_lcd   0x000a24    program     extern /fred/vtouch18f8722/vtouch.c
+                    putc1   0x000ab8    program     extern /fred/vtouch18f8722/vtouch.c
+                    putc2   0x000ad0    program     extern /fred/vtouch18f8722/vtouch.c
+              start_delay   0x000ae8    program     extern /fred/vtouch18f8722/vtouch.c
+              Test_Screen   0x000af8    program     extern /fred/vtouch18f8722/vtouch.c
+                Cylon_Eye   0x000b1a    program     extern /fred/vtouch18f8722/vtouch.c
+                     main   0x000bc8    program     extern /fred/vtouch18f8722/vtouch.c
+           ___if_lbl00163   0x000c5e    program     static                          
+           ___if_lbl00164   0x000ca0    program     static                          
+              __tmplbl_36   0x000cd0    program     static                          
+              __tmplbl_35   0x000cd6    program     static                          
+           ___if_lbl00166   0x000ce4    program     static                          
+           ___if_lbl00167   0x000cf2    program     static                          
+              __tmplbl_38   0x000cf8    program     static                          
+              __tmplbl_37   0x000cfe    program     static                          
+           ___if_lbl00169   0x000d0e    program     static                          
+           ___if_lbl00170   0x000d1e    program     static                          
+           ___if_lbl00171   0x000d30    program     static                          
+           ___if_lbl00173   0x000d40    program     static                          
+           ___if_lbl00172   0x000d40    program     static                          
+           ___if_lbl00174   0x000dca    program     static                          
+           ___if_lbl00175   0x000e1e    program     static                          
+           ___if_lbl00176   0x000e86    program     static                          
+           ___if_lbl00177   0x000e86    program     static                          
+           ___if_lbl00178   0x000ec6    program     static                          
+        ___while_lbl00179   0x000ed8    program     static                          
+        ___while_lbl00180   0x000ee4    program     static                          
+        ___while_lbl00181   0x000ee4    program     static                          
+        ___while_lbl00182   0x000ef0    program     static                          
+        ___while_lbl00183   0x000f12    program     static                          
+              __tmplbl_40   0x000f26    program     static                          
+              __tmplbl_39   0x000f30    program     static                          
+        ___while_lbl00186   0x000f34    program     static                          
+           ___if_lbl00188   0x000faa    program     static                          
+        ___while_lbl00187   0x000faa    program     static                          
+        ___while_lbl00184   0x000fac    program     static                          
+        ___while_lbl00189   0x000fae    program     static                          
+              __tmplbl_41   0x001012    program     static                          
+           ___if_lbl00191   0x00104c    program     static                          
+           ___if_lbl00192   0x00104c    program     static                          
+              __tmplbl_43   0x00106e    program     static                          
+              __tmplbl_42   0x001074    program     static                          
+        ___while_lbl00194   0x00107a    program     static                          
+        ___while_lbl00195   0x00107c    program     static                          
+         ___else_lbl00199   0x00107e    program     static                          
+              __tmplbl_45   0x00108a    program     static                          
+              __tmplbl_44   0x001090    program     static                          
+           ___if_lbl00197   0x00109a    program     static                          
+           ___if_lbl00198   0x00109a    program     static                          
+           ___if_lbl00200   0x00109a    program     static                          
+           ___if_lbl00201   0x0010a4    program     static                          
+         ___else_lbl00203   0x0011d0    program     static                          
+           ___if_lbl00202   0x0012b4    program     static                          
+         ___else_lbl00205   0x0012d6    program     static                          
+           ___if_lbl00204   0x001308    program     static                          
+           ___if_lbl00206   0x001308    program     static                          
+           ___if_lbl00207   0x001344    program     static                          
+           ___if_lbl00208   0x001382    program     static                          
+           ___if_lbl00209   0x00139e    program     static                          
+           ___if_lbl00210   0x0013a4    program     static                          
+           ___if_lbl00211   0x0013ae    program     static                          
+           ___if_lbl00212   0x0013b8    program     static                          
+        ___while_lbl00190   0x0013bc    program     static                          
+           ___if_lbl00213   0x0013bc    program     static                          
+        ___while_lbl00214   0x0013c2    program     static                          
+              __tmplbl_46   0x0013f8    program     static                          
+         ___else_lbl00217   0x001426    program     static                          
+           ___if_lbl00216   0x00143a    program     static                          
+              __tmplbl_48   0x00144a    program     static                          
+              __tmplbl_49   0x001450    program     static                          
+              __tmplbl_47   0x001456    program     static                          
+           ___if_lbl00221   0x00146e    program     static                          
+           ___if_lbl00220   0x00146e    program     static                          
+           ___if_lbl00222   0x001478    program     static                          
+           ___if_lbl00223   0x001482    program     static                          
+           ___if_lbl00224   0x001486    program     static                          
+        ___while_lbl00215   0x001486    program     static                          
+        ___while_lbl00225   0x00148e    program     static                          
+              __tmplbl_50   0x0014c4    program     static                          
+              __tmplbl_52   0x0014dc    program     static                          
+              __tmplbl_51   0x0014e0    program     static                          
+           ___if_lbl00227   0x0014f4    program     static                          
+           ___if_lbl00228   0x0014fe    program     static                          
+           ___if_lbl00229   0x001508    program     static                          
+       ___return_lbl00162   0x00150c    program     static                          
+           ___if_lbl00230   0x00150c    program     static                          
+        ___while_lbl00226   0x00150c    program     static                          
+                   __pa_0   0x001514    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_1   0x001520    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_2   0x001528    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_3   0x001532    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_4   0x00154e    program     static /fred/vtouch18f8722/vtouch.c
+              __tmplbl_90   0x00155e    program     static                          
+              __tmplbl_83   0x00155e    program     static                          
+              __tmplbl_80   0x00155e    program     static                          
+                   __pa_5   0x00155e    program     static /fred/vtouch18f8722/vtouch.c
+              __tmplbl_94   0x00155e    program     static                          
+              __tmplbl_92   0x00155e    program     static                          
+                   __pa_6   0x001566    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_7   0x00157a    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_8   0x00158e    program     static /fred/vtouch18f8722/vtouch.c
+                   __pa_9   0x0015a2    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_10   0x0015b4    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_11   0x0015c6    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_12   0x0015d8    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_13   0x0015ea    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_14   0x0015f4    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_15   0x001602    program     static /fred/vtouch18f8722/vtouch.c
+              __tmplbl_88   0x001610    program     static                          
+                  __pa_16   0x001610    program     static /fred/vtouch18f8722/vtouch.c
+              __tmplbl_87   0x001610    program     static                          
+              __tmplbl_84   0x001610    program     static                          
+                  __pa_17   0x001618    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_18   0x001622    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_19   0x00162c    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_20   0x00163c    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_21   0x001646    program     static /fred/vtouch18f8722/vtouch.c
+                  __pa_22   0x001652    program     static /fred/vtouch18f8722/vtouch.c
+              __cast08uFP   0x00165c    program     extern C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+              __cast08sFP   0x001660    program     extern C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+                     jBeg   0x001662    program     static C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+                  jNotNeg   0x001682    program     static C:\MCC18\v3_39\src\extended\math\cast08FP.asm
+                 __FpPack   0x001696    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+                  jPkLoop   0x0016a4    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+             jPkShiftDone   0x0016c0    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+               jPkRoundIt   0x0016d6    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+              __FpReturnW   0x0016ee    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+             jPkRoundDone   0x0016ee    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+                    jExit   0x00170a    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+            __FpReturnNaN   0x001718    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnSignInf   0x001726    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+         __FpReturnNegInf   0x00172a    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+         __FpReturnPosInf   0x001730    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+           jReturnPosInf0   0x001734    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+               jZero1and2   0x001738    program     static C:\MCC18\v3_39\src\extended\math\packFP.asm
+       __FpReturnSignZero   0x00173e    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnNegZero   0x001742    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+        __FpReturnPosZero   0x00174a    program     extern C:\MCC18\v3_39\src\extended\math\packFP.asm
+              __cast16uFP   0x001750    program     extern C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+              __cast16sFP   0x001754    program     extern C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+                     jBeg   0x001756    program     static C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+                  jNotNeg   0x00177c    program     static C:\MCC18\v3_39\src\extended\math\cast16FP.asm
+               __castFP08   0x001792    program     extern C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                     jMax   0x0017b6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jMaxPos   0x0017ba    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jMaxNeg   0x0017c0    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jZero   0x0017c6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                  jNotInf   0x0017ca    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jLoop   0x0017da    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                jLoopExit   0x0017e8    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jDone   0x0017f2    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+                    jExit   0x0017f6    program     static C:\MCC18\v3_39\src\extended\math\castFP08.asm
+              __FpUnPackA   0x001804    program     extern C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkA1   0x00180e    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkANZ   0x00181c    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkA2   0x001826    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkNaN   0x001830    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+              __FpUnPackB   0x001834    program     extern C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkB1   0x00183e    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                 jUnpkBNZ   0x00184c    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+                  jUnpkB2   0x001856    program     static C:\MCC18\v3_39\src\extended\math\unpackFP.asm
+               __castFP16   0x001860    program     extern C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                     jMax   0x001884    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jMaxPos   0x001888    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jMaxNeg   0x001892    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jZero   0x00189a    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                  jNotInf   0x0018a0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jLoop   0x0018b0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                jLoopExit   0x0018c0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jDone   0x0018d0    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                    jExit   0x0018d8    program     static C:\MCC18\v3_39\src\extended\math\castFP16.asm
+                 SETUPSTK   0x0018e6    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 __div32s   0x0018fe    program     extern C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 __mod32s   0x001904    program     extern C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  SETSIGN   0x001906    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  DA3232S   0x001920    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                   D3232S   0x001936    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                 D3232SOK   0x001940    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                D3232SNEG   0x001944    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                D3232SPOS   0x001962    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+              RETQUOTIENT   0x00197a    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  RESTORE   0x00198a    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  D3232SX   0x001998    program     static C:\MCC18\v3_39\src\extended\math\div32s.asm
+                  __mul32   0x0019a2    program     extern C:\MCC18\v3_39\src\extended\math\mul32.asm
+                  __mulFP   0x001a44    program     extern C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                 jANotInf   0x001a76    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+              jBothFinite   0x001a84    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                jHaveZero   0x001a8c    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+             jBothNotZero   0x001a90    program     static C:\MCC18\v3_39\src\extended\math\mulFP.asm
+                 SETUPSTK   0x001b32    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                 __div32u   0x001b4a    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+                 __mod32u   0x001b50    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+            _early32uexit   0x001b54    program     extern C:\MCC18\v3_39\src\extended\math\div32u.asm
+                divmod32u   0x001b56    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                     loop   0x001b64    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                   _false   0x001b98    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+              RETQUOTIENT   0x001bb8    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+                  RESTORE   0x001bc8    program     static C:\MCC18\v3_39\src\extended\math\div32u.asm
+            build_version   0x001bd6    program     extern /fred/vtouch18f8722/vtouch_build.h
+             elocodes_s_v   0x001c20    program     extern /fred/vtouch18f8722/vtouch.c
+                 elocodes   0x001c2e    program     extern /fred/vtouch18f8722/vtouch.c
+                _do_cinit   0x001c92    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                     test   0x001cac    program     static                          
+                copy_loop   0x001d04    program     static                          
+            copy_one_byte   0x001d0a    program     static                          
+             done_copying   0x001d18    program     static                          
+                     done   0x001d2e    program     static                          
+       ___return_lbl00002   0x001d2e    program     static                          
+               Open2USART   0x001d30    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2open.c
+               Open1USART   0x001db4    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1open.c
+              putrs1USART   0x001e2e    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1putrs.c
+              Write_b_eep   0x001e8a    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\write_B.c
+               Read_b_eep   0x001ed8    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\read_B.c
+       ___return_lbl00000   0x001f0e    program     static                          
+               Read2USART   0x001f1a    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2read.c
+               Read1USART   0x001f58    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1read.c
+             Delay10KTCYx   0x001f96    program     extern C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                    D10Kx   0x001fa2    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                   D10K_1   0x001fa6    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+       _D10KTCYXCODE_0014   0x001faa    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+                    D10Kl   0x001fb4    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+       _D10KTCYXCODE_0022   0x001fb8    program     static C:\MCC18\v3_39\src\extended\delays\d10ktcyx.asm
+               OpenTimer0   0x001fcc    program     extern C:\MCC18\v3_39\src\pmc_common\Timers\t0open.c
+              WriteTimer0   0x002002    program     extern C:\MCC18\v3_39\src\pmc_common\Timers\t0write.c
+              Write2USART   0x002032    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u2write.c
+              Write1USART   0x002060    program     extern C:\MCC18\v3_39\src\pmc_common\USART\u1write.c
+            __zero_memory   0x00208e    program     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   loop_h   0x00209c    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               zero_block   0x00209c    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                compare_l   0x0020a4    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   loop_l   0x0020a6    program     static C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 _startup   0x0020ae    program     extern C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                     loop   0x0020bc    program     static                          
+       ___return_lbl00001   0x0020c6    program     static                          
+               __string_1   0x0020c8    program     static /fred/vtouch18f8722/vtouch.c
+               __string_0   0x0020d1    program     static /fred/vtouch18f8722/vtouch.c
+                 Busy_eep   0x0020de    program     extern C:\MCC18\v3_39\src\pmc_common\EEP\busy_eep.c
+               __config_0   0x300001    program     static /fred/vtouch18f8722/vtouch.c
+               __config_1   0x300002    program     static /fred/vtouch18f8722/vtouch.c
+               __config_2   0x300003    program     static /fred/vtouch18f8722/vtouch.c
+               __config_3   0x300004    program     static /fred/vtouch18f8722/vtouch.c
+               __config_4   0x300005    program     static /fred/vtouch18f8722/vtouch.c
+               __config_5   0x300006    program     static /fred/vtouch18f8722/vtouch.c
+               __config_6   0x300008    program     static /fred/vtouch18f8722/vtouch.c
+               __config_7   0x300009    program     static /fred/vtouch18f8722/vtouch.c
+               __config_8   0x30000a    program     static /fred/vtouch18f8722/vtouch.c
+               __config_9   0x30000b    program     static /fred/vtouch18f8722/vtouch.c
+              __config_10   0x30000c    program     static /fred/vtouch18f8722/vtouch.c
+              __config_11   0x30000d    program     static /fred/vtouch18f8722/vtouch.c
+               build_date   0x000000       data     extern /fred/vtouch18f8722/vtouch_build.h
+               build_time   0x000003       data     extern /fred/vtouch18f8722/vtouch_build.h
+                        S   0x000006       data     extern /fred/vtouch18f8722/vtouch.c
+                        j   0x000015       data     extern /fred/vtouch18f8722/vtouch.c
+                       xs   0x000019       data     extern /fred/vtouch18f8722/vtouch.c
+                       ys   0x00001d       data     extern /fred/vtouch18f8722/vtouch.c
+                    xs_ss   0x000021       data     extern /fred/vtouch18f8722/vtouch.c
+                    ys_ss   0x000025       data     extern /fred/vtouch18f8722/vtouch.c
+               timer0_off   0x000029       data     extern /fred/vtouch18f8722/vtouch.c
+                     junk   0x00002b       data     static /fred/vtouch18f8722/vtouch.c
+                        c   0x00002c       data     static /fred/vtouch18f8722/vtouch.c
+                        i   0x00002d       data     static /fred/vtouch18f8722/vtouch.c
+                 scrn_ptr   0x00002e       data     static /fred/vtouch18f8722/vtouch.c
+                 host_ptr   0x000030       data     static /fred/vtouch18f8722/vtouch.c
+                      sum   0x000032       data     static /fred/vtouch18f8722/vtouch.c
+                      idx   0x000033       data     static /fred/vtouch18f8722/vtouch.c
+                    cylon   0x000034       data     static /fred/vtouch18f8722/vtouch.c
+                   LED_UP   0x000035       data     static /fred/vtouch18f8722/vtouch.c
+                alive_led   0x000036       data     static /fred/vtouch18f8722/vtouch.c
+                     prom   0x00003a       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                curr_byte   0x00003d       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+               curr_entry   0x00003f       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                 data_ptr   0x000041       data     static C:\MCC18\v3_39\src\extended\startup\c018i_e.c
+                  __tmp_0   0x000044       data     static /fred/vtouch18f8722/vtouch.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\USART\u1open.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\EEP\write_B.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\USART\u2open.c
+                  __tmp_0   0x000044       data     static C:\MCC18\v3_39\src\pmc_common\EEP\read_B.c
+                  __tmp_1   0x00004c       data     static /fred/vtouch18f8722/vtouch.c
+                __RETVAL0   0x000051       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL1   0x000052       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL2   0x000053       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+                __RETVAL3   0x000054       data     extern C:\MCC18\v3_39\src\extended\math\cmath18.asm
+            DelayCounter2   0x000055       data     extern C:\MCC18\v3_39\src\extended\delays\delayd2.asm
+            DelayCounter1   0x000056       data     extern C:\MCC18\v3_39\src\extended\delays\delayd1.asm
+            USART2_Status   0x000057       data     extern C:\MCC18\v3_39\src\pmc_common\USART\u2defs.c
+            USART1_Status   0x000058       data     extern C:\MCC18\v3_39\src\pmc_common\USART\u1defs.c
+              screen_type   0x000100       data     extern /fred/vtouch18f8722/vtouch.c
+              emulat_type   0x000101       data     extern /fred/vtouch18f8722/vtouch.c
+                   elobuf   0x000102       data     extern /fred/vtouch18f8722/vtouch.c
+               elobuf_out   0x000142       data     extern /fred/vtouch18f8722/vtouch.c
+                elobuf_in   0x000152       data     extern /fred/vtouch18f8722/vtouch.c
+                    ssbuf   0x000162       data     extern /fred/vtouch18f8722/vtouch.c
+                 ssreport   0x0001a2       data     extern /fred/vtouch18f8722/vtouch.c
+                   status   0x0001ac       data     extern /fred/vtouch18f8722/vtouch.c
+                   timer0   0x0001c7       data     static /fred/vtouch18f8722/vtouch.c
+                 data_ptr   0x0001c9       data     static /fred/vtouch18f8722/vtouch.c
+                 data_pos   0x0001cb       data     static /fred/vtouch18f8722/vtouch.c
+                 data_len   0x0001cc       data     static /fred/vtouch18f8722/vtouch.c
+                    tchar   0x0001cd       data     static /fred/vtouch18f8722/vtouch.c
+                    uchar   0x0001ce       data     static /fred/vtouch18f8722/vtouch.c
+                       xl   0x000400       data     extern /fred/vtouch18f8722/vtouch.c
+                       yl   0x000401       data     extern /fred/vtouch18f8722/vtouch.c
+             elocodes_m_e   0x000402       data     extern /fred/vtouch18f8722/vtouch.c
+             elocodes_s_e   0x00040e       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e0   0x00041a       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e1   0x000426       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e2   0x000432       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e3   0x00043e       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e4   0x00044a       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e5   0x000456       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e6   0x000462       data     extern /fred/vtouch18f8722/vtouch.c
+              elocodes_e7   0x00046e       data     extern /fred/vtouch18f8722/vtouch.c
+            touch_corner1   0x00047a       data     extern /fred/vtouch18f8722/vtouch.c
+       touch_corner_timed   0x00047c       data     extern /fred/vtouch18f8722/vtouch.c
+                 host_rec   0x000800       data     extern /fred/vtouch18f8722/vtouch.c
+                 scrn_rec   0x000900       data     extern /fred/vtouch18f8722/vtouch.c
+                 SSP2CON2   0x000f62       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2CON2bits   0x000f62       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP2CON1   0x000f63       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2CON1bits   0x000f63       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP2STAT   0x000f64       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP2STATbits   0x000f64       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP2ADD   0x000f65       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP2BUF   0x000f66       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP2DEL   0x000f67       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP2DELbits   0x000f67       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  ECCP2AS   0x000f68       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP2ASbits   0x000f68       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP3DELbits   0x000f69       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP3DEL   0x000f69       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP3ASbits   0x000f6a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  ECCP3AS   0x000f6a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               RCSTA2bits   0x000f6b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCSTA2   0x000f6b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXSTA2   0x000f6c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               TXSTA2bits   0x000f6c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXREG2   0x000f6d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCREG2   0x000f6e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRG2   0x000f6f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP5CONbits   0x000f70       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP5CON   0x000f70       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR5   0x000f71       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR5L   0x000f71       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR5H   0x000f72       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP4CON   0x000f73       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP4CONbits   0x000f73       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR4   0x000f74       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR4L   0x000f74       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR4H   0x000f75       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T4CONbits   0x000f76       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T4CON   0x000f76       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PR4   0x000f77       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TMR4   0x000f78       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP1DELbits   0x000f79       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP1DEL   0x000f79       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 BAUDCON2   0x000f7c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             BAUDCON2bits   0x000f7c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SPBRGH2   0x000f7d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             BAUDCON1bits   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 BAUDCON1   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              BAUDCONbits   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  BAUDCON   0x000f7e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SPBRGH1   0x000f7f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRGH   0x000f7f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTAbits   0x000f80       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTA   0x000f80       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTBbits   0x000f81       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTB   0x000f81       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTC   0x000f82       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTCbits   0x000f82       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTD   0x000f83       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTDbits   0x000f83       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTEbits   0x000f84       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTE   0x000f84       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTFbits   0x000f85       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTF   0x000f85       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTGbits   0x000f86       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTG   0x000f86       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTHbits   0x000f87       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTH   0x000f87       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                PORTJbits   0x000f88       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PORTJ   0x000f88       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATAbits   0x000f89       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATA   0x000f89       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATB   0x000f8a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATBbits   0x000f8a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATCbits   0x000f8b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATC   0x000f8b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATDbits   0x000f8c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATD   0x000f8c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATEbits   0x000f8d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATE   0x000f8d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATFbits   0x000f8e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATF   0x000f8e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATG   0x000f8f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATGbits   0x000f8f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATHbits   0x000f90       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATH   0x000f90       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 LATJbits   0x000f91       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     LATJ   0x000f91       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISAbits   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISA   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRAbits   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRA   0x000f92       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISB   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISBbits   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRBbits   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRB   0x000f93       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISC   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISCbits   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRCbits   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRC   0x000f94       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISD   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISDbits   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRDbits   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRD   0x000f95       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDREbits   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRE   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISEbits   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISE   0x000f96       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRFbits   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRF   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISFbits   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISF   0x000f97       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISG   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISGbits   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRG   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRGbits   0x000f98       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISH   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISHbits   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRH   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRHbits   0x000f99       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     DDRJ   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 DDRJbits   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TRISJbits   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TRISJ   0x000f9a       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  OSCTUNE   0x000f9b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              OSCTUNEbits   0x000f9b       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   MEMCON   0x000f9c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               MEMCONbits   0x000f9c       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE1   0x000f9d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE1bits   0x000f9d       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR1bits   0x000f9e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR1   0x000f9e       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR1bits   0x000f9f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR1   0x000f9f       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE2   0x000fa0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE2bits   0x000fa0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR2bits   0x000fa1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR2   0x000fa1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR2bits   0x000fa2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR2   0x000fa2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIE3bits   0x000fa3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIE3   0x000fa3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 PIR3bits   0x000fa4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PIR3   0x000fa4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 IPR3bits   0x000fa5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     IPR3   0x000fa5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               EECON1bits   0x000fa6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EECON1   0x000fa6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EECON2   0x000fa7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EEDATA   0x000fa8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    EEADR   0x000fa9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   EEADRH   0x000faa       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                RCSTAbits   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               RCSTA1bits   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    RCSTA   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCSTA1   0x000fab       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TXSTA   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXSTA1   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               TXSTA1bits   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                TXSTAbits   0x000fac       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TXREG   0x000fad       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TXREG1   0x000fad       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    RCREG   0x000fae       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   RCREG1   0x000fae       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SPBRG1   0x000faf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    SPBRG   0x000faf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PSPCON   0x000fb0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               PSPCONbits   0x000fb0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T3CONbits   0x000fb1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T3CON   0x000fb1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR3L   0x000fb2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR3H   0x000fb3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                CMCONbits   0x000fb4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CMCON   0x000fb4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               CVRCONbits   0x000fb5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CVRCON   0x000fb5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              ECCP1ASbits   0x000fb6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  ECCP1AS   0x000fb6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP3CONbits   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP3CON   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP3CONbits   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP3CON   0x000fb7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR3   0x000fb8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR3L   0x000fb8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR3H   0x000fb9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP2CON   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP2CONbits   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP2CON   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP2CONbits   0x000fba       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR2   0x000fbb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR2L   0x000fbb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR2H   0x000fbc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 ECCP1CON   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             ECCP1CONbits   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              CCP1CONbits   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  CCP1CON   0x000fbd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    CCPR1   0x000fbe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR1L   0x000fbe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   CCPR1H   0x000fbf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON2bits   0x000fc0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON2   0x000fc0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON1   0x000fc1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON1bits   0x000fc1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADCON0   0x000fc2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               ADCON0bits   0x000fc2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    ADRES   0x000fc3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADRESL   0x000fc3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   ADRESH   0x000fc4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1CON2   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1CON2bits   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPCON2   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPCON2bits   0x000fc5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1CON1   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1CON1bits   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPCON1   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPCON1bits   0x000fc6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 SSP1STAT   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+             SSP1STATbits   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSPSTAT   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              SSPSTATbits   0x000fc7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SSPADD   0x000fc8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP1ADD   0x000fc8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  SSP1BUF   0x000fc9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   SSPBUF   0x000fc9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T2CONbits   0x000fca       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T2CON   0x000fca       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PR2   0x000fcb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TMR2   0x000fcc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T1CON   0x000fcd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T1CONbits   0x000fcd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR1L   0x000fce       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR1H   0x000fcf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     RCON   0x000fd0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 RCONbits   0x000fd0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               WDTCONbits   0x000fd1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   WDTCON   0x000fd1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              HLVDCONbits   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  HLVDCON   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               LVDCONbits   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   LVDCON   0x000fd2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               OSCCONbits   0x000fd3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   OSCCON   0x000fd3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                T0CONbits   0x000fd5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    T0CON   0x000fd5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR0L   0x000fd6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    TMR0H   0x000fd7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   STATUS   0x000fd8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               STATUSbits   0x000fd8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR2L   0x000fd9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR2   0x000fd9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR2H   0x000fda       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW2   0x000fdb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC2   0x000fdc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC2   0x000fdd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC2   0x000fde       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF2   0x000fdf       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      BSR   0x000fe0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR1L   0x000fe1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR1   0x000fe1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR1H   0x000fe2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW1   0x000fe3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC1   0x000fe4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC1   0x000fe5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC1   0x000fe6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF1   0x000fe7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     WREG   0x000fe8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR0L   0x000fe9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     FSR0   0x000fe9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    FSR0H   0x000fea       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PLUSW0   0x000feb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  PREINC0   0x000fec       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTDEC0   0x000fed       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                 POSTINC0   0x000fee       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    INDF0   0x000fef       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              INTCON3bits   0x000ff0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  INTCON3   0x000ff0       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+              INTCON2bits   0x000ff1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  INTCON2   0x000ff1       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               INTCONbits   0x000ff2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   INTCON   0x000ff2       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     PROD   0x000ff3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PRODL   0x000ff3       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                    PRODH   0x000ff4       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TABLAT   0x000ff5       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRL   0x000ff6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   TBLPTR   0x000ff6       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRH   0x000ff7       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                  TBLPTRU   0x000ff8       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      PCL   0x000ff9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                       PC   0x000ff9       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PCLATH   0x000ffa       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   PCLATU   0x000ffb       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+               STKPTRbits   0x000ffc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                   STKPTR   0x000ffc       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                      TOS   0x000ffd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSL   0x000ffd       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSH   0x000ffe       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+                     TOSU   0x000fff       data     extern C:\MCC18\v3_39\src\extended\proc\p18F8722.asm
+
+
