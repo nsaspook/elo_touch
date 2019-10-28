@@ -953,7 +953,10 @@ void main(void)
 	/* check for touchscreen configuration data and setup switch on port J */
 	INTCON2bits.RBPU = 0;
 	wdtdelay(7000);
-	z = 0xff;
+	/*
+	 * set touchscreen emulation type code
+	 */
+	z = 0b11111101; // DELL_E215546 E220
 	Busy_eep();
 	check_byte = Read_b_eep(0);
 
