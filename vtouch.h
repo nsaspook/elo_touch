@@ -58,6 +58,7 @@ extern "C" {
 #define	HOST_CMD_SIZE_V80   6		// tool command size
 #define	CMD_OVERFLOW_V80    HOST_CMD_SIZE_V80*2
 #define ELO_SEQ_V80         10		// max smartset sequences
+#define ELO_SIZE	    12
 #define ELO_SIZE_V80        14		// number of bytes to send from elocodes_s configuration string
 #define ELO_SIZE_I_V80      10		// max smartset sequence size
 #define FALSE	0
