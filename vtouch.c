@@ -955,8 +955,8 @@ void main(void)
 	wdtdelay(7000);
 	/*
 	 * set touchscreen emulation type code
-	 */
-	z = 0b11111101; // DELL_E215546 E220
+	 */  
+	z = 0b11111001; // DELL_E224864 E220
 	Busy_eep();
 	check_byte = Read_b_eep(0);
 
