@@ -14,8 +14,8 @@
 #pragma config BORV = 3         // Brown-out Voltage bits (Minimum setting)
 
 // CONFIG2H
-#pragma config WDT = OFF         // Watchdog Timer (WDT enabled)
-#pragma config WDTPS = 128      // Watchdog Timer Postscale Select bits (1:128)
+#pragma config WDT = ON         // Watchdog Timer (WDT enabled)
+#pragma config WDTPS = 16384      // Watchdog Timer Postscale Select bits (1:128)
 
 // CONFIG3L
 #pragma config MODE = MC        // Processor Data Memory Mode Select bits (Microcontroller mode)
@@ -138,7 +138,7 @@
  * pin 10 to tx/rx GND jacks
  */
 
-/* E220/E500 terminal code
+ /* E220/E500 terminal code */
  /*
  * This program converts the rs-232 output from a ELO touch-screen controller
  * to a format that can be used with the Varian E220/E500 Implanter
@@ -333,7 +333,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 	}
 
 	/* start with data_ptr pointed to address of data, data_len to length of data in bytes, data_pos to 0 to start at the beginning of data block */
-	/* then enable the interrupt and wait for the interrupt enable flag to clear
+	/* then enable the interrupt and wait for the interrupt enable flag to clear */
 	/* send buffer and count xmit data bytes for host link */
 	if (PIE1bits.TX1IE && PIR1bits.TX1IF) { // send data to host USART
 		if (data_pos >= data_len) { // buffer has been sent
@@ -471,11 +471,15 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> 4;
 								ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
 							}
-						} else if (ssbuf[1] == 'A') {
-							status.restart_delay = 0;
-							LATEbits.LATE2 = 0; // connect  led ON
-							S.speedup = -10000;
+						} else {
+							if (ssbuf[1] == 'A') {
+								status.restart_delay = 0;
+								LATEbits.LATE2 = 0; // connect  led ON
+								S.speedup = -10000;
+							}
 						}
+						break;
+					default:
 						break;
 					}
 					sum += c;
@@ -817,6 +821,7 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 			break;
 		default:
 			sum += (c = strptr[i]);
+			break;
 		}
 		eloSScmdout(c);
 	};
@@ -955,7 +960,7 @@ void main(void)
 	wdtdelay(7000);
 	/*
 	 * set touchscreen emulation type code
-	 */  
+	 */
 	z = 0b11111001; // DELL_E224864 E220
 	Busy_eep();
 	check_byte = Read_b_eep(0);
