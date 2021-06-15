@@ -118,6 +118,7 @@
  * V3.33	display screen/machine config on LATJ with data 8 bit config on PORTB, program structure
  * V3.34	merge state machine refactor update
  * V3.35	"" ""
+ * V3.38	fix G 3&4 jumpers for proper monitor and tool selection, update eeprom
  *
  *
  *
@@ -132,7 +133,7 @@
  * G4 jumper: DELL_E215546 E220
  *
  * HFBR-0501Z light link converter
- * Move jumper 15 to I/O, sending TTL signals to 10 pin port socket
+ * Move jumper 15 RC6&7to I/O, sending TTL signals to 10 pin port socket
  *
  * RC[0..7]
  * pin 7 to TXD pin on HFBR
@@ -151,10 +152,11 @@
  *
  * PRORTA, PORTE Camera, aux switching with touch in target box
  * PORTJ		LED bar display
+ * PORTG		config jumpers
  * PORTH0		run flasher led onboard.
  * 8 led status lights.
  *
- * Microchip Inc , Aug 2009,2018
+ * Microchip Inc , Aug 2009,2018,2021
  * Gresham, Oregon
  *
  *
