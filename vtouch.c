@@ -127,6 +127,9 @@
  * LCD  RS-232  5-1     uC port2
  * Male         2-3-rx
  *              3-2-tx
+ * 
+ * G3 jumper: DELL_E215546 VIISION
+ * G4 jumper: DELL_E215546 E220
  *
  * HFBR-0501Z light link converter
  * Move jumper 15 to I/O, sending TTL signals to 10 pin port socket
@@ -138,8 +141,8 @@
  * pin 10 to tx/rx GND jacks
  */
 
- /* E220/E500 terminal code */
- /*
+/* E220/E500 terminal code */
+/*
  * This program converts the rs-232 output from a ELO touch-screen controller
  * to a format that can be used with the Varian E220/E500 Implanter
  * The touch controller must be first programmed
@@ -955,22 +958,22 @@ void main(void)
 	LATG = 0;
 	LATGbits.LATG3 = 1;
 	LATGbits.LATG4 = 1;
-	/* check for touchscreen configuration data and setup switch on port J */
+	/* check for touchscreen configuration data and setup switch on port G */
 	INTCON2bits.RBPU = 0;
 	wdtdelay(7000);
 	/*
 	 * set touchscreen emulation type code
 	 */
-	z = 0b11111001; // DELL_E224864 E220
+
 	Busy_eep();
 	check_byte = Read_b_eep(0);
 
-	if (z != 0xff) { // some config switches read logic zero
+	if (check_byte != 0x57) { // invalid eeprom display data
 		Busy_eep();
 		Write_b_eep(0, 0x57);
 		Busy_eep();
 		Write_b_eep(1, z);
-
+		z = 0b11111001; // DELL_E224864 E220
 	}
 
 	Busy_eep();
@@ -982,6 +985,8 @@ void main(void)
 			screen_type = DELL_E215546;
 			emulat_type = VIISION;
 			z = 0b11111110;
+			Busy_eep();
+			Write_b_eep(1, z);
 		}
 		if (z == 0b11111010) {
 			screen_type = DELL_E224864;
@@ -991,6 +996,8 @@ void main(void)
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
+			Busy_eep();
+			Write_b_eep(1, z);
 		}
 		if (z == 0b11111001) {
 			screen_type = DELL_E224864;
