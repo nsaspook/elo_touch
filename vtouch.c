@@ -332,6 +332,11 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		}
 	}
 
+	if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1)
+		TMR6_ISR();
+	if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1)
+		TMR5_ISR();
+
 	if (emulat_type == E220) {
 		//		if (PIR3bits.RC2IF) { // is data from touchscreen
 		if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
@@ -674,10 +679,9 @@ void elocmdout(uint8_t * elostr)
 	LED2_Toggle(); // touch screen commands led
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	UART2_Write(elostr[0]);
+	putc2(elostr[0]);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	LED2_Toggle(); // flash external led
 
 	wdtdelay(30000);
 }
@@ -687,10 +691,9 @@ void eloSScmdout(uint8_t elostr)
 	LED2_Toggle(); // touch screen commands led
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	UART2_Write(elostr);
+	putc2(elostr);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	LED2_Toggle(); // flash external led
 	wdtdelay(10000); // inter char delay
 }
 
@@ -725,7 +728,7 @@ void elocmdout_v80(const uint8_t * elostr)
 		while (!UART2_is_tx_done()) {
 		}; // wait until the usart is clear
 		elo_char = elostr[e];
-		UART2_Write(elo_char); // send to LCD touch
+		putc2(elo_char); // send to LCD touch
 		wdtdelay(10000); // inter char delay
 		LED2_Toggle(); // flash external led
 	}
@@ -759,7 +762,7 @@ void putc1(uint8_t c)
 {
 	while (!UART1_is_tx_done()) {
 	}; // wait until the usart is clear
-	UART1_Write(c);
+	U1TXB = c;
 	LED2_Toggle(); // flash external led
 }
 
@@ -767,7 +770,7 @@ void putc2(uint8_t c)
 {
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	UART2_Write(c);
+	U2TXB = c;
 	LED2_Toggle(); // flash external led
 }
 
@@ -868,8 +871,7 @@ void main(void)
 	INTERRUPT_GlobalInterruptHighEnable();
 
 	// Enable low priority global interrupts.
-	INTERRUPT_GlobalInterruptLowEnable();
-
+	//	INTERRUPT_GlobalInterruptLowEnable();
 
 	if (emulat_type == OTHER_MECH) {
 		/*
@@ -905,14 +907,8 @@ void main(void)
 		 * Open the USART configured as0
 		 * 8N1, 9600 baud, in receive INT mode
 		 */
-
 		setup_lcd(); // send lcd touch controller setup codes
 	}
-
-	/* Display a prompt to the USART */
-	//		putrs1USART(build_version);
-
-
 
 	if (emulat_type == E220) {
 		S.DATA1 = FALSE; // reset COMM flags.
@@ -928,6 +924,7 @@ void main(void)
 		/* Loop forever */
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
+				LED2_Toggle();
 #ifdef	DEBUG_CAM
 				CAM_RELAY = !CAM_RELAY;
 #endif
