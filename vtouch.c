@@ -677,7 +677,7 @@ void elocmdout(uint8_t * elostr)
 	UART2_Write(elostr[0]);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	BLED_Toggle(); // flash external led
+	LED2_Toggle(); // flash external led
 
 	wdtdelay(30000);
 }
@@ -690,7 +690,7 @@ void eloSScmdout(uint8_t elostr)
 	UART2_Write(elostr);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	BLED_Toggle(); // flash external led
+	LED2_Toggle(); // flash external led
 	wdtdelay(10000); // inter char delay
 }
 
@@ -727,6 +727,7 @@ void elocmdout_v80(const uint8_t * elostr)
 		elo_char = elostr[e];
 		UART2_Write(elo_char); // send to LCD touch
 		wdtdelay(10000); // inter char delay
+		LED2_Toggle(); // flash external led
 	}
 	wdtdelay(50000); // wait for LCD controller reset
 }
@@ -759,6 +760,7 @@ void putc1(uint8_t c)
 	while (!UART1_is_tx_done()) {
 	}; // wait until the usart is clear
 	UART1_Write(c);
+	LED2_Toggle(); // flash external led
 }
 
 void putc2(uint8_t c)
@@ -766,6 +768,7 @@ void putc2(uint8_t c)
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
 	UART2_Write(c);
+	LED2_Toggle(); // flash external led
 }
 
 void start_delay(void)
@@ -802,6 +805,7 @@ void main(void)
 	// default interface
 	screen_type = DELL_E215546;
 	emulat_type = E220;
+	z = 0b11111101;
 	/* Configure  PORT pins for output */
 
 	/* check for touchscreen configuration data and setup switch on port G */
@@ -815,7 +819,6 @@ void main(void)
 	if (check_byte != 0x57) { // invalid eeprom display data
 		DATAEE_WriteByte(0, 0x57);
 		DATAEE_WriteByte(1, z);
-		z = 0b11111001; // DELL_E224864 E220
 	}
 
 	check_byte = DATAEE_ReadByte(0);
@@ -860,6 +863,12 @@ void main(void)
 
 
 	wdtdelay(700000); // wait for LCD controller reset on power up
+
+	// Enable high priority global interrupts
+	INTERRUPT_GlobalInterruptHighEnable();
+
+	// Enable low priority global interrupts.
+	INTERRUPT_GlobalInterruptLowEnable();
 
 
 	if (emulat_type == OTHER_MECH) {
@@ -956,25 +965,25 @@ void main(void)
 
 			if (S.CATCH46) { // flag to send report to host
 				if (S.CATCH) { // send the buffered touch report
-					 __delay_ms(75);
+					__delay_ms(75);
 					putc1(0xFE); // send position report header to host
 					if (screen_type == DELL_E215546) {
 						ssreport.tohost = TRUE;
 						rez_parm_h = ((float) (ssreport.x_cord)) * rez_scale_h_ss;
 						rez_parm_v = ((float) (ssreport.y_cord)) * rez_scale_v_ss;
 						ssreport.tohost = FALSE;
-						scaled_char = ((uint16_t) (rez_parm_h));
+						scaled_char = ((uint8_t) (rez_parm_h));
 						elobuf[0] = scaled_char;
 						putc1(scaled_char); // send h scaled touch coord
-						scaled_char = ((uint16_t) (rez_parm_v));
+						scaled_char = ((uint8_t) (rez_parm_v));
 						elobuf[1] = scaled_char;
 						putc1(scaled_char); // send v scaled touch coord
 					} else {
 						rez_parm_h = ((float) (elobuf[0])) * rez_scale_h;
-						scaled_char = ((uint16_t) (rez_parm_h));
+						scaled_char = ((uint8_t) (rez_parm_h));
 						putc1(scaled_char); // send h scaled touch coord
 						rez_parm_v = ((float) (elobuf[1])) * rez_scale_v;
-						scaled_char = ((uint16_t) (rez_parm_v));
+						scaled_char = ((uint8_t) (rez_parm_v));
 						putc1(scaled_char); // send v scaled touch coord
 						S.c_idx = 0;
 					}
@@ -999,13 +1008,17 @@ void main(void)
 					putc2(0x3D); // send clear buffer to touch
 
 				putc1(0xF4); // send status report
-				if (TS_TYPE == 0) { // CRT type screens
-					putc1(0x77); // touch parm
-					putc1(0x5f); // touch parm
-				}
-				if (TS_TYPE == 1) { // new LCD type screens
+				switch (TS_TYPE) {
+				case 1:
+					// new LCD type screens
 					putc1(0x71); // touch parm 113
 					putc1(0x59); // touch parm 89
+					break;
+				default:
+					// CRT type screens
+					putc1(0x77); // touch parm
+					putc1(0x5f); // touch parm
+					break;
 				}
 				putc1(0xFF); // end of report
 				status.resync_count++;
