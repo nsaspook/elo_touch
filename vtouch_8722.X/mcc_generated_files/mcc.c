@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F27Q43
+        Device            :  PIC18F47Q43
         Driver Version    :  2.00
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above or later
@@ -54,8 +54,9 @@ void SYSTEM_Initialize(void)
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
     TMR6_Initialize();
-    TMR2_Initialize();
     TMR5_Initialize();
+    TMR2_Initialize();
+    TMR0_Initialize();
     UART2_Initialize();
     UART1_Initialize();
     SPI1_Initialize();

@@ -14,7 +14,7 @@
     This header file provides implementations for pin APIs for all pins selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F27Q43
+        Device            :  PIC18F47Q43
         Driver Version    :  2.11
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above
@@ -57,30 +57,37 @@ void PIN_MANAGER_Initialize(void)
     /**
     LATx registers
     */
+    LATE = 0x07;
+    LATD = 0x00;
     LATA = 0x00;
     LATB = 0x00;
-    LATC = 0x00;
+    LATC = 0x06;
 
     /**
     TRISx registers
     */
-    TRISA = 0xFF;
-    TRISB = 0xFF;
-    TRISC = 0xF7;
+    TRISE = 0x00;
+    TRISA = 0xF5;
+    TRISB = 0xBF;
+    TRISC = 0x91;
+    TRISD = 0x3C;
 
     /**
     ANSELx registers
     */
-    ANSELC = 0x67;
-    ANSELB = 0x7F;
-    ANSELA = 0xFF;
+    ANSELD = 0x3C;
+    ANSELC = 0x01;
+    ANSELB = 0x3F;
+    ANSELE = 0x00;
+    ANSELA = 0xF0;
 
     /**
     WPUx registers
     */
+    WPUD = 0x00;
     WPUE = 0x00;
     WPUB = 0x00;
-    WPUA = 0x00;
+    WPUA = 0x05;
     WPUC = 0x00;
 
     /**
@@ -98,6 +105,7 @@ void PIN_MANAGER_Initialize(void)
     ODCONA = 0x00;
     ODCONB = 0x00;
     ODCONC = 0x00;
+    ODCOND = 0x00;
 
     /**
     SLRCONx registers
@@ -105,6 +113,8 @@ void PIN_MANAGER_Initialize(void)
     SLRCONA = 0xFF;
     SLRCONB = 0xFF;
     SLRCONC = 0xFF;
+    SLRCOND = 0xFF;
+    SLRCONE = 0x07;
 
     /**
     INLVLx registers
@@ -112,7 +122,8 @@ void PIN_MANAGER_Initialize(void)
     INLVLA = 0xFF;
     INLVLB = 0xFF;
     INLVLC = 0xFF;
-    INLVLE = 0x08;
+    INLVLD = 0xFF;
+    INLVLE = 0x0F;
 
 
 
@@ -123,7 +134,10 @@ void PIN_MANAGER_Initialize(void)
 	
     U2RXPPS = 0x0F;   //RB7->UART2:RX2;    
     SPI1SCKPPS = 0x13;   //RC3->SPI1:SCK1;    
+    RB6PPS = 0x23;   //RB6->UART2:TX2;    
     RC3PPS = 0x31;   //RC3->SPI1:SCK1;    
+    RC5PPS = 0x32;   //RC5->SPI1:SDO1;    
+    RC6PPS = 0x20;   //RC6->UART1:TX1;    
     U1RXPPS = 0x17;   //RC7->UART1:RX1;    
     SPI1SDIPPS = 0x14;   //RC4->SPI1:SDI1;    
 }

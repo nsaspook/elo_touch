@@ -12,22 +12,6 @@
 extern "C" {
 #endif
 
-#ifdef INTTYPES
-#include <stdint.h>
-#else
-#define INTTYPES
-	/*unsigned types*/
-	typedef unsigned char uint8_t;
-	typedef unsigned int uint16_t;
-	typedef unsigned long uint32_t;
-	typedef unsigned long long uint64_t;
-	/*signed types*/
-	typedef signed char int8_t;
-	typedef signed int int16_t;
-	typedef signed long int32_t;
-	typedef signed long long int64_t;
-#endif
-
 #define	DO_CAP      FALSE       // E220 save data for usarts 1&2, save to eeprom
 #define	TS_TYPE     0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
 #define BUF_SIZE    64
