@@ -15,6 +15,10 @@ extern "C" {
 	const char *build_date = __DATE__, *build_time = __TIME__,
 		build_version[] = " V4.00 8722 Varian VE touch-screen converter. Fred Brooks, Microchip Inc.";
 
+	void wdtdelay(const uint32_t);
+	void putc1(const uint8_t);
+	void putc2(const uint8_t);
+
 #ifdef	__cplusplus
 }
 #endif

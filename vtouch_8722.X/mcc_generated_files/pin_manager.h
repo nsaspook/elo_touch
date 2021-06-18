@@ -145,6 +145,46 @@
 #define JMP2SET_SetAnalogMode()      do { ANSELAbits.ANSELA3 = 1; } while(0)
 #define JMP2SET_SetDigitalMode()     do { ANSELAbits.ANSELA3 = 0; } while(0)
 
+// get/set CAM_R aliases
+#define CAM_R_TRIS                 TRISBbits.TRISB0
+#define CAM_R_LAT                  LATBbits.LATB0
+#define CAM_R_PORT                 PORTBbits.RB0
+#define CAM_R_WPU                  WPUBbits.WPUB0
+#define CAM_R_OD                   ODCONBbits.ODCB0
+#define CAM_R_ANS                  ANSELBbits.ANSELB0
+#define CAM_R_SetHigh()            do { LATBbits.LATB0 = 1; } while(0)
+#define CAM_R_SetLow()             do { LATBbits.LATB0 = 0; } while(0)
+#define CAM_R_Toggle()             do { LATBbits.LATB0 = ~LATBbits.LATB0; } while(0)
+#define CAM_R_GetValue()           PORTBbits.RB0
+#define CAM_R_SetDigitalInput()    do { TRISBbits.TRISB0 = 1; } while(0)
+#define CAM_R_SetDigitalOutput()   do { TRISBbits.TRISB0 = 0; } while(0)
+#define CAM_R_SetPullup()          do { WPUBbits.WPUB0 = 1; } while(0)
+#define CAM_R_ResetPullup()        do { WPUBbits.WPUB0 = 0; } while(0)
+#define CAM_R_SetPushPull()        do { ODCONBbits.ODCB0 = 0; } while(0)
+#define CAM_R_SetOpenDrain()       do { ODCONBbits.ODCB0 = 1; } while(0)
+#define CAM_R_SetAnalogMode()      do { ANSELBbits.ANSELB0 = 1; } while(0)
+#define CAM_R_SetDigitalMode()     do { ANSELBbits.ANSELB0 = 0; } while(0)
+
+// get/set CAM_R1 aliases
+#define CAM_R1_TRIS                 TRISBbits.TRISB1
+#define CAM_R1_LAT                  LATBbits.LATB1
+#define CAM_R1_PORT                 PORTBbits.RB1
+#define CAM_R1_WPU                  WPUBbits.WPUB1
+#define CAM_R1_OD                   ODCONBbits.ODCB1
+#define CAM_R1_ANS                  ANSELBbits.ANSELB1
+#define CAM_R1_SetHigh()            do { LATBbits.LATB1 = 1; } while(0)
+#define CAM_R1_SetLow()             do { LATBbits.LATB1 = 0; } while(0)
+#define CAM_R1_Toggle()             do { LATBbits.LATB1 = ~LATBbits.LATB1; } while(0)
+#define CAM_R1_GetValue()           PORTBbits.RB1
+#define CAM_R1_SetDigitalInput()    do { TRISBbits.TRISB1 = 1; } while(0)
+#define CAM_R1_SetDigitalOutput()   do { TRISBbits.TRISB1 = 0; } while(0)
+#define CAM_R1_SetPullup()          do { WPUBbits.WPUB1 = 1; } while(0)
+#define CAM_R1_ResetPullup()        do { WPUBbits.WPUB1 = 0; } while(0)
+#define CAM_R1_SetPushPull()        do { ODCONBbits.ODCB1 = 0; } while(0)
+#define CAM_R1_SetOpenDrain()       do { ODCONBbits.ODCB1 = 1; } while(0)
+#define CAM_R1_SetAnalogMode()      do { ANSELBbits.ANSELB1 = 1; } while(0)
+#define CAM_R1_SetDigitalMode()     do { ANSELBbits.ANSELB1 = 0; } while(0)
+
 // get/set RB6 procedures
 #define RB6_SetHigh()            do { LATBbits.LATB6 = 1; } while(0)
 #define RB6_SetLow()             do { LATBbits.LATB6 = 0; } while(0)
@@ -309,45 +349,45 @@
 #define LED2_SetAnalogMode()      do { ANSELDbits.ANSELD1 = 1; } while(0)
 #define LED2_SetDigitalMode()     do { ANSELDbits.ANSELD1 = 0; } while(0)
 
-// get/set CAM_R1 aliases
-#define CAM_R1_TRIS                 TRISDbits.TRISD6
-#define CAM_R1_LAT                  LATDbits.LATD6
-#define CAM_R1_PORT                 PORTDbits.RD6
-#define CAM_R1_WPU                  WPUDbits.WPUD6
-#define CAM_R1_OD                   ODCONDbits.ODCD6
-#define CAM_R1_ANS                  ANSELDbits.ANSELD6
-#define CAM_R1_SetHigh()            do { LATDbits.LATD6 = 1; } while(0)
-#define CAM_R1_SetLow()             do { LATDbits.LATD6 = 0; } while(0)
-#define CAM_R1_Toggle()             do { LATDbits.LATD6 = ~LATDbits.LATD6; } while(0)
-#define CAM_R1_GetValue()           PORTDbits.RD6
-#define CAM_R1_SetDigitalInput()    do { TRISDbits.TRISD6 = 1; } while(0)
-#define CAM_R1_SetDigitalOutput()   do { TRISDbits.TRISD6 = 0; } while(0)
-#define CAM_R1_SetPullup()          do { WPUDbits.WPUD6 = 1; } while(0)
-#define CAM_R1_ResetPullup()        do { WPUDbits.WPUD6 = 0; } while(0)
-#define CAM_R1_SetPushPull()        do { ODCONDbits.ODCD6 = 0; } while(0)
-#define CAM_R1_SetOpenDrain()       do { ODCONDbits.ODCD6 = 1; } while(0)
-#define CAM_R1_SetAnalogMode()      do { ANSELDbits.ANSELD6 = 1; } while(0)
-#define CAM_R1_SetDigitalMode()     do { ANSELDbits.ANSELD6 = 0; } while(0)
+// get/set CAM_R1_O aliases
+#define CAM_R1_O_TRIS                 TRISDbits.TRISD6
+#define CAM_R1_O_LAT                  LATDbits.LATD6
+#define CAM_R1_O_PORT                 PORTDbits.RD6
+#define CAM_R1_O_WPU                  WPUDbits.WPUD6
+#define CAM_R1_O_OD                   ODCONDbits.ODCD6
+#define CAM_R1_O_ANS                  ANSELDbits.ANSELD6
+#define CAM_R1_O_SetHigh()            do { LATDbits.LATD6 = 1; } while(0)
+#define CAM_R1_O_SetLow()             do { LATDbits.LATD6 = 0; } while(0)
+#define CAM_R1_O_Toggle()             do { LATDbits.LATD6 = ~LATDbits.LATD6; } while(0)
+#define CAM_R1_O_GetValue()           PORTDbits.RD6
+#define CAM_R1_O_SetDigitalInput()    do { TRISDbits.TRISD6 = 1; } while(0)
+#define CAM_R1_O_SetDigitalOutput()   do { TRISDbits.TRISD6 = 0; } while(0)
+#define CAM_R1_O_SetPullup()          do { WPUDbits.WPUD6 = 1; } while(0)
+#define CAM_R1_O_ResetPullup()        do { WPUDbits.WPUD6 = 0; } while(0)
+#define CAM_R1_O_SetPushPull()        do { ODCONDbits.ODCD6 = 0; } while(0)
+#define CAM_R1_O_SetOpenDrain()       do { ODCONDbits.ODCD6 = 1; } while(0)
+#define CAM_R1_O_SetAnalogMode()      do { ANSELDbits.ANSELD6 = 1; } while(0)
+#define CAM_R1_O_SetDigitalMode()     do { ANSELDbits.ANSELD6 = 0; } while(0)
 
-// get/set CAM_R aliases
-#define CAM_R_TRIS                 TRISDbits.TRISD7
-#define CAM_R_LAT                  LATDbits.LATD7
-#define CAM_R_PORT                 PORTDbits.RD7
-#define CAM_R_WPU                  WPUDbits.WPUD7
-#define CAM_R_OD                   ODCONDbits.ODCD7
-#define CAM_R_ANS                  ANSELDbits.ANSELD7
-#define CAM_R_SetHigh()            do { LATDbits.LATD7 = 1; } while(0)
-#define CAM_R_SetLow()             do { LATDbits.LATD7 = 0; } while(0)
-#define CAM_R_Toggle()             do { LATDbits.LATD7 = ~LATDbits.LATD7; } while(0)
-#define CAM_R_GetValue()           PORTDbits.RD7
-#define CAM_R_SetDigitalInput()    do { TRISDbits.TRISD7 = 1; } while(0)
-#define CAM_R_SetDigitalOutput()   do { TRISDbits.TRISD7 = 0; } while(0)
-#define CAM_R_SetPullup()          do { WPUDbits.WPUD7 = 1; } while(0)
-#define CAM_R_ResetPullup()        do { WPUDbits.WPUD7 = 0; } while(0)
-#define CAM_R_SetPushPull()        do { ODCONDbits.ODCD7 = 0; } while(0)
-#define CAM_R_SetOpenDrain()       do { ODCONDbits.ODCD7 = 1; } while(0)
-#define CAM_R_SetAnalogMode()      do { ANSELDbits.ANSELD7 = 1; } while(0)
-#define CAM_R_SetDigitalMode()     do { ANSELDbits.ANSELD7 = 0; } while(0)
+// get/set CAM_R_O aliases
+#define CAM_R_O_TRIS                 TRISDbits.TRISD7
+#define CAM_R_O_LAT                  LATDbits.LATD7
+#define CAM_R_O_PORT                 PORTDbits.RD7
+#define CAM_R_O_WPU                  WPUDbits.WPUD7
+#define CAM_R_O_OD                   ODCONDbits.ODCD7
+#define CAM_R_O_ANS                  ANSELDbits.ANSELD7
+#define CAM_R_O_SetHigh()            do { LATDbits.LATD7 = 1; } while(0)
+#define CAM_R_O_SetLow()             do { LATDbits.LATD7 = 0; } while(0)
+#define CAM_R_O_Toggle()             do { LATDbits.LATD7 = ~LATDbits.LATD7; } while(0)
+#define CAM_R_O_GetValue()           PORTDbits.RD7
+#define CAM_R_O_SetDigitalInput()    do { TRISDbits.TRISD7 = 1; } while(0)
+#define CAM_R_O_SetDigitalOutput()   do { TRISDbits.TRISD7 = 0; } while(0)
+#define CAM_R_O_SetPullup()          do { WPUDbits.WPUD7 = 1; } while(0)
+#define CAM_R_O_ResetPullup()        do { WPUDbits.WPUD7 = 0; } while(0)
+#define CAM_R_O_SetPushPull()        do { ODCONDbits.ODCD7 = 0; } while(0)
+#define CAM_R_O_SetOpenDrain()       do { ODCONDbits.ODCD7 = 1; } while(0)
+#define CAM_R_O_SetAnalogMode()      do { ANSELDbits.ANSELD7 = 1; } while(0)
+#define CAM_R_O_SetDigitalMode()     do { ANSELDbits.ANSELD7 = 0; } while(0)
 
 // get/set BLED aliases
 #define BLED_TRIS                 TRISEbits.TRISE0

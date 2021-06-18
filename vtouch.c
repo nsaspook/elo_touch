@@ -41,7 +41,7 @@
  * V3.34	merge state machine refactor update
  * V3.35	"" ""
  * V3.38	fix G 3&4 jumpers for proper monitor and tool selection, update eeprom
- * V4.00	Q43 version
+ * V4.00	Q43 version, USART operated in bare mode using custom ISR code
  *
  *
  *
@@ -105,16 +105,11 @@
 #pragma warning disable 1498
 
 #include <xc.h>
+#include <stdlib.h>
 #include "vtouch_8722.X/mcc_generated_files/mcc.h"
 #include "vtouch_8722.X/mcc_generated_files/interrupt_manager.h"
 #include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
-//#include <usart.h>
-//#include <delays.h>
-//#include <timers.h>
-#include <stdlib.h>
-#//include <EEP.h>
 #include "vtouch_8722.X/mcc_generated_files/memory.h"
-//#include <GenericTypeDefs.h>
 #include "vtouch.h"
 #include "vtouch_build.h"
 
@@ -240,44 +235,31 @@ uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 volatile uint8_t host_rec[CAP_SIZE] = "H";
 volatile uint8_t scrn_rec[CAP_SIZE] = "S";
 
-void putc1(uint8_t);
-void putc2(uint8_t);
-
 void rxtx_handler(void) // timer & serial data transform functions are handled here
 {
-	//	static union Timers timer0;
-	static uint8_t junk = 0, c = 0, *data_ptr,
-		i = 0, data_pos, data_len, tchar, uchar;
+	static uint8_t c = 0, *data_ptr, i = 0, data_pos, data_len, tchar, uchar;
 	uint16_t x_tmp, y_tmp, uvalx, lvalx, uvaly, lvaly;
-	static uint16_t scrn_ptr = 0, host_ptr = 0;
 	static uint8_t sum = 0xAA + 'U', idx = 0;
 
 	status.rawint_count++;
-
-	//	if (INTCONbits.RBIF) {
-	//		junk = PORTB;
-	//		INTCONbits.RBIF = 0;
-	//		LATAbits.LATA2 = !LATAbits.LATA2;
-	//}
-
 	/* start with data_ptr pointed to address of data, data_len to length of data in bytes, data_pos to 0 to start at the beginning of data block */
 	/* then enable the interrupt and wait for the interrupt enable flag to clear */
 	/* send buffer and count xmit data bytes for host link */
 	if (PIE4bits.U1TXIE == 1 && PIR4bits.U1TXIF == 1) {
-		//	if (PIE1bits.TX1IE && PIR1bits.TX1IF) { // send data to host USART
+		// send data to host USART
 		if (data_pos >= data_len) { // buffer has been sent
 			if (U1ERRIRbits.TXMTIF) { // last bit has been shifted out
 				PIE4bits.U1TXIE = 0; // stop data xmit
 			}
 		} else {
 			BLED_Toggle();
-			U1TXB = *data_ptr; // send data and clear PIR1bits.TX1IF
+			U1TXB = *data_ptr; // send data
 			data_pos++; // move the data pointer
 			data_ptr++; // move the buffer pointer position
 		}
 	}
 
-	//	if (PIR1bits.RCIF) { // is data from host COMM1, only from E220/E500 machines
+	// is data from host COMM1, only from E220/E500 machines
 	if (PIE4bits.U1RXIE == 1 && PIR4bits.U1RXIF == 1) {
 		PIR4bits.U1RXIF = 0;
 		tchar = U1RXB; // read from host
@@ -295,7 +277,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		}
 	}
 
-	//	if (INTCONbits.TMR0IF) { // check timer0 irq 1 second timer
+	// check timer0 irq 1 second timer
 	if (PIE3bits.TMR0IE == 1 && PIR3bits.TMR0IF == 1) {
 		//check for TMR0 overflow
 		idx = 0; // reset packet char index counter
@@ -338,7 +320,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		TMR5_ISR();
 
 	if (emulat_type == E220) {
-		//		if (PIR3bits.RC2IF) { // is data from touchscreen
+		// is data from touchscreen COMM2
 		if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
 			PIR8bits.U2RXIF = 0;
 			PIR3bits.TMR0IF = 0;
@@ -421,7 +403,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 
 						S.TSTATUS = TRUE;
 						status.restart_delay = 0;
-
 						S.speedup = -10000;
 					};
 					if (S.c_idx > (BUF_SIZE - 2)) {
@@ -441,7 +422,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 
 	if (emulat_type == VIISION) {
 		if (screen_type == DELL_E215546) { // This is for the newer SMARTSET intellitouch screens
-			//			if (PIR3bits.RC2IF) { // is data from screen COMM2
+			// is data from screen COMM2
 			if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
 				PIR8bits.U2RXIF = 0;
 
@@ -666,7 +647,7 @@ void touch_cam(void)
 	};
 }
 
-void wdtdelay(uint32_t delay)
+void wdtdelay(const uint32_t delay)
 {
 	uint32_t dcount;
 	for (dcount = 0; dcount <= delay; dcount++) { // delay a bit
@@ -682,11 +663,10 @@ void elocmdout(uint8_t * elostr)
 	putc2(elostr[0]);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-
-	wdtdelay(30000);
+	wdtdelay(2000);
 }
 
-void eloSScmdout(uint8_t elostr)
+void eloSScmdout(const uint8_t elostr)
 {
 	LED2_Toggle(); // touch screen commands led
 	while (!UART2_is_tx_done()) {
@@ -694,7 +674,7 @@ void eloSScmdout(uint8_t elostr)
 	putc2(elostr);
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
-	wdtdelay(10000); // inter char delay
+	wdtdelay(2000); // inter char delay
 }
 
 void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
@@ -729,7 +709,7 @@ void elocmdout_v80(const uint8_t * elostr)
 		}; // wait until the usart is clear
 		elo_char = elostr[e];
 		putc2(elo_char); // send to LCD touch
-		wdtdelay(10000); // inter char delay
+		wdtdelay(2000); // inter char delay
 		LED2_Toggle(); // flash external led
 	}
 	wdtdelay(50000); // wait for LCD controller reset
@@ -758,7 +738,7 @@ void setup_lcd(void)
 	}
 }
 
-void putc1(uint8_t c)
+void putc1(const uint8_t c)
 {
 	while (!UART1_is_tx_done()) {
 	}; // wait until the usart is clear
@@ -766,7 +746,7 @@ void putc1(uint8_t c)
 	LED2_Toggle(); // flash external led
 }
 
-void putc2(uint8_t c)
+void putc2(const uint8_t c)
 {
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
@@ -809,10 +789,7 @@ void main(void)
 	screen_type = DELL_E215546;
 	emulat_type = E220;
 	z = 0b11111101;
-	/* Configure  PORT pins for output */
 
-	/* check for touchscreen configuration data and setup switch on port G */
-	wdtdelay(7000);
 	/*
 	 * set touchscreen emulation type code
 	 */
@@ -863,7 +840,6 @@ void main(void)
 	status.touch_count = 0;
 	S.CAM = 0;
 	ssreport.tohost = TRUE;
-
 
 	wdtdelay(700000); // wait for LCD controller reset on power up
 
@@ -951,6 +927,7 @@ void main(void)
 					} else {
 						if ((status.restart_delay >= (uint16_t) 150) && (S.TSTATUS)) { // after delay restart TS status.
 							S.TSTATUS = FALSE; // lost comms while connected
+							S.speedup = 0;
 							status.restart_delay = 0;
 						};
 					};
