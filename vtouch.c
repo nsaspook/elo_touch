@@ -112,6 +112,7 @@
 #include "vtouch_8722.X/mcc_generated_files/memory.h"
 #include "vtouch.h"
 #include "vtouch_build.h"
+#include "eadog.h"
 
 extern volatile uint16_t timer0ReloadVal16bit;
 
@@ -234,6 +235,8 @@ uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 
 volatile uint8_t host_rec[CAP_SIZE] = "H";
 volatile uint8_t scrn_rec[CAP_SIZE] = "S";
+
+char buffer[256];
 
 void rxtx_handler(void) // timer & serial data transform functions are handled here
 {
@@ -848,6 +851,17 @@ void main(void)
 
 	// Enable low priority global interrupts.
 	//	INTERRUPT_GlobalInterruptLowEnable();
+
+	init_display();
+	sprintf(buffer, "%s ", "          ");
+	eaDogM_WriteStringAtPos(0, 0, buffer);
+	sprintf(buffer, "%s ", build_version);
+	eaDogM_WriteStringAtPos(0, 0, buffer);
+	sprintf(buffer, "%s ", build_date);
+	eaDogM_WriteStringAtPos(1, 0, buffer);
+	/* display build time and boot status codes 67 34 07, WDT reset 67 24 07 */
+	sprintf(buffer, "%s B:%X %X %X", build_time, STATUS, PCON0, PCON1);
+	eaDogM_WriteStringAtPos(2, 0, buffer);
 
 	if (emulat_type == OTHER_MECH) {
 		/*
