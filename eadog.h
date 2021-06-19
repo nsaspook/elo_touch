@@ -26,8 +26,17 @@ extern "C" {
 #include "qconfig.h"
 #include "ringbufs.h"
 #include "vtouch_build.h"
+#include "vtouch_8722.X/mcc_generated_files/spi1.h"
 
-extern struct V_data V;
+	typedef struct {
+		uint8_t con0;
+		uint8_t con1;
+		uint8_t con2;
+		uint8_t baud;
+		uint8_t operation;
+	} spi1_configuration_t;
+
+	extern struct V_data V;
 
 #define LCD_CMD_MASK	0x01
 #define LCD_CMD_SET	0x100
@@ -39,7 +48,7 @@ extern struct V_data V;
 #define NHD_BL_HIGH	8
 
 	void wdtdelay(uint32_t);
-	void init_display(void);
+	bool init_display(void);
 	void init_port_dma(void);
 	void send_port_data_dma(uint16_t);
 	uint8_t* port_data_dma_ptr(void);
@@ -57,7 +66,7 @@ extern struct V_data V;
 	void eaDogM_WriteStringAtPos(uint8_t, uint8_t, char *);
 	void eaDogM_WriteIntAtPos(uint8_t, uint8_t, uint8_t);
 	void eaDogM_WriteByteToCGRAM(uint8_t, uint8_t);
-	
+
 	// DMA complete flag
 	void clear_lcd_done(void);
 	void spi_rec_done(void);
@@ -67,6 +76,9 @@ extern struct V_data V;
 #define eaDogM_CursorOff()       eaDogM_WriteCommand(EADOGM_CMD_CURSOR_OFF)
 #define eaDogM_DisplayOn()       eaDogM_WriteCommand(EADOGM_CMD_DISPLAY_ON)
 #define eaDogM_DisplayOff()      eaDogM_WriteCommand(EADOGM_CMD_DISPLAY_OFF)
+
+#define max_strlen	20
+#define max_port_data	1024
 
 #ifdef	__cplusplus
 }

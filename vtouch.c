@@ -114,6 +114,7 @@
 #include "vtouch_build.h"
 #include "eadog.h"
 
+const char *build_date = __DATE__, *build_time = __TIME__;
 extern volatile uint16_t timer0ReloadVal16bit;
 
 void rxtx_handler(void);
@@ -236,7 +237,7 @@ uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 volatile uint8_t host_rec[CAP_SIZE] = "H";
 volatile uint8_t scrn_rec[CAP_SIZE] = "S";
 
-char buffer[256];
+char buffer[256], opbuffer[256];
 
 void rxtx_handler(void) // timer & serial data transform functions are handled here
 {
@@ -792,6 +793,7 @@ void main(void)
 	screen_type = DELL_E215546;
 	emulat_type = E220;
 	z = 0b11111101;
+	sprintf(opbuffer, "E220 DELL_E215546");
 
 	/*
 	 * set touchscreen emulation type code
@@ -812,28 +814,34 @@ void main(void)
 			emulat_type = VIISION;
 			z = 0b11111110;
 			DATAEE_WriteByte(1, z);
+			sprintf(opbuffer, "VIISION DELL_E215546");
 		}
 		if (z == 0b11111010) {
 			screen_type = DELL_E224864;
 			emulat_type = VIISION;
+			sprintf(opbuffer, "VIISION DELL_E224864");
 		}
 		if (z == 0b11111101 || (!JMP2_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
 			DATAEE_WriteByte(1, z);
+			sprintf(opbuffer, "E220 DELL_E215546");
 		}
 		if (z == 0b11111001) {
 			screen_type = DELL_E224864;
 			emulat_type = E220;
+			sprintf(opbuffer, "E220 DELL_E224864");
 		}
 		if (z == 0b11111100) {
 			screen_type = DELL_E215546;
 			emulat_type = OTHER_MECH;
+			sprintf(opbuffer, "OTHER DELL_E215546");
 		}
 		if (z == 0b11111000) {
 			screen_type = DELL_E224864;
 			emulat_type = OTHER_MECH;
+			sprintf(opbuffer, "OTHER DELL_E224864");
 		}
 	}
 
@@ -862,6 +870,7 @@ void main(void)
 	/* display build time and boot status codes 67 34 07, WDT reset 67 24 07 */
 	sprintf(buffer, "%s B:%X %X %X", build_time, STATUS, PCON0, PCON1);
 	eaDogM_WriteStringAtPos(2, 0, buffer);
+	eaDogM_WriteStringAtPos(3, 0, opbuffer);
 
 	if (emulat_type == OTHER_MECH) {
 		/*
@@ -1025,7 +1034,7 @@ void main(void)
 		/* Loop forever */
 		while (TRUE) { // busy loop BSG style
 			if (j++ >= BLINK_RATE_V80) { // delay a bit ok
-
+				LED2_Toggle();
 
 				if (S.LCD_OK) { // screen status feedback
 					timer0_off = TIMEROFFSET;

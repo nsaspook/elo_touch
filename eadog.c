@@ -5,24 +5,44 @@
 //#include "mcc_generated_files/dma1.h"
 //#include "mcc_generated_files/dma2.h"
 
-#define max_strlen	21
-#define max_port_data	1024
-
 volatile struct spi_link_type spi_link;
 struct ringBufS_t ring_buf1;
 static uint8_t port_data[max_port_data] = {255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0};
 
+static const spi1_configuration_t spi1_configuration[] = {
+	{ 0x3, 0x24, 0x3, 0x4, 0}
+};
+
 static void send_lcd_cmd_long(uint8_t); // for display init only
 static void send_lcd_data(uint8_t);
 static void send_lcd_cmd(uint8_t);
+bool SPI1_Config(void);
+
+bool SPI1_Config(void)
+{
+	if (!SPI1CON0bits.EN) {
+		SPI1CON0 = spi1_configuration[0].con0;
+		SPI1CON1 = spi1_configuration[0].con1;
+		SPI1CON2 = spi1_configuration[0].con2 | (_SPI1CON2_SPI1RXR_MASK | _SPI1CON2_SPI1TXR_MASK);
+		SPI1CLK = 0x02; // fixup for clock selection
+		SPI1BAUD = spi1_configuration[0].baud;
+		TRISCbits.TRISC3 = spi1_configuration[0].operation;
+		SPI1CON0bits.EN = 1;
+		return true;
+	}
+	return false;
+}
 
 /*
  * Init the NHD-0420D3Z-NSW-BBW-V3 in 8-bit serial mode
  * channel 1 DMA
  */
-void init_display(void)
+bool init_display(void)
 {
-	SPI1CON0bits.EN = 1;
+	SPI1_Close();
+	if (!SPI1_Config()) {
+		return false;
+	};
 	spi_link.tx1a = &ring_buf1;
 	ringBufS_init(spi_link.tx1a);
 #ifdef DEBUG_DISP2
@@ -38,7 +58,6 @@ void init_display(void)
 	wdtdelay(80);
 	send_lcd_cmd(0x51); // clear screen
 	wdtdelay(800);
-
 #else
 	CSB_SetHigh();
 	wdtdelay(350000); // > 400ms power up delay
@@ -65,7 +84,7 @@ void init_display(void)
 	DMA1_SetSCNTIInterruptHandler(clear_lcd_done);
 	DMA2_SetDCNTIInterruptHandler(spi_rec_done);
 #endif
-
+	return true;
 }
 
 /*
