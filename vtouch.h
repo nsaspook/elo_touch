@@ -35,6 +35,7 @@ extern "C" {
 #define CAM_RELAY_AUX	LATEbits.LATE1
 #define CAM_RELAY_TIME	LATEbits.LATE2
 #define	TIMERPACKET     41000
+#define SCREEN_UPDATE	20
 
 #define BUF_SIZE_V80        16
 #define	CMD_SIZE_V80        4		// CT size of command in bytes from touch screen

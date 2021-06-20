@@ -127,7 +127,7 @@ typedef struct reporttype {
 } volatile reporttype;
 
 typedef struct statustype {
-	int32_t alive_led, touch_count, resync_count, rawint_count, status_count;
+	int32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks;
 	uint8_t host_write : 1;
 	uint8_t scrn_write : 1;
 	uint8_t do_cap : 1;
@@ -181,7 +181,9 @@ volatile uint8_t elobuf[BUF_SIZE], elobuf_out[BUF_SIZE_V80], elobuf_in[BUF_SIZE_
 volatile uint8_t ssbuf[BUF_SIZE];
 
 volatile struct reporttype ssreport;
-volatile struct statustype status;
+volatile struct statustype status = {
+	.ticks = 0,
+};
 
 const uint8_t elocodes_s_v[] = {
 	0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x3c, 0x2b, 0x44, 0x25, 0x29, 0x44, 0x3d, 0x2a, 0x37
@@ -432,9 +434,9 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 
 				/* Get the character received from the USART */
 				c = U2RXB;
+				status.status_count++;
 
 				if (((c & 0xc0) == 0xc0) || S.CATCH) { // start of touch sequence
-
 					S.CATCH = TRUE; // found elo touch command start of sequence
 					j = 0; // reset led timer
 					elobuf[i++] = c; // start stuffing the command buffer
@@ -472,7 +474,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 						elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
 						elobuf_out[4] = 0x00;
 						elobuf_out[5] = 0x0f;
-
 					}
 
 					if (!elobuf[5]) { //S.UNTOUCH
@@ -483,7 +484,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 						elobuf_out[3] = 0x00;
 						elobuf_out[4] = 0x00;
 						elobuf_out[5] = 0x00;
-
 					}
 
 					if (S.TOUCH || S.UNTOUCH) { // send both
@@ -494,12 +494,11 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							data_len = HOST_CMD_SIZE_V80;
 							//							PIE1bits.TX1IE = 1; // start sending data
 							PIE4bits.U1TXIE = 0;
+							status.touch_count++;
 						}
 						S.LCD_OK = TRUE; // looks like a screen controller is connected
 						S.SCREEN_INIT = FALSE; // command code has been received by lcd controller
-
 						status.init_check = 0; // reset init code timer
-
 
 						if (S.UNTOUCH) { // After untouch is sent dump buffer and clear all.
 							S.TOUCH = FALSE;
@@ -518,9 +517,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 					S.CATCH = FALSE;
 					S.TOUCH = FALSE;
 					S.UNTOUCH = FALSE;
-
-
-
 				}
 			}
 
@@ -778,7 +774,7 @@ uint8_t Test_Screen(void)
 void main(void)
 {
 	uint8_t z, check_byte;
-	uint16_t eep_ptr;
+	uint16_t eep_ptr, update_screen = 0;
 	uint8_t scaled_char;
 	float rez_scale_h = 1.0, rez_parm_h, rez_scale_v = 1.0, rez_parm_v;
 	float rez_scale_h_ss = ELO_SS_H_SCALE, rez_scale_v_ss = ELO_SS_V_SCALE;
@@ -956,6 +952,11 @@ void main(void)
 					};
 				}
 				j = 0;
+				if (update_screen++ >= SCREEN_UPDATE) {
+					update_screen = 0;
+					sprintf(buffer, "E %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
+					eaDogM_WriteStringAtPos(0, 0, buffer);
+				}
 			}
 
 			touch_cam(); // always check the cam touch
@@ -1045,6 +1046,11 @@ void main(void)
 				if ((screen_type == DELL_E224864) && (S.SCREEN_INIT && !PIE4bits.U1TXIE)) { // if this flag is set send elo commands
 					elocmdout_v80(elocodes_s_v); // send touchscreen setup data, causes a frame size report to be send from screen
 					S.SCREEN_INIT = FALSE; // commands sent, now wait for reply to set S.LCD_OK flag
+				}
+				if (update_screen++ >= SCREEN_UPDATE) {
+					update_screen = 0;
+					sprintf(buffer, "V %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
+					eaDogM_WriteStringAtPos(0, 0, buffer);
 				}
 			}
 			ClrWdt(); // reset the WDT timer

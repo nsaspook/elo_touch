@@ -408,7 +408,7 @@ void eaDogM_WriteChr(const int8_t value)
 void send_port_data_dma(uint16_t dsize)
 {
 	if (dsize > max_port_data) {
-		dsize = max_port_data;
+		return;
 	}
 }
 

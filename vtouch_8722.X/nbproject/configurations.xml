@@ -51,7 +51,6 @@
         <itemPath>mcc_generated_files/memory.c</itemPath>
       </logicalFolder>
       <itemPath>../vtouch.c</itemPath>
-      <itemPath>main.c</itemPath>
       <itemPath>../ringbufs.c</itemPath>
       <itemPath>../eadog.c</itemPath>
     </logicalFolder>
@@ -79,9 +78,9 @@
         <targetDevice>PIC18F47Q43</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>pk4hybrid</platformTool>
+        <platformTool>ICD4Tool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.32</languageToolchainVersion>
+        <languageToolchainVersion>2.31</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <packs>
