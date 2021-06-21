@@ -160,6 +160,9 @@ void eaDogM_WriteString(char *strPtr)
 #ifdef DEBUG_DISP1
 	DLED1 = false;
 #endif
+#ifndef USE_DMA
+	wait_lcd_done();
+#endif
 }
 
 /*
@@ -449,6 +452,7 @@ void wait_lcd_done(void)
 #endif
 	while (!SPI1STATUSbits.TXBE) {
 	};
+	CSB_SetHigh(); /* SPI deselect display */
 }
 
 void clear_lcd_done(void)
