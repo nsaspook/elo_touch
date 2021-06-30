@@ -42,6 +42,7 @@
  * V3.35	"" ""
  * V3.38	fix G 3&4 jumpers for proper monitor and tool selection, update eeprom
  * V4.00	Q43 version, USART operated in bare mode using custom ISR code
+ * V4.03	adjust HV scaling values for better calibration on new windows systems
  *
  *
  *

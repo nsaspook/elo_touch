@@ -22,8 +22,8 @@ extern "C" {
 #define ELO_SIZE    12
 #define ELO_SEQ     10
 #define ELO_REV_H	4096
-#define ELO_SS_H_SCALE	0.483
-#define ELO_SS_V_SCALE	0.380
+#define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
+#define ELO_SS_V_SCALE	0.360 // old value 0.380 V4.03
 #define	BLINK_RATE_E220	20000
 #define AUTO_RESTART	FALSE
 #define SINGLE_TOUCH	FALSE
