@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-	const char build_version[] = "V4.03 Vtouch Q43 ";
+	const char build_version[] = "V4.04 Vtouch Q43 ";
 
 	void wdtdelay(const uint32_t);
 	void putc1(const uint8_t);

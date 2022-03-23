@@ -43,6 +43,7 @@
  * V3.38	fix G 3&4 jumpers for proper monitor and tool selection, update eeprom
  * V4.00	Q43 version, USART operated in bare mode using custom ISR code
  * V4.03	adjust HV scaling values for better calibration on new windows systems
+ * V4.04	Small bug fixes version
  *
  *
  *
@@ -52,9 +53,10 @@
  * LCD  RS-232  5-1     uC port2
  * Male         2-3-rx
  *              3-2-tx
- * 
- * G3 jumper: DELL_E215546 VIISION
- * G4 jumper: DELL_E215546 E220
+ *
+ * PORT A plug
+ * 0..1 jumper: DELL_E215546 VIISION
+ * 2..3 jumper: DELL_E215546 E220
  *
  * HFBR-0501Z light link converter
  * Move jumper 15 RC6&7to I/O, sending TTL signals to 10 pin port socket
@@ -125,6 +127,7 @@ typedef struct reporttype {
 	uint16_t x_cord, y_cord, z_cord;
 	uint8_t checksum;
 	uint8_t tohost;
+	uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
 } volatile reporttype;
 
 typedef struct statustype {
@@ -371,6 +374,18 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 								ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
 							}
 						} else {
+							if (ssbuf[1] == 'I') {
+								status.restart_delay = 0;
+								if (!ssreport.tohost) {
+									ssreport.id_type = ssbuf[2];
+									ssreport.id_io = ssbuf[3];
+									ssreport.id_features = ssbuf[4];
+									ssreport.id_minor = ssbuf[5];
+									ssreport.id_major = ssbuf[6];
+									ssreport.id_p = ssbuf[7];
+									ssreport.id_class = ssbuf[8];
+								}
+							}
 							if (ssbuf[1] == 'A') {
 								status.restart_delay = 0;
 								BLED_SetHigh(); // connect  led ON
@@ -636,7 +651,7 @@ void touch_cam(void)
 	};
 
 
-	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses 
+	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses
 		S.CAM = TRUE;
 		status.cam_time = 0;
 		CAM_RELAY_TIME = 1;
@@ -722,6 +737,8 @@ void setup_lcd(void)
 	uint8_t single_t = SINGLE_TOUCH;
 
 	if (screen_type == DELL_E215546) {
+		elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
+		wdtdelay(30000);
 		elopacketout(elocodes_e3, ELO_SEQ, 0); // reset to default smartset
 		wdtdelay(700000); // wait for LCD touch controller reset
 		elopacketout(elocodes_e0, ELO_SEQ, 0); // set touch packet spacing and timing
@@ -955,7 +972,7 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
+					sprintf(buffer, "E %lu %lu %lu %u %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssbuf[2], ssbuf[6], ssbuf[5], ssbuf[8]);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 				}
 			}
