@@ -88,12 +88,12 @@
  *
  * This application is designed for use with the
  * ET-BASE PIC8722 board and  device.
- * HOST RS-232  5-1     uC port1
- * Female       2-2-tx
- *              3-3-rx
- * LCD  RS-232  5-1     uC port2
- * Male         2-3-rx
- *              3-2-tx
+ * HOST RS-232  Black 5-1     uC port1
+ * Female       Red   2-2-tx
+ *              White 3-3-rx
+ * LCD  RS-232  Black 5-1     uC port2
+ * Male         Red   2-3-rx
+ *              White 3-2-tx
  *
  * VGA converter box relay
  * Omron
@@ -915,7 +915,7 @@ void main(void)
 
 	if (emulat_type == E220) {
 		/*
-		 * Open the USART configured as0
+		 * Open the USART configured as
 		 * 8N1, 9600 baud, in receive INT mode
 		 */
 		setup_lcd(); // send lcd touch controller setup codes
@@ -972,6 +972,16 @@ void main(void)
 					update_screen = 0;
 					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
+					if (ssreport.id_type == 0) {
+						sprintf(opbuffer, "NO SCREEN DETECTED  ");
+					}
+					if (ssreport.id_type == 0x32) {
+						sprintf(opbuffer, "E220 DELL_E215546");
+					}
+					if (ssreport.id_type == 0x33) {
+						sprintf(opbuffer, "E220 DELL_E224864");
+					}
+					eaDogM_WriteStringAtPos(3, 0, opbuffer);
 				}
 			}
 
