@@ -376,15 +376,13 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 						} else {
 							if (ssbuf[1] == 'I') {
 								status.restart_delay = 0;
-								if (!ssreport.tohost) {
-									ssreport.id_type = ssbuf[2];
-									ssreport.id_io = ssbuf[3];
-									ssreport.id_features = ssbuf[4];
-									ssreport.id_minor = ssbuf[5];
-									ssreport.id_major = ssbuf[6];
-									ssreport.id_p = ssbuf[7];
-									ssreport.id_class = ssbuf[8];
-								}
+								ssreport.id_type = ssbuf[2];
+								ssreport.id_io = ssbuf[3];
+								ssreport.id_features = ssbuf[4];
+								ssreport.id_minor = ssbuf[5];
+								ssreport.id_major = ssbuf[6];
+								ssreport.id_p = ssbuf[7];
+								ssreport.id_class = ssbuf[8];
 							}
 							if (ssbuf[1] == 'A') {
 								status.restart_delay = 0;
@@ -972,7 +970,7 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu %u %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssbuf[2], ssbuf[6], ssbuf[5], ssbuf[8]);
+					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 				}
 			}
