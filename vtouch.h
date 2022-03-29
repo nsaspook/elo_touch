@@ -31,9 +31,9 @@ extern "C" {
 #define MAX_CAM_TIME	5
 #define MAX_CAM_TIMEOUT	30
 #define MAX_CAM_TOUCH	5
-#define CAM_RELAY       LATAbits.LATA1
-#define CAM_RELAY_AUX	LATEbits.LATE1
-#define CAM_RELAY_TIME	LATEbits.LATE2
+#define CAM_RELAY       CAM_R_LAT
+#define CAM_RELAY_AUX	CAM_R1_LAT
+#define CAM_RELAY_TIME	CAM_R1_O_LAT
 #define	TIMERPACKET     41000
 #define SCREEN_UPDATE	20
 

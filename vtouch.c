@@ -77,18 +77,19 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * PRORTA, PORTE Camera, aux switching with touch in target box
- * PORTJ		LED bar display
- * PORTG		config jumpers
- * PORTH0		run flasher led onboard.
- * 8 led status lights.
+ * PORTB 0,1 PORTD 6,7  Camera, aux switching with touch in target box
+ * PORTD 0		RELAY
+ * PORTA 0,1,2,3	config jumpers
+ * PORTD 1 PORTE 0	flasher leds
+ * PORTC 1,2,3,4,5	LCD status PANEL
+ * PORTE 1,2		DEBUG pins
  *
- * Microchip Inc , Aug 2009,2018,2021
+ * Microchip Inc , Aug 2009,2018,2021,2022
  * Gresham, Oregon
  *
  *
  * This application is designed for use with the
- * ET-BASE PIC8722 board and  device.
+ * MCHP Q43 touch-board and device.
  * HOST RS-232  Black 5-1     uC port1
  * Female       Red   2-2-tx
  *              White 3-3-rx
@@ -110,10 +111,6 @@
 
 #include <xc.h>
 #include <stdlib.h>
-#include "vtouch_8722.X/mcc_generated_files/mcc.h"
-#include "vtouch_8722.X/mcc_generated_files/interrupt_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/memory.h"
 #include "vtouch.h"
 #include "vtouch_build.h"
 #include "eadog.h"
