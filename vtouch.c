@@ -44,6 +44,7 @@
  * V4.00	Q43 version, USART operated in bare mode using custom ISR code
  * V4.03	adjust HV scaling values for better calibration on new windows systems
  * V4.04	Small bug fixes version
+ * V4.05	receive and parse touch-screen ID codes
  *
  *
  *
@@ -366,7 +367,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							break;
 						}
 						if (ssbuf[1] == 'T') {
-
 							status.restart_delay = 0;
 							S.CATCH = TRUE;
 							if (!ssreport.tohost) {

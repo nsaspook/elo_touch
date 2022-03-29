@@ -84,7 +84,7 @@ void rxtx_handler(void);
 
 void __interrupt() INTERRUPT_InterruptManagerHigh(void)
 {
-	goto done;
+	goto done; // bypass MCC routines
 
 	// interrupt handler
 	if (PIE8bits.U2TXIE == 1 && PIR8bits.U2TXIF == 1) {
@@ -105,7 +105,7 @@ void __interrupt() INTERRUPT_InterruptManagerHigh(void)
 		//Unhandled Interrupt
 	}
 done:
-	rxtx_handler();
+	rxtx_handler(); // only run our ISR
 }
 
 /**
