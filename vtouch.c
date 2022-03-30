@@ -1,6 +1,5 @@
-
 /*
- Viision terminal code */
+ IMPLANTER terminal code */
 /*
  * This program converts the rs-232 output from a ELO controller type LCD monitor
  * to a format that can be used with the Varian Viision 80 Implanter with ADYIN CRT monitor
@@ -59,14 +58,9 @@
  * 0..1 jumper: DELL_E215546 VIISION
  * 2..3 jumper: DELL_E215546 E220
  *
- * HFBR-0501Z light link converter
- * Move jumper 15 RC6&7to I/O, sending TTL signals to 10 pin port socket
+ * HFBR-0501Z light link converter for VIISION front controller
+ * Switch in serial
  *
- * RC[0..7]
- * pin 7 to TXD pin on HFBR
- * pin 8 to RXD pin on HFBR
- * pin 9 to tx/rx VCC jacks
- * pin 10 to tx/rx GND jacks
  */
 
 /* E220/E500 terminal code */
@@ -101,7 +95,7 @@
  * Omron
  * G6k-2P bottom view
  * Pin		8 - gnd, wire tag 0/stripe,	RELAY output	pin 10 on connector SIG COMMON
- * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector for RA1 or RE1 PORT SIGNAL
+ * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector RB0 orRB1 CAM signals
  */
 
 //#define DEBUG_CAM
