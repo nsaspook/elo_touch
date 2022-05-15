@@ -1,6 +1,5 @@
-
 /*
- Viision terminal code */
+ IMPLANTER terminal code */
 /*
  * This program converts the rs-232 output from a ELO controller type LCD monitor
  * to a format that can be used with the Varian Viision 80 Implanter with ADYIN CRT monitor
@@ -43,6 +42,8 @@
  * V3.38	fix G 3&4 jumpers for proper monitor and tool selection, update eeprom
  * V4.00	Q43 version, USART operated in bare mode using custom ISR code
  * V4.03	adjust HV scaling values for better calibration on new windows systems
+ * V4.04	Small bug fixes version
+ * V4.05	receive and parse touch-screen ID codes
  *
  *
  *
@@ -52,18 +53,14 @@
  * LCD  RS-232  5-1     uC port2
  * Male         2-3-rx
  *              3-2-tx
- * 
- * G3 jumper: DELL_E215546 VIISION
- * G4 jumper: DELL_E215546 E220
  *
- * HFBR-0501Z light link converter
- * Move jumper 15 RC6&7to I/O, sending TTL signals to 10 pin port socket
+ * PORT A plug
+ * 0..1 jumper: DELL_E215546 VIISION
+ * 2..3 jumper: DELL_E215546 E220
  *
- * RC[0..7]
- * pin 7 to TXD pin on HFBR
- * pin 8 to RXD pin on HFBR
- * pin 9 to tx/rx VCC jacks
- * pin 10 to tx/rx GND jacks
+ * HFBR-0501Z light link converter for VIISION front controller
+ * connected to host USART1 xmit output pin
+ * connection corrected on board version 1.5
  */
 
 /* E220/E500 terminal code */
@@ -74,30 +71,31 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * PRORTA, PORTE Camera, aux switching with touch in target box
- * PORTJ		LED bar display
- * PORTG		config jumpers
- * PORTH0		run flasher led onboard.
- * 8 led status lights.
+ * PORTB 0,1 PORTD 6,7  Camera, aux switching with touch in target box
+ * PORTD 0		RELAY
+ * PORTA 0,1,2,3	config jumpers
+ * PORTD 1 PORTE 0	flasher leds
+ * PORTC 1,2,3,4,5	LCD status PANEL
+ * PORTE 1,2		DEBUG pins
  *
- * Microchip Inc , Aug 2009,2018,2021
+ * Microchip Inc , Aug 2009,2018,2021,2022
  * Gresham, Oregon
  *
  *
  * This application is designed for use with the
- * ET-BASE PIC8722 board and  device.
- * HOST RS-232  5-1     uC port1
- * Female       2-2-tx
- *              3-3-rx
- * LCD  RS-232  5-1     uC port2
- * Male         2-3-rx
- *              3-2-tx
+ * MCHP Q43 touch-board and device.
+ * HOST RS-232  Black 5-1     uC port1
+ * Female       Red   2-2-tx
+ *              White 3-3-rx
+ * LCD  RS-232  Black 5-1     uC port2
+ * Male         Red   2-3-rx
+ *              White 3-2-tx
  *
  * VGA converter box relay
  * Omron
  * G6k-2P bottom view
  * Pin		8 - gnd, wire tag 0/stripe,	RELAY output	pin 10 on connector SIG COMMON
- * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector for RA1 or RE1 PORT SIGNAL
+ * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector RB0 orRB1 CAM signals
  */
 
 //#define DEBUG_CAM
@@ -107,10 +105,6 @@
 
 #include <xc.h>
 #include <stdlib.h>
-#include "vtouch_8722.X/mcc_generated_files/mcc.h"
-#include "vtouch_8722.X/mcc_generated_files/interrupt_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/memory.h"
 #include "vtouch.h"
 #include "vtouch_build.h"
 #include "eadog.h"
@@ -125,6 +119,7 @@ typedef struct reporttype {
 	uint16_t x_cord, y_cord, z_cord;
 	uint8_t checksum;
 	uint8_t tohost;
+	uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
 } volatile reporttype;
 
 typedef struct statustype {
@@ -299,7 +294,11 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		if (S.LCD_OK) {
 			DEBUG1_SetHigh();
 		} else {
+<<<<<<< HEAD
 			if (status.init_check++ >LCD_CHK_TIME) {
+=======
+			if ((status.init_check++ >LCD_CHK_TIME)) {
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 				status.init_check = 0; // reset screen init code counter
 				S.SCREEN_INIT = TRUE; // set init code flag so it can be sent in main loop
 				DEBUG2_SetHigh();
@@ -324,10 +323,17 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		}
 	}
 
+<<<<<<< HEAD
 	if ((PIE15bits.TMR6IE == 1) && (PIR15bits.TMR6IF == 1)) {
 		TMR6_ISR();
 	}
 	if ((PIE8bits.TMR5IE == 1) && (PIR8bits.TMR5IF == 1)) {
+=======
+	if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1) {
+		TMR6_ISR();
+	}
+	if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1) {
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 		TMR5_ISR();
 	}
 
@@ -368,14 +374,27 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							break;
 						}
 						if (ssbuf[1] == 'T') {
-
 							status.restart_delay = 0;
 							S.CATCH = TRUE;
 							if (!ssreport.tohost) {
+<<<<<<< HEAD
 								ssreport.x_cord = ((uint16_t) ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> 4;
+=======
+								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4;
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 								ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
 							}
 						} else {
+							if (ssbuf[1] == 'I') {
+								status.restart_delay = 0;
+								ssreport.id_type = ssbuf[2];
+								ssreport.id_io = ssbuf[3];
+								ssreport.id_features = ssbuf[4];
+								ssreport.id_minor = ssbuf[5];
+								ssreport.id_major = ssbuf[6];
+								ssreport.id_p = ssbuf[7];
+								ssreport.id_class = ssbuf[8];
+							}
 							if (ssbuf[1] == 'A') {
 								status.restart_delay = 0;
 								BLED_SetHigh(); // connect  led ON
@@ -475,9 +494,15 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 						y_tmp = (y_tmp >> (uint16_t) 4); // rescale y
 						elobuf_in[1] = (uint8_t) x_tmp; // X to 8-bit var
 						elobuf_in[2] = (uint8_t) y_tmp; // Y
+<<<<<<< HEAD
 						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) (uint8_t) >> 6); // stuff into binary 4002 format
 						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
 						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) (uint8_t) >> 6);
+=======
+						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into binary 4002 format
+						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
+						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 						elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
 						elobuf_out[4] = 0x00;
 						elobuf_out[5] = 0x0f;
@@ -554,9 +579,15 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							elobuf_in[2] = yl - elobuf_in[2]; // FLIP Y
 							elobuf_in[1] = (uint8_t) ((float) elobuf_in[1]* (float) xs); // X scale
 							elobuf_in[2] = (uint8_t) ((float) elobuf_in[2]* (float) ys); // Y scale
+<<<<<<< HEAD
 							elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) (uint8_t) >> 6); // stuff into binary 4002 format
 							elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
 							elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) (uint8_t) >> 6);
+=======
+							elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into binary 4002 format
+							elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
+							elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 							elobuf_out[i + 3] = 0x00 + (elobuf_in[2]&0x3f);
 							elobuf_out[i + 4] = 0x00;
 							elobuf_out[i + 5] = 0x15; // Z value = 15 "hard touch"
@@ -642,7 +673,7 @@ void touch_cam(void)
 	};
 
 
-	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses 
+	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses
 		S.CAM = TRUE;
 		status.cam_time = 0;
 		CAM_RELAY_TIME = 1;
@@ -729,6 +760,8 @@ void setup_lcd(void)
 	uint8_t single_t = SINGLE_TOUCH;
 
 	if (screen_type == DELL_E215546) {
+		elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
+		wdtdelay(30000);
 		elopacketout(elocodes_e3, ELO_SEQ, 0); // reset to default smartset
 		wdtdelay(700000); // wait for LCD touch controller reset
 		elopacketout(elocodes_e0, ELO_SEQ, 0); // set touch packet spacing and timing
@@ -737,6 +770,10 @@ void setup_lcd(void)
 		if (TS_TYPE == 1) {
 			single_t = FALSE;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 		for (code_count = 0; code_count < ELO_SIZE_V80; code_count++) {
 			if (single_t) {
 				elocmdout(&elocodes_s_e[code_count]);
@@ -783,7 +820,7 @@ uint8_t Test_Screen(void)
 
 void main(void)
 {
-	uint8_t z, check_byte;
+	uint8_t z, check_byte, ts_type = TS_TYPE;
 	uint16_t eep_ptr, update_screen = 0;
 	uint8_t scaled_char, ts_type = TS_TYPE;
 	float rez_scale_h = 1.0, rez_parm_h, rez_scale_v = 1.0, rez_parm_v;
@@ -909,7 +946,7 @@ void main(void)
 
 	if (emulat_type == E220) {
 		/*
-		 * Open the USART configured as0
+		 * Open the USART configured as
 		 * 8N1, 9600 baud, in receive INT mode
 		 */
 		setup_lcd(); // send lcd touch controller setup codes
@@ -964,8 +1001,18 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
+					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
+					if (ssreport.id_type == 0) {
+						sprintf(opbuffer, "NO SCREEN DETECTED  ");
+					}
+					if (ssreport.id_type == 0x32) {
+						sprintf(opbuffer, "E220 DELL_E215546");
+					}
+					if (ssreport.id_type == 0x33) {
+						sprintf(opbuffer, "E220 DELL_E224864");
+					}
+					eaDogM_WriteStringAtPos(3, 0, opbuffer);
 				}
 			}
 

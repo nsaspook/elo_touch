@@ -23,7 +23,7 @@ extern "C" {
 #define ELO_SEQ     10
 #define ELO_REV_H	4096
 #define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
-#define ELO_SS_V_SCALE	0.360 // old value 0.380 V4.03
+#define ELO_SS_V_SCALE	0.380 
 #define	BLINK_RATE_E220	20000
 #define AUTO_RESTART	FALSE
 #define SINGLE_TOUCH	FALSE
@@ -31,9 +31,9 @@ extern "C" {
 #define MAX_CAM_TIME	5
 #define MAX_CAM_TIMEOUT	30
 #define MAX_CAM_TOUCH	5
-#define CAM_RELAY       LATAbits.LATA1
-#define CAM_RELAY_AUX	LATEbits.LATE1
-#define CAM_RELAY_TIME	LATEbits.LATE2
+#define CAM_RELAY       CAM_R_LAT
+#define CAM_RELAY_AUX	CAM_R1_LAT
+#define CAM_RELAY_TIME	CAM_R1_O_LAT
 #define	TIMERPACKET     41000
 #define SCREEN_UPDATE	20
 

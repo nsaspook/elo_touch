@@ -12,7 +12,12 @@
 extern "C" {
 #endif
 
-	const char build_version[] = "V4.03 Vtouch Q43 ";
+#include "vtouch_8722.X/mcc_generated_files/mcc.h"
+#include "vtouch_8722.X/mcc_generated_files/interrupt_manager.h"
+#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
+#include "vtouch_8722.X/mcc_generated_files/memory.h"
+
+	const char build_version[] = "V4.05 Vtouch Q43 ";
 
 	void wdtdelay(const uint32_t);
 	void putc1(const uint8_t);
