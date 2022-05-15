@@ -44,6 +44,7 @@
  * V4.03	adjust HV scaling values for better calibration on new windows systems
  * V4.04	Small bug fixes version
  * V4.05	receive and parse touch-screen ID codes
+ * V5.00	Q41 version
  *
  *
  *

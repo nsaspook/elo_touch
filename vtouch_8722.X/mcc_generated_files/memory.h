@@ -14,7 +14,7 @@
     This header file provides APIs for driver for MEMORY.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  1.1.0
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above
@@ -58,9 +58,9 @@
   Section: Macro Declarations
  */
 
-#define WRITE_FLASH_BLOCKSIZE    128
+#define WRITE_FLASH_BLOCKSIZE    1
 #define ERASE_FLASH_BLOCKSIZE    128
-#define END_FLASH                0x020000
+#define END_FLASH                0x004000
 
 
 /**

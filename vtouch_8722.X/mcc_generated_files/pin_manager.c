@@ -14,7 +14,7 @@
     This header file provides implementations for pin APIs for all pins selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.11
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above
@@ -57,73 +57,51 @@ void PIN_MANAGER_Initialize(void)
     /**
     LATx registers
     */
-    LATE = 0x07;
-    LATD = 0x00;
     LATA = 0x00;
     LATB = 0x00;
-    LATC = 0x2E;
+    LATC = 0x00;
 
     /**
     TRISx registers
     */
-    TRISE = 0x00;
-    TRISA = 0xF5;
-    TRISB = 0xBC;
-    TRISC = 0x91;
-    TRISD = 0x3C;
+    TRISA = 0x28;
+    TRISB = 0x30;
+    TRISC = 0x0B;
 
     /**
     ANSELx registers
     */
-    ANSELD = 0x3C;
-    ANSELC = 0x01;
-    ANSELB = 0x3C;
-    ANSELE = 0x00;
-    ANSELA = 0xF0;
+    ANSELC = 0x00;
+    ANSELB = 0x80;
+    ANSELA = 0x20;
 
     /**
     WPUx registers
     */
-    WPUD = 0x00;
-    WPUE = 0x00;
     WPUB = 0x00;
-    WPUA = 0x05;
-    WPUC = 0x10;
-
-    /**
-    RxyI2C registers
-    */
-    RB1I2C = 0x00;
-    RB2I2C = 0x00;
-    RC3I2C = 0x00;
-    RC4I2C = 0x00;
+    WPUA = 0x00;
+    WPUC = 0x09;
 
     /**
     ODx registers
     */
-    ODCONE = 0x00;
     ODCONA = 0x00;
     ODCONB = 0x00;
     ODCONC = 0x00;
-    ODCOND = 0x00;
 
     /**
     SLRCONx registers
     */
-    SLRCONA = 0xFF;
-    SLRCONB = 0xFF;
+    SLRCONA = 0x37;
+    SLRCONB = 0xF0;
     SLRCONC = 0xFF;
-    SLRCOND = 0xFF;
-    SLRCONE = 0x07;
 
     /**
     INLVLx registers
     */
-    INLVLA = 0xFF;
-    INLVLB = 0xFF;
+    INLVLA = 0x3F;
+    INLVLB = 0xF0;
     INLVLC = 0xFF;
-    INLVLD = 0xFF;
-    INLVLE = 0x0F;
 
 
 
@@ -132,14 +110,14 @@ void PIN_MANAGER_Initialize(void)
    
     
 	
-    U2RXPPS = 0x0F;   //RB7->UART2:RX2;    
-    SPI1SCKPPS = 0x13;   //RC3->SPI1:SCK1;    
-    RB6PPS = 0x23;   //RB6->UART2:TX2;    
-    RC3PPS = 0x31;   //RC3->SPI1:SCK1;    
-    RC5PPS = 0x32;   //RC5->SPI1:SDO1;    
-    RC6PPS = 0x20;   //RC6->UART1:TX1;    
-    U1RXPPS = 0x17;   //RC7->UART1:RX1;    
-    SPI1SDIPPS = 0x14;   //RC4->SPI1:SDI1;    
+    U2RXPPS = 0x11;   //RC1->UART2:RX2;    
+    SPI1SCKPPS = 0x04;   //RA4->SPI1:SCK1;    
+    RA4PPS = 0x1B;   //RA4->SPI1:SCK1;    
+    RC2PPS = 0x13;   //RC2->UART2:TX2;    
+    RA2PPS = 0x1C;   //RA2->SPI1:SDO1;    
+    RC6PPS = 0x10;   //RC6->UART1:TX1;    
+    U1RXPPS = 0x0D;   //RB5->UART1:RX1;    
+    SPI1SDIPPS = 0x0C;   //RB4->SPI1:SDI1;    
 }
   
 void PIN_MANAGER_IOC(void)

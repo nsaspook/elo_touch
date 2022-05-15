@@ -14,7 +14,7 @@
     This source file provides APIs for TMR2.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.11
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above 
@@ -50,10 +50,13 @@
 
 #include <xc.h>
 #include "tmr2.h"
+#include "interrupt_manager.h"
 
 /**
   Section: Global Variables Definitions
 */
+
+void (*TMR2_InterruptHandler)(void);
 
 /**
   Section: TMR2 APIs
@@ -69,20 +72,26 @@ void TMR2_Initialize(void)
     // T2PSYNC Not Synchronized; T2MODE Software control; T2CKPOL Rising Edge; T2CKSYNC Not Synchronized; 
     T2HLT = 0x00;
 
-    // T2RSEL T2CKIPPS pin; 
+    // T2RSEL T2INPPS pin; 
     T2RST = 0x00;
 
-    // PR2 15; 
-    T2PR = 0x0F;
+    // PR2 62; 
+    T2PR = 0x3E;
 
     // TMR2 0; 
     T2TMR = 0x00;
 
-    // Clearing IF flag.
+    // Clearing IF flag before enabling the interrupt.
     PIR3bits.TMR2IF = 0;
 
-    // T2CKPS 1:1; T2OUTPS 1:1; TMR2ON on; 
-    T2CON = 0x80;
+    // Enabling TMR2 interrupt.
+    PIE3bits.TMR2IE = 1;
+
+    // Set Default Interrupt Handler
+    TMR2_SetInterruptHandler(TMR2_DefaultInterruptHandler);
+
+    // T2CKPS 1:128; T2OUTPS 1:1; TMR2ON on; 
+    T2CON = 0xF0;
 }
 
 void TMR2_ModeSet(TMR2_HLT_MODE mode)
@@ -154,17 +163,28 @@ void TMR2_LoadPeriodRegister(uint8_t periodVal)
    TMR2_Period8BitSet(periodVal);
 }
 
-bool TMR2_HasOverflowOccured(void)
+void __interrupt(irq(TMR2),base(8)) TMR2_ISR()
 {
-    // check if  overflow has occurred by checking the TMRIF bit
-    bool status = PIR3bits.TMR2IF;
-    if(status)
+
+    // clear the TMR2 interrupt flag
+    PIR3bits.TMR2IF = 0;
+
+    if(TMR2_InterruptHandler)
     {
-        // Clearing IF flag.
-        PIR3bits.TMR2IF = 0;
+        TMR2_InterruptHandler();
     }
-    return status;
 }
+
+
+void TMR2_SetInterruptHandler(void (* InterruptHandler)(void)){
+    TMR2_InterruptHandler = InterruptHandler;
+}
+
+void TMR2_DefaultInterruptHandler(void){
+    // add your TMR2 interrupt custom code
+    // or set custom function using TMR2_SetInterruptHandler()
+}
+
 /**
   End of File
 */

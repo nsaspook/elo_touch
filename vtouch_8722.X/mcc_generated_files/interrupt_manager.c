@@ -16,7 +16,7 @@
     all modules selected in the GUI.
     Generation Information :
 	Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-	Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
 	Driver Version    :  2.12
     The generated drivers are tested against the following:
 	Compiler          :  XC8 2.31 and above or later
@@ -49,64 +49,40 @@
 #include "interrupt_manager.h"
 #include "mcc.h"
 
-void INTERRUPT_Initialize(void)
+void  INTERRUPT_Initialize (void)
 {
-	// Enable Interrupt Priority Vectors
 	INTCON0bits.IPEN = 1;
 
+    bool state = (unsigned char)GIE;
+    GIE = 0;
+    IVTLOCK = 0x55;
+    IVTLOCK = 0xAA;
+    IVTLOCKbits.IVTLOCKED = 0x00; // unlock IVT
+
+    IVTBASEU = 0;
+    IVTBASEH = 0;
+    IVTBASEL = 8;
+
+    IVTLOCK = 0x55;
+    IVTLOCK = 0xAA;
+    IVTLOCKbits.IVTLOCKED = 0x01; // lock IVT
+
+    GIE = state;
 	// Assign peripheral interrupt priority vectors
-
-	// UTXI - high priority
+    IPR2bits.DMA1SCNTIP = 1;
 	IPR8bits.U2TXIP = 1;
-
-	// URXI - high priority
 	IPR8bits.U2RXIP = 1;
-
-	// UTXI - high priority
 	IPR4bits.U1TXIP = 1;
-
-	// URXI - high priority
 	IPR4bits.U1RXIP = 1;
-
-	// TMRI - high priority
 	IPR3bits.TMR0IP = 1;
-
-	// TMRI - high priority
-	IPR15bits.TMR6IP = 1;
-
-	// TMRI - high priority
-	IPR8bits.TMR5IP = 1;
-
-
+    IPR4bits.TMR3IP = 1;
+    IPR3bits.TMR2IP = 1;
+    IPR3bits.TMR1IP = 1;
 }
 
-void rxtx_handler(void);
-
-void __interrupt() INTERRUPT_InterruptManagerHigh(void)
+void __interrupt(irq(default),base(8)) Default_ISR()
 {
-	goto done; // bypass MCC routines
-
-	// interrupt handler
-	if (PIE8bits.U2TXIE == 1 && PIR8bits.U2TXIF == 1) {
-		UART2_TxInterruptHandler();
-	} else if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
-		UART2_RxInterruptHandler();
-	} else if (PIE4bits.U1TXIE == 1 && PIR4bits.U1TXIF == 1) {
-		UART1_TxInterruptHandler();
-	} else if (PIE4bits.U1RXIE == 1 && PIR4bits.U1RXIF == 1) {
-		UART1_RxInterruptHandler();
-	} else if (PIE3bits.TMR0IE == 1 && PIR3bits.TMR0IF == 1) {
-		TMR0_ISR();
-	} else if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1) {
-		TMR6_ISR();
-	} else if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1) {
-		TMR5_ISR();
-	} else {
-		//Unhandled Interrupt
 	}
-done:
-	rxtx_handler(); // only run our ISR
-}
 
 /**
  End of File

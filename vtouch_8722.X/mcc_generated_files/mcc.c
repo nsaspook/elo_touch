@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.00
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above or later
@@ -53,25 +53,27 @@ void SYSTEM_Initialize(void)
     PMD_Initialize();
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
-    TMR6_Initialize();
-    TMR5_Initialize();
+    DMA1_Initialize();
+    TMR3_Initialize();
     TMR2_Initialize();
+    TMR1_Initialize();
     TMR0_Initialize();
     UART2_Initialize();
     UART1_Initialize();
     SPI1_Initialize();
+    SystemArbiter_Initialize();
 }
 
 void OSCILLATOR_Initialize(void)
 {
-    // NOSC EXTOSC   with 4x PLL; NDIV 1; 
-    OSCCON1 = 0x20;
+    // NOSC EXTOSC; NDIV 1; 
+    OSCCON1 = 0x70;
     // CSWHOLD may proceed; SOSCPWR Low power; 
     OSCCON3 = 0x00;
-    // MFOEN disabled; LFOEN disabled; ADOEN disabled; SOSCEN disabled; EXTOEN disabled; HFOEN disabled; 
-    OSCEN = 0x00;
-    // HFFRQ 64_MHz; 
-    OSCFRQ = 0x08;
+    // MFOEN disabled; LFOEN disabled; ADOEN disabled; PLLEN enabled; SOSCEN disabled; EXTOEN disabled; HFOEN disabled; 
+    OSCEN = 0x01;
+    // HFFRQ 16_MHz; 
+    OSCFRQ = 0x05;
     // TUN 0; 
     OSCTUNE = 0x00;
     // ACTUD enabled; ACTEN disabled; 
@@ -84,25 +86,28 @@ void OSCILLATOR_Initialize(void)
 
 void PMD_Initialize(void)
 {
-    // CLKRMD CLKR enabled; SYSCMD SYSCLK enabled; SCANMD SCANNER enabled; FVRMD FVR enabled; IOCMD IOC enabled; CRCMD CRC enabled; HLVDMD HLVD enabled; 
+    // CLKRMD CLKR enabled; SYSCMD SYSCLK enabled; SCANMD SCANNER enabled; LVDMD HLVD enabled; FVRMD FVR enabled; IOCMD IOC enabled; CRCMD CRC enabled; 
     PMD0 = 0x00;
-    // TMR0MD TMR0 enabled; TMR1MD TMR1 enabled; TMR4MD TMR4 enabled; SMT1MD SMT1 enabled; TMR5MD TMR5 enabled; TMR2MD TMR2 enabled; TMR3MD TMR3 enabled; TMR6MD TMR6 enabled; 
+    // ZCDMD ZCD enabled; TMR0MD TMR0 enabled; TMR1MD TMR1 enabled; TMR4MD TMR4 enabled; SMT1MD SMT1 enabled; TMR2MD TMR2 enabled; TMR3MD TMR3 enabled; CM1MD CM1 enabled; 
     PMD1 = 0x00;
-    // ZCDMD ZCD enabled; ADCMD ADC enabled; ACTMD ACT enabled; CM2MD CM2 enabled; CM1MD CM1 enabled; DAC1MD DAC1 enabled; 
+    // NCO1MD NCO1 enabled; ADCMD ADC enabled; DSM1MD DSM enabled; CWG1MD CWG1 enabled; ACTMD ACT enabled; CM2MD CM2 enabled; DAC1MD DAC1 enabled; 
+    PMD2 = 0x00;
+    // PWM2MD PWM2 enabled; PWM1MD PWM1 enabled; PWM3MD PWM3 enabled; SPI2MD SPI2 enabled; SPI1MD SPI1 enabled; U2MD UART2 enabled; U1MD UART1 enabled; I2C1MD I2C1 enabled; 
     PMD3 = 0x00;
-    // NCO1MD NCO1 enabled; NCO2MD NCO2 enabled; DSM1MD DSM1 enabled; CWG3MD CWG3 enabled; CWG2MD CWG2 enabled; CWG1MD CWG1 enabled; NCO3MD NCO3 enabled; 
+    // CLC3MD CLC3 enabled; CLC4MD CLC4 enabled; DMA1MD DMA1 enabled; DMA2MD DMA2 enabled; DMA3MD DMA3 enabled; CLC1MD CLC1 enabled; CLC2MD CLC2 enabled; 
     PMD4 = 0x00;
-    // CCP2MD CCP2 enabled; CCP1MD CCP1 enabled; PWM2MD PWM2 enabled; CCP3MD CCP3 enabled; PWM1MD PWM1 enabled; PWM3MD PWM3 enabled; 
+    // DMA4MD DMA4 enabled; OPAMD OPA enabled; DAC2MD DAC2 enabled; 
     PMD5 = 0x00;
-    // U5MD UART5 enabled; U4MD UART4 enabled; U3MD UART3 enabled; U2MD UART2 enabled; U1MD UART1 enabled; SPI2MD SPI2 enabled; SPI1MD SPI1 enabled; I2C1MD I2C1 enabled; 
-    PMD6 = 0x00;
-    // CLC5MD CLC5 enabled; CLC6MD CLC6 enabled; CLC3MD CLC3 enabled; CLC4MD CLC4 enabled; CLC7MD CLC7 enabled; CLC8MD CLC8 enabled; CLC1MD CLC1 enabled; CLC2MD CLC2 enabled; 
-    PMD7 = 0x00;
-    // DMA5MD DMA5 enabled; DMA6MD DMA6 enabled; DMA1MD DMA1 enabled; DMA2MD DMA2 enabled; DMA3MD DMA3 enabled; DMA4MD DMA4 enabled; 
-    PMD8 = 0x00;
 }
 
 
+void SystemArbiter_Initialize(void)
+{
+    // This function is dependant on the PR1WAY CONFIG bit
+    PRLOCK = 0x55;
+    PRLOCK = 0xAA;
+    PRLOCKbits.PRLOCKED = 1;
+}
 /**
  End of File
 */

@@ -14,7 +14,7 @@
     This file provides implementations of driver APIs for MEMORY.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  1.1.0
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above
@@ -54,8 +54,8 @@
   Section: Program Flash Memory APIs
  */
 
-//128-words of Buffer RAM for PIC18F47Q43 is available at 0x2500
-uint16_t bufferRAM __at(0x2500); 
+//128-words of Buffer RAM for PIC18F14Q41 is available at 0x0900
+uint16_t bufferRAM __at(0x0900); 
 
 uint8_t FLASH_ReadByte(uint32_t flashAddr)
 {
@@ -275,8 +275,8 @@ uint8_t DATAEE_ReadByte(uint16_t bAdd)
     return NVMDATL;
 }
 
-void MEMORY_ISR(void)
+void __interrupt(irq(NVMIP),base(8)) MEMORY_ISR()
 {
     /* TODO : Add interrupt handling code */
-    PIR15bits.NVMIF = 0;
+    PIR0bits.NVMIF = 0;
 }

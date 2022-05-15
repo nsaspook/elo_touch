@@ -14,7 +14,7 @@
     This header file provides APIs for driver for TMR2.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.11
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above 
@@ -231,21 +231,13 @@ typedef enum
      */
     TMR2_T4POSTSCALED,
     
-    /* Timer6 Postscale is the Timer external reset source 
+    /* Reserved enum cannot be used
      */
-    TMR2_T6POSTSCALED,
+    TMR2_RESERVED_2,
 
     /* CCP1_OUT is the Timer external reset source 
      */
     TMR2_CCP1_OUT,
-
-    /* CCP2_OUT is the Timer external reset source 
-     */
-    TMR2_CCP2_OUT,
-
-    /* CCP3_OUT is the Timer external reset source 
-     */
-    TMR2_CCP3_OUT,
 
     /* PWM1S1P1_out is the Timer external reset source 
      */
@@ -270,14 +262,6 @@ typedef enum
     /* PWM3S1P2_out is the Timer external reset source 
      */
     TMR2_PWM3S1P2_OUT,
-
-    /* Reserved enum cannot be used 
-    */
-    TMR2_RESERVED_2,
-
-    /* Reserved enum cannot be used 
-    */
-    TMR2_RESERVED_3,
 
     /* CMP1_OUT is the Timer external reset source 
      */
@@ -307,22 +291,6 @@ typedef enum
      */
     TMR2_CLC4_OUT,  
 
-    /* CLC5_out is the Timer external reset source 
-     */
-    TMR2_CLC5_OUT,
-         
-    /* CLC6_out is the Timer external reset source 
-     */
-    TMR2_CLC6_OUT,
-            
-    /* CLC7_out is the Timer external reset source 
-     */
-    TMR2_CLC7_OUT,
-    
-    /* CLC8_out is the Timer external reset source 
-     */
-    TMR2_CLC8_OUT,
-
     /* UART1_rx_edge is the Timer external reset source 
      */
     TMR2_UART1_RX_EDGE,
@@ -347,25 +315,9 @@ typedef enum
      */
     TMR2_UART3_TX_EDGE,
 
-    /* UART4_rx_edge is the Timer external reset source 
-     */
-    TMR2_UART4_RX_EDGE,
-
-    /* UART4_tx_edge is the Timer external reset source 
-     */
-    TMR2_UART4_TX_EDGE,
-
-    /* UART5_rx_edge is the Timer external reset source 
-     */
-    TMR2_UART5_RX_EDGE,
-
-    /* UART5_tx_edge is the Timer external reset source 
-     */
-    TMR2_UART5_TX_EDGE,
-
     /* Reserved enum cannot be used 
     */
-    TMR2_RESERVED_4
+    TMR2_RESERVED_3
 
 
 } TMR2_HLT_EXT_RESET_SOURCE;
@@ -857,43 +809,61 @@ void TMR2_Period8BitSet(uint8_t periodVal);
 */
 void TMR2_LoadPeriodRegister(uint8_t periodVal);
 
+
 /**
   @Summary
-    Boolean routine to poll or to check for the match flag on the fly.
+    Set Timer Interrupt Handler
 
   @Description
-    This function is called to check for the timer match flag.
-    This function is usd in timer polling method.
+    This sets the function to be called during the ISR
 
   @Preconditions
-    Initialize  the TMR2 module before calling this routine.
+    Initialize  the TMR2 module with interrupt before calling this.
+
+  @Param
+    Address of function to be set
+
+  @Returns
+    None
+*/
+ void TMR2_SetInterruptHandler(void (* InterruptHandler)(void));
+
+/**
+  @Summary
+    Timer Interrupt Handler
+
+  @Description
+    This is a function pointer to the function that will be called during the ISR
+
+  @Preconditions
+    Initialize  the TMR2 module with interrupt before calling this isr.
 
   @Param
     None
 
   @Returns
-    true - timer match has occured.
-    false - timer match has not occured.
-
-  @Example
-    <code>
-    while(1)
-    {
-        // check the match flag
-        if(TMR2_HasOverflowOccured())
-        {
-            // Do something else...
-
-            // clear the TMR2 match interrupt flag
-            TMR2IF = 0;
-
-            // Reload the TMR2 value
-            TMR2_Reload();
-        }
-    }
-    </code>
+    None
 */
-bool TMR2_HasOverflowOccured(void);
+extern void (*TMR2_InterruptHandler)(void);
+
+/**
+  @Summary
+    Default Timer Interrupt Handler
+
+  @Description
+    This is the default Interrupt Handler function
+
+  @Preconditions
+    Initialize  the TMR2 module with interrupt before calling this isr.
+
+  @Param
+    None
+
+  @Returns
+    None
+*/
+void TMR2_DefaultInterruptHandler(void);
+
 
  #ifdef __cplusplus  // Provide C++ Compatibility
 
