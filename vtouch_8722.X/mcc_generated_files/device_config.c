@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.00
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above or later
@@ -48,18 +48,20 @@
 
 // CONFIG1
 #pragma config FEXTOSC = ECH    // External Oscillator Selection->EC (external clock) above 8 MHz
-#pragma config RSTOSC = EXTOSC_4PLL    // Reset Oscillator Selection->EXTOSC with 4x PLL, with EXTOSC operating per FEXTOSC bits
+#pragma config RSTOSC = EXTOSC    // Reset Oscillator Selection->EXTOSC operating per FEXTOSC bits (device manufacturing default)
 
 // CONFIG2
 #pragma config CLKOUTEN = OFF    // Clock out Enable bit->CLKOUT function is disabled
 #pragma config PR1WAY = ON    // PRLOCKED One-Way Set Enable bit->PRLOCKED bit can be cleared and set only once
 #pragma config CSWEN = ON    // Clock Switch Enable bit->Writing to NOSC and NDIV is allowed
 #pragma config FCMEN = ON    // Fail-Safe Clock Monitor Enable bit->Fail-Safe Clock Monitor enabled
+#pragma config FCMENP = ON    // Fail-Safe Clock Monitor - Primary XTAL Enable bit->Fail-Safe Clock Monitor enabled; timer will flag FSCMP bit and OSFIF interrupt on EXTOSC failure.
+#pragma config FCMENS = ON    // Fail-Safe Clock Monitor - Secondary XTAL Enable bit->Fail-Safe Clock Monitor enabled; timer will flag FSCMP bit and OSFIF interrupt on SOSC failure.
 
 // CONFIG3
 #pragma config MCLRE = EXTMCLR    // MCLR Enable bit->If LVP = 0, MCLR pin is MCLR; If LVP = 1, RE3 pin function is MCLR 
 #pragma config PWRTS = PWRT_OFF    // Power-up timer selection bits->PWRT is disabled
-#pragma config MVECEN = OFF    // Multi-vector enable bit->Interrupt contoller does not use vector table to prioritze interrupts
+#pragma config MVECEN = ON    // Multi-vector enable bit->Multi-vector enabled, Vector table used for interrupts
 #pragma config IVT1WAY = ON    // IVTLOCK bit One-way set enable bit->IVTLOCKED bit can be cleared and set only once
 #pragma config LPBOREN = OFF    // Low Power BOR Enable bit->Low-Power BOR disabled
 #pragma config BOREN = SBORDIS    // Brown-out Reset Enable bits->Brown-out Reset enabled , SBOREN bit is ignored
@@ -73,12 +75,12 @@
 #pragma config XINST = OFF    // Extended Instruction Set Enable bit->Extended Instruction Set and Indexed Addressing Mode disabled
 
 // CONFIG5
-#pragma config WDTCPS = WDTCPS_13    // WDT Period selection bits->Divider ratio 1:262144
-#pragma config WDTE = ON    // WDT operating mode->WDT enabled regardless of sleep; SWDTEN is ignored
+#pragma config WDTCPS = WDTCPS_31    // WDT Period selection bits->Divider ratio 1:65536; software control of WDTPS
+#pragma config WDTE = OFF    // WDT operating mode->WDT Disabled; SWDTEN is ignored
 
 // CONFIG6
 #pragma config WDTCWS = WDTCWS_7    // WDT Window Select bits->window always open (100%); software control; keyed access not required
-#pragma config WDTCCS = MFINTOSC    // WDT input clock selector->WDT reference clock is the 32kHz MFINTOSC output
+#pragma config WDTCCS = SC    // WDT input clock selector->Software Control
 
 // CONFIG7
 #pragma config BBSIZE = BBSIZE_512    // Boot Block Size selection bits->Boot Block size is 512 words
@@ -93,5 +95,5 @@
 #pragma config WRTSAF = OFF    // SAF Write protection bit->SAF not Write Protected
 #pragma config WRTAPP = OFF    // Application Block write protection bit->Application Block not write protected
 
-// CONFIG10
+// CONFIG9
 #pragma config CP = OFF    // PFM and Data EEPROM Code Protection bit->PFM and Data EEPROM code protection disabled

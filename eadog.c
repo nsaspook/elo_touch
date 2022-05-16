@@ -7,7 +7,7 @@
 
 volatile struct spi_link_type spi_link;
 struct ringBufS_t ring_buf1;
-static uint8_t port_data[max_port_data] = {255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0};
+static uint8_t port_data[max_port_data];
 
 static const spi1_configuration_t spi1_configuration[] = {
 	{ 0x3, 0x24, 0x3, 0x4, 0}
@@ -102,14 +102,14 @@ void init_port_dma(void)
 
 static void send_lcd_data(const uint8_t data)
 {
-	CSB_SetLow();
+	CS_SetLow();
 	SPI1_ExchangeByte(data);
 	wdtdelay(8);
 }
 
 static void send_lcd_cmd(const uint8_t cmd)
 {
-	CSB_SetLow();
+	CS_SetLow();
 	SPI1_ExchangeByte(NHD_CMD);
 	wdtdelay(8);
 	SPI1_ExchangeByte(cmd);
@@ -118,7 +118,7 @@ static void send_lcd_cmd(const uint8_t cmd)
 
 static void send_lcd_cmd_long(const uint8_t cmd)
 {
-	CSB_SetLow();
+	CS_SetLow();
 	SPI1_ExchangeByte(NHD_CMD);
 	wdtdelay(8);
 	SPI1_ExchangeByte(cmd);
@@ -139,7 +139,7 @@ void eaDogM_WriteString(char *strPtr)
 	wait_lcd_set();
 	/* reset buffer for DMA */
 	ringBufS_flush(spi_link.tx1a, false);
-	CSB_SetLow(); /* SPI select display */
+	CS_SetLow(); /* SPI select display */
 	if (len > (uint8_t) max_strlen) {
 		len = max_strlen;
 	}
@@ -188,7 +188,7 @@ void send_lcd_data_dma(const uint8_t strPtr)
 	wait_lcd_set();
 	/* reset buffer for DMA */
 	ringBufS_flush(spi_link.tx1a, false);
-	CSB_SetLow(); /* SPI select display */
+	CS_SetLow(); /* SPI select display */
 	ringBufS_put_dma(spi_link.tx1a, strPtr); // don't use printf to send zeros
 #ifdef USE_DMA
 	DMA1_SetSourceAddress((uint24_t) spi_link.tx1a);
@@ -227,7 +227,7 @@ void eaDogM_WriteStringAtPos(const uint8_t r, const uint8_t c, char *strPtr)
 	send_lcd_cmd(0x45);
 	send_lcd_data(row + c);
 	wait_lcd_done();
-	CSB_SetHigh(); /* SPI deselect display */
+	CS_SetHigh(); /* SPI deselect display */
 	eaDogM_WriteString(strPtr);
 }
 
@@ -452,7 +452,7 @@ void wait_lcd_done(void)
 #endif
 	while (!SPI1STATUSbits.TXBE) {
 	};
-	CSB_SetHigh(); /* SPI deselect display */
+	CS_SetHigh(); /* SPI deselect display */
 }
 
 void clear_lcd_done(void)

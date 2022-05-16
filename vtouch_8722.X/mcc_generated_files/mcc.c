@@ -53,9 +53,9 @@ void SYSTEM_Initialize(void)
     PMD_Initialize();
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
+    DMA2_Initialize();
+    DMA3_Initialize();
     DMA1_Initialize();
-    TMR3_Initialize();
-    TMR2_Initialize();
     TMR1_Initialize();
     TMR0_Initialize();
     UART2_Initialize();

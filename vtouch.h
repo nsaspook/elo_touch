@@ -14,8 +14,8 @@ extern "C" {
 
 #define	DO_CAP      FALSE       // E220 save data for usarts 1&2, save to eeprom
 #define	TS_TYPE     0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
-#define BUF_SIZE    64
-#define	CAP_SIZE    256
+#define BUF_SIZE    32
+#define	CAP_SIZE    8
 
 #define	CMD_SIZE    2
 #define	CMD_OVERFLOW	CMD_SIZE*12
@@ -31,9 +31,7 @@ extern "C" {
 #define MAX_CAM_TIME	5
 #define MAX_CAM_TIMEOUT	30
 #define MAX_CAM_TOUCH	5
-#define CAM_RELAY       CAM_R_LAT
-#define CAM_RELAY_AUX	CAM_R1_LAT
-#define CAM_RELAY_TIME	CAM_R1_O_LAT
+#define CAM_RELAY       RELAY_LAT
 #define	TIMERPACKET     41000
 #define SCREEN_UPDATE	20
 

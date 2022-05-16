@@ -78,7 +78,7 @@ extern "C" {
 #define eaDogM_DisplayOff()      eaDogM_WriteCommand(EADOGM_CMD_DISPLAY_OFF)
 
 #define max_strlen	20
-#define max_port_data	1024
+#define max_port_data	4
 
 #ifdef	__cplusplus
 }

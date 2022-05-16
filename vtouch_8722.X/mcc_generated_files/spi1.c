@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for SPI1.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  1.0.0
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above or later
@@ -58,22 +58,22 @@ typedef struct {
 
 //con0 == SPIxCON0, con1 == SPIxCON1, con2 == SPIxCON2, baud == SPIxBAUD, operation == Master/Slave
 static const spi1_configuration_t spi1_configuration[] = {   
-    { 0x3, 0x24, 0x3, 0x4, 0 }
+    { 0x2, 0x40, 0x0, 0x2, 0 }
 };
 
 void SPI1_Initialize(void)
 {
-    //EN disabled; LSBF MSb first; MST bus master; BMODE every byte; 
-    SPI1CON0 = 0x03;
-    //SMP Middle; CKE Idle to active; CKP Idle:High, Active:Low; FST disabled; SSP active low; SDIP active high; SDOP active high; 
-    SPI1CON1 = 0x24;
-    //SSET disabled; TXR required for a transfer; RXR suspended if the RxFIFO is full; 
-    SPI1CON2 = 0x03;
+    //EN disabled; LSBF MSb first; MST bus slave; BMODE last byte; 
+    SPI1CON0 = 0x02;
+    //SMP Middle; CKE Active to idle; CKP Idle:Low, Active:High; FST disabled; SSP active high; SDIP active high; SDOP active high; 
+    SPI1CON1 = 0x40;
+    //SSET disabled; TXR not required for a transfer; RXR data is not stored in the FIFO; 
+    SPI1CON2 = 0x00;
     //CLKSEL MFINTOSC; 
     SPI1CLK = 0x02;
-    //BAUD 4; 
-    SPI1BAUD = 0x04;
-    TRISCbits.TRISC3 = 0;
+    //BAUD 2; 
+    SPI1BAUD = 0x02;
+    TRISAbits.TRISA4 = 0;
 }
 
 bool SPI1_Open(spi1_modes_t spi1UniqueConfiguration)
@@ -85,7 +85,7 @@ bool SPI1_Open(spi1_modes_t spi1UniqueConfiguration)
         SPI1CON2 = spi1_configuration[spi1UniqueConfiguration].con2 | (_SPI1CON2_SPI1RXR_MASK | _SPI1CON2_SPI1TXR_MASK);
         SPI1CLK  = 0x00;
         SPI1BAUD = spi1_configuration[spi1UniqueConfiguration].baud;        
-        TRISCbits.TRISC3 = spi1_configuration[spi1UniqueConfiguration].operation;
+        TRISAbits.TRISA4 = spi1_configuration[spi1UniqueConfiguration].operation;
         SPI1CON0bits.EN = 1;
         return true;
     }

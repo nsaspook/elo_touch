@@ -14,7 +14,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#define RBUF_SIZE    64
+#define RBUF_SIZE    16
 
 	typedef struct ringBufS_t {
 		uint8_t buf[RBUF_SIZE];

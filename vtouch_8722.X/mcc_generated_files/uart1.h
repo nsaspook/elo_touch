@@ -14,7 +14,7 @@
     This header file provides APIs for driver for UART1.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
-        Device            :  PIC18F47Q43
+        Device            :  PIC18F14Q41
         Driver Version    :  2.4.1
     The generated drivers are tested against the following:
         Compiler          :  XC8 2.31 and above
@@ -379,26 +379,6 @@ uint8_t UART1_Read(void);
 */
 void UART1_Write(uint8_t txData);
 
-/**
-  @Summary
-    Maintains the driver's transmitter state machine and implements its ISR.
-
-  @Description
-    This routine is used to maintain the driver's internal transmitter state
-    machine.This interrupt service routine is called when the state of the
-    transmitter needs to be maintained in a non polled manner.
-
-  @Preconditions
-    UART1_Initialize() function should have been called
-    for the ISR to execute correctly.
-
-  @Param
-    None
-
-  @Returns
-    None
-*/     
-void UART1_Transmit_ISR(void);
 
 /**
   @Summary
@@ -516,23 +496,6 @@ void UART1_SetErrorHandler(void (* interruptHandler)(void));
 */
 void (*UART1_RxInterruptHandler)(void);
 
-/**
-  @Summary
-    UART1 Transmit Interrupt Handler
-
-  @Description
-    This is a pointer to the function that will be called upon UART1 transmit interrupt
-
-  @Preconditions
-    Initialize  the UART1 module with transmit interrupt enabled
-
-  @Param
-    None
-
-  @Returns
-    None
-*/
-void (*UART1_TxInterruptHandler)(void);
 
 
 
@@ -554,23 +517,6 @@ void (*UART1_TxInterruptHandler)(void);
 */
 void UART1_SetRxInterruptHandler(void (* InterruptHandler)(void));
 
-/**
-  @Summary
-    Set UART1 Transmit Interrupt Handler
-
-  @Description
-    This API sets the function to be called upon UART1 transmit interrupt
-
-  @Preconditions
-    Initialize  the UART1 module with transmit interrupt enabled before calling this API
-
-  @Param
-    Address of function to be set as transmit interrupt handler
-
-  @Returns
-    None
-*/
-void UART1_SetTxInterruptHandler(void (* InterruptHandler)(void));
 
 
 

@@ -111,7 +111,6 @@
 #include "eadog.h"
 
 const char *build_date = __DATE__, *build_time = __TIME__;
-extern volatile uint16_t timer0ReloadVal16bit;
 
 void rxtx_handler(void);
 
@@ -235,14 +234,56 @@ uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 
 volatile uint8_t host_rec[CAP_SIZE] = "H";
 volatile uint8_t scrn_rec[CAP_SIZE] = "S";
+volatile uint8_t sum = 0xAA + 'U', idx = 0;
+volatile uint8_t c = 0, *data_ptr, i = 0, data_pos, data_len, tchar, uchar;
 
-char buffer[256], opbuffer[256];
+char buffer[64], opbuffer[64];
+
+void tmr0isr(void);
+
+
+// check timer0 irq 1 second timer
+
+void tmr0isr(void)
+{
+	//check for TMR0 overflow
+	idx = 0; // reset packet char index counter
+	ssreport.tohost = FALSE; // when packets stop allow for next updates
+	// clear the TMR0 interrupt flag
+	PIR3bits.TMR0IF = 0;
+	// Write to the Timer0 register
+	RLED_Toggle();
+
+	if (S.LCD_OK) {
+		DB1_SetHigh();
+	} else {
+		if ((status.init_check++ >LCD_CHK_TIME)) {
+			status.init_check = 0; // reset screen init code counter
+			S.SCREEN_INIT = TRUE; // set init code flag so it can be sent in main loop
+			DB0_SetHigh();
+		}
+	}
+
+	if ((status.comm_check++ >COMM_CHK_TIME) && !S.CATCH) { // check for LCD screen connection
+		status.comm_check = 0; // reset connect heartbeat counter
+		S.LCD_OK = FALSE; // reset the connect flag while waiting for response from controller.
+		while (!U2ERRIRbits.TXMTIF) {
+		}; // wait until the usart is clear
+		if (screen_type == DELL_E224864) {
+			U2TXB = 0x37; // send frame size request to LCD touch
+			DB1_SetHigh();
+		}
+		if (screen_type == DELL_E215546) {
+			DB1_SetHigh();
+		}
+
+	}
+}
 
 void rxtx_handler(void) // timer & serial data transform functions are handled here
 {
-	static uint8_t c = 0, *data_ptr, i = 0, data_pos, data_len, tchar, uchar;
 	uint16_t x_tmp, y_tmp, uvalx, lvalx, uvaly, lvaly;
-	static uint8_t sum = 0xAA + 'U', idx = 0;
+
 
 	status.rawint_count++;
 	/* start with data_ptr pointed to address of data, data_len to length of data in bytes, data_pos to 0 to start at the beginning of data block */
@@ -255,7 +296,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 				PIE4bits.U1TXIE = 0; // stop data xmit
 			}
 		} else {
-			BLED_Toggle();
+			RLED_Toggle();
 			U1TXB = *data_ptr; // send data
 			data_pos++; // move the data pointer
 			data_ptr++; // move the buffer pointer position
@@ -280,62 +321,13 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		}
 	}
 
-	// check timer0 irq 1 second timer
-	if (PIE3bits.TMR0IE == 1 && PIR3bits.TMR0IF == 1) {
-		//check for TMR0 overflow
-		idx = 0; // reset packet char index counter
-		ssreport.tohost = FALSE; // when packets stop allow for next updates
-		// clear the TMR0 interrupt flag
-		PIR3bits.TMR0IF = 0;
-		// Write to the Timer0 register
-		TMR0H = timer0ReloadVal16bit >> 8;
-		TMR0L = (uint8_t) timer0ReloadVal16bit;
-		BLED_Toggle();
-
-		if (S.LCD_OK) {
-			DEBUG1_SetHigh();
-		} else {
-			if ((status.init_check++ >LCD_CHK_TIME)) {
-				status.init_check = 0; // reset screen init code counter
-				S.SCREEN_INIT = TRUE; // set init code flag so it can be sent in main loop
-				DEBUG2_SetHigh();
-			}
-		}
-
-		if ((status.comm_check++ >COMM_CHK_TIME) && !S.CATCH) { // check for LCD screen connection
-			status.comm_check = 0; // reset connect heartbeat counter
-			S.LCD_OK = FALSE; // reset the connect flag while waiting for response from controller.
-			while (!U2ERRIRbits.TXMTIF) {
-			}; // wait until the usart is clear
-			if (screen_type == DELL_E224864) {
-				U2TXB = 0x37; // send frame size request to LCD touch
-				DEBUG1_SetHigh();
-			}
-			if (screen_type == DELL_E215546) {
-				DEBUG1_SetHigh();
-			}
-
-		}
-	}
-
-	if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1) {
-		TMR6_ISR();
-	}
-	if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1) {
-		TMR5_ISR();
-	}
-
 	if (emulat_type == E220) {
 		// is data from touchscreen COMM2
 		if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
 			PIR8bits.U2RXIF = 0;
 			PIR3bits.TMR0IF = 0;
 			// Write to the Timer0 register
-			TMR0H = timer0ReloadVal16bit >> 8;
-			TMR0L = (uint8_t) timer0ReloadVal16bit;
 			if (S.CAM && (status.cam_time > MAX_CAM_TIME)) {
-				CAM_RELAY_TIME = 0;
-				CAM_RELAY_AUX = 0; // clear video switch
 				CAM_RELAY = 0; // clear video switch
 				S.CAM = FALSE;
 			}
@@ -381,7 +373,7 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							}
 							if (ssbuf[1] == 'A') {
 								status.restart_delay = 0;
-								BLED_SetHigh(); // connect  led ON
+								RLED_SetHigh(); // connect  led ON
 								S.speedup = -10000;
 							}
 						}
@@ -515,8 +507,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							S.UNTOUCH = FALSE;
 							S.CATCH = FALSE;
 							// Write to the Timer0 register
-							TMR0H = timer0ReloadVal16bit >> 8;
-							TMR0L = (uint8_t) timer0ReloadVal16bit;
 						}
 					}
 				}
@@ -601,8 +591,6 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							S.UNTOUCH = FALSE;
 							S.CATCH = FALSE;
 							// Write to the Timer0 register
-							TMR0H = timer0ReloadVal16bit >> 8;
-							TMR0L = (uint8_t) timer0ReloadVal16bit;
 						}
 					}
 
@@ -648,9 +636,7 @@ void touch_cam(void)
 	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses
 		S.CAM = TRUE;
 		status.cam_time = 0;
-		CAM_RELAY_TIME = 1;
 		touch_corner1 = 0;
-		CAM_RELAY_AUX = 1; // set secondary VGA/CAM switch
 		CAM_RELAY = 1; // set primary VGA/CAM switch
 		elobuf[0] = 0;
 		elobuf[1] = 0;
@@ -667,7 +653,6 @@ void wdtdelay(const uint32_t delay)
 
 void elocmdout(uint8_t * elostr)
 {
-	LED2_Toggle(); // touch screen commands led
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
 	putc2(elostr[0]);
@@ -678,7 +663,6 @@ void elocmdout(uint8_t * elostr)
 
 void eloSScmdout(const uint8_t elostr)
 {
-	LED2_Toggle(); // touch screen commands led
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
 	putc2(elostr);
@@ -721,7 +705,6 @@ void elocmdout_v80(const uint8_t * elostr)
 		elo_char = elostr[e];
 		putc2(elo_char); // send to LCD touch
 		wdtdelay(2000); // inter char delay
-		LED2_Toggle(); // flash external led
 	}
 	wdtdelay(50000); // wait for LCD controller reset
 }
@@ -758,7 +741,6 @@ void putc1(const uint8_t c)
 	while (!UART1_is_tx_done()) {
 	}; // wait until the usart is clear
 	U1TXB = c;
-	LED2_Toggle(); // flash external led
 }
 
 void putc2(const uint8_t c)
@@ -766,7 +748,6 @@ void putc2(const uint8_t c)
 	while (!UART2_is_tx_done()) {
 	}; // wait until the usart is clear
 	U2TXB = c;
-	LED2_Toggle(); // flash external led
 }
 
 void start_delay(void)
@@ -821,7 +802,7 @@ void main(void)
 	check_byte = DATAEE_ReadByte(0);
 	if (check_byte == 0x57) { // change config from default settings if needed
 		z = DATAEE_ReadByte(1);
-		if (z == 0b11111110 || (!JMP1_GetValue())) {
+		if (z == 0b11111110 || (!MIN0_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = VIISION;
 			z = 0b11111110;
@@ -833,7 +814,7 @@ void main(void)
 			emulat_type = VIISION;
 			sprintf(opbuffer, "VIISION DELL_E224864");
 		}
-		if (z == 0b11111101 || (!JMP2_GetValue())) {
+		if (z == 0b11111101 || (!MIN1_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
@@ -857,9 +838,7 @@ void main(void)
 		}
 	}
 
-	CAM_RELAY_TIME = 0;
 	CAM_RELAY = 0;
-	CAM_RELAY_AUX = 0;
 	status.touch_count = 0;
 	S.CAM = 0;
 	ssreport.tohost = TRUE;
@@ -870,7 +849,9 @@ void main(void)
 	INTERRUPT_GlobalInterruptHighEnable();
 
 	// Enable low priority global interrupts.
-	//	INTERRUPT_GlobalInterruptLowEnable();
+	INTERRUPT_GlobalInterruptLowEnable();
+
+	TMR0_SetInterruptHandler(tmr0isr);
 
 	init_display();
 	sprintf(buffer, "%s ", "          ");
@@ -935,15 +916,12 @@ void main(void)
 		/* Loop forever */
 		while (TRUE) {
 			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
-				LED2_Toggle();
 #ifdef	DEBUG_CAM
 				CAM_RELAY = !CAM_RELAY;
 #endif
 				if (status.cam_time > MAX_CAM_TIMEOUT) {
-					CAM_RELAY_TIME = 0;
 					if (touch_corner_timed) {
 						touch_corner_timed = FALSE;
-						CAM_RELAY_AUX = 0; // clear video switch
 						CAM_RELAY = 0; // clear video switch
 						S.CAM = FALSE;
 					}
@@ -1062,7 +1040,6 @@ void main(void)
 		/* Loop forever */
 		while (TRUE) { // busy loop BSG style
 			if (j++ >= BLINK_RATE_V80) { // delay a bit ok
-				LED2_Toggle();
 
 				if (S.LCD_OK) { // screen status feedback
 					timer0_off = TIMEROFFSET;

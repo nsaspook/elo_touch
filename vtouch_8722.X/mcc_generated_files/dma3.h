@@ -1,17 +1,17 @@
 /**
-  DMA1 Generated Driver API Header File
+  DMA3 Generated Driver API Header File
 
   @Company
     Microchip Technology Inc.
 
   @File Name
-    dma1.h
+    dma3.h
 
   @Summary
-    This is the generated header file for the DMA1 driver using PIC10 / PIC12 / PIC16 / PIC18 MCUs
+    This is the generated header file for the DMA3 driver using PIC10 / PIC12 / PIC16 / PIC18 MCUs
 
   @Description
-    This header file provides APIs for driver for DMA1.
+    This header file provides APIs for driver for DMA3.
     Generation Information :
         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
         Device            :  PIC18F14Q41
@@ -44,121 +44,121 @@
     SOFTWARE.
 */
 
-#ifndef DMA1_H
-#define DMA1_H
+#ifndef DMA3_H
+#define DMA3_H
 
 /**
   Section: Included Files
 */
 #include <stdint.h>
 
-uint8_t SrcVarName0[16];
+uint8_t SrcVarName2[16];
 
 /**
- * @brief Initializes the DMA1 module
- *        This routine must be called before any other DMA1 routine
+ * @brief Initializes the DMA3 module
+ *        This routine must be called before any other DMA3 routine
  * @return None.
  * @param None.
  */
-void DMA1_Initialize(void);
+void DMA3_Initialize(void);
 
 /**
  * @brief Sets the source region as per user selection
  * @return None.
  * @param [in] Desired source region
  */
-void DMA1_SelectSourceRegion(uint8_t region);
+void DMA3_SelectSourceRegion(uint8_t region);
 
 /**
  * @brief Sets the Source Address for the DMA packet
  * @return None.
  * @param [in] Desired Source Address
  */
-void DMA1_SetSourceAddress(uint24_t address);
+void DMA3_SetSourceAddress(uint24_t address);
 
 /**
  * @brief Sets the destination address for the DMA packet
  * @return None.
  * @param [in] Desired Destination Address
  */
-void DMA1_SetDestinationAddress(uint16_t address);
+void DMA3_SetDestinationAddress(uint16_t address);
 
 /**
  * @brief Sets the size of the Source array
  * @return None.
  * @param [in] Size of Source Array
  */
-void DMA1_SetSourceSize(uint16_t size);
+void DMA3_SetSourceSize(uint16_t size);
 
 /**
  * @brief Sets the size of the destination array
  * @return None.
  * @param [in] Size of Destination array
  */
-void DMA1_SetDestinationSize(uint16_t size);
+void DMA3_SetDestinationSize(uint16_t size);
 
 /**
  * @brief Returns the current location from which the DMA has read
  * @return Current Source pointer
  * @param None
  */
-uint24_t DMA1_GetSourcePointer(void);
+uint24_t DMA3_GetSourcePointer(void);
 
 /**
  * @brief Returns the current location where the DMA last wrote
  * @return Current Destination pointer
  * @param None
  */
-uint16_t DMA1_GetDestinationPointer(void);
+uint16_t DMA3_GetDestinationPointer(void);
 
 /**
  * @brief Sets the Start Trigger for DMA, doesn't start the transfer
  * @return None.
  * @param [in] Start Trigger Source
  */
-void DMA1_SetStartTrigger(uint8_t sirq);
+void DMA3_SetStartTrigger(uint8_t sirq);
 
 /**
  * @brief Sets the Abort Trigger for DMA, doesn't abort the transfer
  * @return None.
  * @param [in] Abort Trigger Source
  */
-void DMA1_SetAbortTrigger(uint8_t airq);
+void DMA3_SetAbortTrigger(uint8_t airq);
 
 /**
  * @brief Starts the DMA Transfer by setting GO bit
  * @return None.
  * @param None.
  */
-void DMA1_StartTransfer(void);
+void DMA3_StartTransfer(void);
 
 /**
  * @brief Starts the DMA transfer by enabling the trigger
  * @return None.
  * @param None.
  */
-void DMA1_StartTransferWithTrigger(void);	
+void DMA3_StartTransferWithTrigger(void);	
 
 /**
  * @brief Stops all the possible triggers and also clears the GO bit
  * @return None.
  * @param None.
  */
-void DMA1_StopTransfer(void);
+void DMA3_StopTransfer(void);
 
 /**
  * @brief Unlocks Arbiter - changes priority - locks Arbiter
  * @return None.
  * @param [in] Priority of DMA
  */
-void DMA1_SetDMAPriority(uint8_t priority);
+void DMA3_SetDMAPriority(uint8_t priority);
 
 /**
  * @brief This routine is used to set the callback for the SCNTI Interrupt.
  * @return None
  * @param Callback Function to be called
  */
-void DMA1_SetSCNTIInterruptHandler(void (* InterruptHandler)(void));
+void DMA3_SetSCNTIInterruptHandler(void (* InterruptHandler)(void));
 
 
 
@@ -167,5 +167,5 @@ void DMA1_SetSCNTIInterruptHandler(void (* InterruptHandler)(void));
  * @return None
  * @param None
  */
-void DMA1_DefaultInterruptHandler(void);
-#endif //DMA1_H
+void DMA3_DefaultInterruptHandler(void);
+#endif //DMA3_H
