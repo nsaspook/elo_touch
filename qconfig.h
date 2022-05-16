@@ -35,8 +35,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "vtouch_8722.X/mcc_generated_files/spi1.h"
-#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
 #include "ringbufs.h"
 
 #define EADOGM_CMD_CLR		1
@@ -51,8 +49,8 @@
 #define EADOGM_CMD_SET_TABLE2    0b00101010
 #define EADOGM_COLSPAN		16
 
+#define USE_DMA
 #define NHD		// 4x20 SPI display
-#define SHOWFOSC
 
 struct spi_link_type { // internal SPI state table
 	uint8_t SPI_LCD : 1;

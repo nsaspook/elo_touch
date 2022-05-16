@@ -26,7 +26,6 @@ extern "C" {
 #include "qconfig.h"
 #include "ringbufs.h"
 #include "vtouch_build.h"
-#include "vtouch_8722.X/mcc_generated_files/spi1.h"
 
 	typedef struct {
 		uint8_t con0;
