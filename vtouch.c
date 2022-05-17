@@ -179,10 +179,6 @@ volatile struct statustype status = {
 	.ticks = 0,
 };
 
-const uint8_t elocodes_s_v[] = {
-	0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x3c, 0x2b, 0x44, 0x25, 0x29, 0x44, 0x3d, 0x2a, 0x37
-}; // initial carrol-touch config codes, tracking, add end point modifier, get frame size report
-
 const uint8_t elocodes[ELO_SEQ_V80][ELO_SIZE_I_V80] = {// elo 2210/2216 program codes
 	'U', 'M', 0x00, 0x87, 0x40, '0', '0', '0', '0', '0', // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
 	'U', 'S', 'X', 0x00, 0x0ff, 0x00, 0x01, '0', '0', '0', // scale x: X,Y,Z scaling Not Used
@@ -253,7 +249,7 @@ void uart2work(void)
 			S.CAM = FALSE;
 		}
 
-		c = U2RXB; // read data from touchscreen
+		c = UART2_Read(); // read data from touchscreen
 		if (status.do_cap) {
 		} else {
 			if (screen_type == DELL_E215546) { // IntelliTouch
@@ -310,11 +306,9 @@ void uart2work(void)
 	}
 
 	if (emulat_type == VIISION) {
-		if (screen_type == DELL_E215546) { // This is for the newer SMARTSET intellitouch screens
-			// is data from screen COMM2
-
+		if (screen_type == DELL_E215546) { // This is for the newer SMARTSET Intellitouch screens
 			/* Get the character received from the USART */
-			c = U2RXB;
+			c = UART2_Read();
 			status.status_count++;
 
 			if (((c & 0xc0) == 0xc0) || S.CATCH) { // start of touch sequence
@@ -401,12 +395,8 @@ void uart2work(void)
 		}
 
 		if (emulat_type == OTHER_SCREEN) {
-			if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
-				PIR8bits.U2RXIF = 0;
-
-				/* Get the character received from the USART */
-				c = U2RXB;
-			}
+			/* Get the character received from the USART */
+			c = UART2_Read();
 		}
 	}
 };
@@ -450,16 +440,9 @@ void tmr0isr(void)
 	if ((status.comm_check++ >COMM_CHK_TIME) && !S.CATCH) { // check for LCD screen connection
 		status.comm_check = 0; // reset connect heartbeat counter
 		S.LCD_OK = FALSE; // reset the connect flag while waiting for response from controller.
-		while (!U2ERRIRbits.TXMTIF) {
-		}; // wait until the usart is clear
-		if (screen_type == DELL_E224864) {
-			U2TXB = 0x37; // send frame size request to LCD touch
-			DB1_SetHigh();
-		}
 		if (screen_type == DELL_E215546) {
 			DB1_SetHigh();
 		}
-
 	}
 }
 
@@ -556,9 +539,6 @@ void elocmdout_v80(const uint8_t * elostr)
 
 void setup_lcd(void)
 {
-	uint16_t code_count;
-	uint8_t single_t = SINGLE_TOUCH;
-
 	if (screen_type == DELL_E215546) {
 		elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
 		wdtdelay(30000);
@@ -566,18 +546,6 @@ void setup_lcd(void)
 		wdtdelay(700000); // wait for LCD touch controller reset
 		elopacketout(elocodes_e0, ELO_SEQ, 0); // set touch packet spacing and timing
 		elopacketout(elocodes_e2, ELO_SEQ, 0); // nvram save
-	} else {
-		if (TS_TYPE == 1) {
-			single_t = FALSE;
-		}
-
-		for (code_count = 0; code_count < ELO_SIZE_V80; code_count++) {
-			if (single_t) {
-				elocmdout(&elocodes_s_e[code_count]);
-			} else {
-				elocmdout(&elocodes_m_e[code_count]);
-			}
-		};
 	}
 }
 
@@ -654,11 +622,6 @@ void main(void)
 			DATAEE_WriteByte(1, z);
 			sprintf(opbuffer, "VIISION DELL_E215546");
 		}
-		if (z == 0b11111010) {
-			screen_type = DELL_E224864;
-			emulat_type = VIISION;
-			sprintf(opbuffer, "VIISION DELL_E224864");
-		}
 		if (z == 0b11111101 || (!MIN1_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
@@ -666,20 +629,10 @@ void main(void)
 			DATAEE_WriteByte(1, z);
 			sprintf(opbuffer, "E220 DELL_E215546");
 		}
-		if (z == 0b11111001) {
-			screen_type = DELL_E224864;
-			emulat_type = E220;
-			sprintf(opbuffer, "E220 DELL_E224864");
-		}
 		if (z == 0b11111100) {
 			screen_type = DELL_E215546;
 			emulat_type = OTHER_MECH;
 			sprintf(opbuffer, "OTHER DELL_E215546");
-		}
-		if (z == 0b11111000) {
-			screen_type = DELL_E224864;
-			emulat_type = OTHER_MECH;
-			sprintf(opbuffer, "OTHER DELL_E224864");
 		}
 	}
 
@@ -689,15 +642,13 @@ void main(void)
 	ssreport.tohost = TRUE;
 
 	wdtdelay(700000); // wait for LCD controller reset on power up
-
+	TMR0_SetInterruptHandler(tmr0isr);
+	UART1_SetRxInterruptHandler(uart1risr);
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
 
 	// Enable low priority global interrupts.
 	INTERRUPT_GlobalInterruptLowEnable();
-
-	TMR0_SetInterruptHandler(tmr0isr);
-	UART1_SetRxInterruptHandler(uart1risr);
 
 	init_display();
 	sprintf(buffer, "%s ", "          ");
@@ -726,9 +677,6 @@ void main(void)
 		 */
 		/* Host */
 
-		if (screen_type == DELL_E224864) {
-			elocmdout_v80(elocodes_s_v); // send touchscreen setup data, causes a frame size report to be send from screen
-		}
 		if (screen_type == DELL_E215546) {
 			elocmdout_v80(&elocodes[7][0]); // reset;
 			wdtdelay(700000); // wait for LCD touch controller reset
@@ -827,14 +775,6 @@ void main(void)
 						scaled_char = ((uint8_t) (rez_parm_v));
 						elobuf[1] = scaled_char;
 						putc1(scaled_char); // send v scaled touch coord
-					} else {
-						rez_parm_h = ((float) (elobuf[0])) * rez_scale_h;
-						scaled_char = ((uint8_t) (rez_parm_h));
-						putc1(scaled_char); // send h scaled touch coord
-						rez_parm_v = ((float) (elobuf[1])) * rez_scale_v;
-						scaled_char = ((uint8_t) (rez_parm_v));
-						putc1(scaled_char); // send v scaled touch coord
-						S.c_idx = 0;
 					}
 					putc1(0xFF); // send end of report to host
 					status.touch_count++;
@@ -894,10 +834,6 @@ void main(void)
 					timer0_off = TIMERFAST;
 				}
 				j = 0;
-				if ((screen_type == DELL_E224864) && (S.SCREEN_INIT && !PIE4bits.U1TXIE)) { // if this flag is set send elo commands
-					elocmdout_v80(elocodes_s_v); // send touchscreen setup data, causes a frame size report to be send from screen
-					S.SCREEN_INIT = FALSE; // commands sent, now wait for reply to set S.LCD_OK flag
-				}
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
 					sprintf(buffer, "V %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
