@@ -71,8 +71,8 @@ void DMA2_Initialize(void)
     DMAnSSZ = 1;
     //Destination Message Size : 1
     DMAnDSZ = 1;
-    //Start Trigger : SIRQ None; 
-    DMAnSIRQ = 0x00;
+    //Start Trigger : SIRQ U1TX; 
+    DMAnSIRQ = 0x21;
     //Abort Trigger : AIRQ None; 
     DMAnAIRQ = 0x00;
 	
@@ -91,8 +91,8 @@ void DMA2_Initialize(void)
     PIE6bits.DMA2AIE = 0;
     PIE6bits.DMA2ORIE = 0;
 	
-    //EN enabled; SIRQEN disabled; DGO not in progress; AIRQEN disabled; 
-    DMAnCON0 = 0x80;
+    //EN enabled; SIRQEN enabled; DGO not in progress; AIRQEN disabled; 
+    DMAnCON0 = 0xC0;
 	
 }
 

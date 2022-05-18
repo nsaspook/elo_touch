@@ -709,7 +709,9 @@ void main(void)
 		Test_Screen(); // send touch init commands
 		/* Loop forever */
 		while (TRUE) {
-			uart2work();
+			if (UART2_is_rx_ready()) {
+				uart2work();
+			}
 			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
 #ifdef	DEBUG_CAM
 				CAM_RELAY = !CAM_RELAY;
