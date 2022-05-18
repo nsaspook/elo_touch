@@ -364,12 +364,12 @@ void uart2work(void)
 
 				if (S.TOUCH || S.UNTOUCH) { // send both
 
-					if (uchar) { /* only send valid data */
-						data_ptr = (uint8_t*) elobuf_out;
-						data_pos = 0;
-						data_len = HOST_CMD_SIZE_V80;
-						//							PIE1bits.TX1IE = 1; // start sending data
-						PIE4bits.U1TXIE = 0;
+					if (uchar) { /* only send valid data to HOST */
+						for (int e = 0; e < HOST_CMD_SIZE_V80; e++) { // send buffered data
+							while (!UART1_is_tx_done()) {
+							}; // wait until the usart is clear
+							putc1(elobuf_out[e]); // send to host
+						}
 						status.touch_count++;
 					}
 					S.LCD_OK = TRUE; // looks like a screen controller is connected
@@ -525,9 +525,8 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 
 void elocmdout_v80(const uint8_t * elostr)
 {
-	int16_t e;
 	uint8_t elo_char;
-	for (e = 0; e < ELO_SIZE_V80; e++) { // send buffered data
+	for (int e = 0; e < ELO_SIZE_V80; e++) { // send buffered data
 		while (!UART2_is_tx_done()) {
 		}; // wait until the usart is clear
 		elo_char = elostr[e];
@@ -828,6 +827,9 @@ void main(void)
 	if (emulat_type == VIISION) {
 		/* Loop forever */
 		while (TRUE) { // busy loop BSG style
+			if (UART2_is_rx_ready()) {
+				uart2work();
+			}
 			if (j++ >= BLINK_RATE_V80) { // delay a bit ok
 
 				if (S.LCD_OK) { // screen status feedback
