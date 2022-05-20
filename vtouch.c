@@ -223,8 +223,10 @@ uint16_t x_tmp, y_tmp, uvalx, lvalx, uvaly, lvaly;
 
 char buffer[64], opbuffer[24];
 
-void tmr0isr(void);
-void uart1risr(void);
+static void tmr0isr(void);
+static void delayisr(void);
+static void uart1risr(void);
+uint32_t get_ticks(void);
 void uart2work(void);
 
 void uart2work(void)
@@ -233,7 +235,7 @@ void uart2work(void)
 	static uint8_t sum = 0xAA + 'U';
 
 	if (emulat_type == E220) {
-		// is data from touchscreen COMM2
+		// is data from Touchscreen COMM2
 		PIR3bits.TMR0IF = 0;
 		// Write to the Timer0 register
 		if (S.CAM && (status.cam_time > MAX_CAM_TIME)) {
@@ -394,7 +396,7 @@ void uart2work(void)
 /*
  * check host transmit data
  */
-void uart1risr(void)
+static void uart1risr(void)
 {
 	uint8_t tchar;
 
@@ -416,7 +418,7 @@ void uart1risr(void)
 /*
  * check timer0 irq 1 second time
  */
-void tmr0isr(void)
+static void tmr0isr(void)
 {
 	//check for TMR0 overflow
 	idx = 0; // reset packet char index counter
@@ -440,6 +442,25 @@ void tmr0isr(void)
 	}
 }
 
+/*
+ * check timer1 irq 500ns time
+ * update ticks
+ */
+static void delayisr(void)
+{
+	status.ticks++;
+}
+
+uint32_t get_ticks(void)
+{
+	static uint32_t tmp = 0;
+
+	PIE3bits.TMR1IE = 0;
+	tmp = (uint32_t) status.ticks;
+	PIE3bits.TMR1IE = 1;
+	return tmp;
+}
+
 void touch_cam(void)
 {
 	//	check for corner presses
@@ -453,7 +474,6 @@ void touch_cam(void)
 			touch_corner1++;
 		};
 	};
-
 
 	if (touch_corner1 >= MAX_CAM_TOUCH) { // we have several corner presses
 		S.CAM = TRUE;
@@ -471,7 +491,7 @@ void touch_cam(void)
 void wdtdelay(const uint32_t delay)
 {
 	uint32_t dcount;
-	
+
 	for (dcount = 0; dcount <= delay; dcount++) { // delay a bit
 		ClrWdt(); // reset the WDT timer
 	};
@@ -566,7 +586,7 @@ uint8_t Test_Screen(void)
 void main(void)
 {
 	uint8_t z, check_byte, ts_type = TS_TYPE;
-	uint16_t eep_ptr, update_screen = 0;
+	uint16_t update_screen = 0;
 	uint8_t scaled_char;
 	float rez_scale_h = 1.0, rez_parm_h, rez_scale_v = 1.0, rez_parm_v;
 	float rez_scale_h_ss = ELO_SS_H_SCALE, rez_scale_v_ss = ELO_SS_V_SCALE;
@@ -625,12 +645,15 @@ void main(void)
 
 	wdtdelay(700000); // wait for LCD controller reset on power up
 	TMR0_SetInterruptHandler(tmr0isr);
+	TMR1_SetInterruptHandler(delayisr);
 	UART1_SetRxInterruptHandler(uart1risr);
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
 
 	// Enable low priority global interrupts.
 	INTERRUPT_GlobalInterruptLowEnable();
+	TMR0_StartTimer();
+	TMR1_StartTimer();
 
 	init_display();
 	sprintf(buffer, "%s ", "          ");
@@ -727,7 +750,7 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, status.ticks++, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, get_ticks(), ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
 						sprintf(opbuffer, "NO SCREEN DETECTED  ");
@@ -823,7 +846,7 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "V %lu %lu %lu            ", status.status_count, status.touch_count, status.ticks++);
+					sprintf(buffer, "V %lu %lu %lu            ", status.status_count, status.touch_count, get_ticks());
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 				}
 			}
