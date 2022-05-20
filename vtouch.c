@@ -2,18 +2,18 @@
  IMPLANTER terminal code */
 /*
  * This program converts the rs-232 output from a ELO controller type LCD monitor
- * to a format that can be used with the Varian Viision 80 Implanter with ADYIN CRT monitor
+ * to a format that can be used with Varian Implanters with CRT touch monitors
  * The LCD touchscreen will be  programmed to the correct touch response and configuration at program start
  *
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * Microchip Inc , Oct 2021
+ * Microchip Inc , May 2022
  * Gresham, Oregon
  *
  *
  * This application is designed for use with the
- * ET-BASE PIC8722 board and  device
+ * PIC18F14Q41 board and  device
  *
  * usart1	connected to implant host computer at 9600
  * usart2       connected to touchscreen  serial post at 9600
@@ -44,7 +44,7 @@
  * V4.03	adjust HV scaling values for better calibration on new windows systems
  * V4.04	Small bug fixes version
  * V4.05	receive and parse touch-screen ID codes
- * V5.00	Q41 version, remove CarrollTouch
+ * V5.00	Q41 version, remove CarrollTouch code and options. obsolete
  *
  *
  *
@@ -55,13 +55,12 @@
  * Male         2-3-rx
  *              3-2-tx
  *
- * PORT A plug
- * 0..1 jumper: DELL_E215546 VIISION
- * 2..3 jumper: DELL_E215546 E220
+ * DIO2/SPI plug
+ * 1..2 MIN0 jumper: DELL_E215546 VIISION
+ * 3..4 MIN1 jumper: DELL_E215546 E220
  *
  * HFBR-0501Z light link converter for VIISION front controller
  * connected to host USART1 xmit output pin
- * connection corrected on board version 1.5
  */
 
 /* E220/E500 terminal code */
@@ -72,19 +71,12 @@
  * USART1 is the host comm port
  * USART2 is the touch-screen comm port
  *
- * PORTB 0,1 PORTD 6,7  Camera, aux switching with touch in target box
- * PORTD 0		RELAY
- * PORTA 0,1,2,3	config jumpers
- * PORTD 1 PORTE 0	flasher leds
- * PORTC 1,2,3,4,5	LCD status PANEL
- * PORTE 1,2		DEBUG pins
- *
  * Microchip Inc , Aug 2009,2018,2021,2022
  * Gresham, Oregon
  *
  *
  * This application is designed for use with the
- * MCHP Q43 touch-board and device.
+ * MCHP Q41 touch-board and device.
  * HOST RS-232  Black 5-1     uC port1
  * Female       Red   2-2-tx
  *              White 3-3-rx
@@ -92,11 +84,14 @@
  * Male         Red   2-3-rx
  *              White 3-2-tx
  *
+ * relay output 
+ * DIO3 pin1 relay power +5vdc
+ *	pin2 relay ground
  * VGA converter box relay
  * Omron
  * G6k-2P bottom view
- * Pin		8 - gnd, wire tag 0/stripe,	RELAY output	pin 10 on connector SIG COMMON
- * Pin		1 + 5vdc signal,		Power PIN	pin 2 connector RB0 orRB1 CAM signals
+ * Pin		8 - gnd, wire tag 0/stripe
+ * Pin		1 + 5vdc signal
  */
 
 //#define DEBUG_CAM
@@ -106,6 +101,7 @@
 
 #include <xc.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "vtouch.h"
 #include "vtouch_build.h"
 #include "eadog.h"
@@ -116,9 +112,9 @@ typedef struct reporttype {
 	uint8_t headder, status;
 	uint16_t x_cord, y_cord, z_cord;
 	uint8_t checksum;
-	uint8_t tohost;
+	volatile uint8_t tohost;
 	uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
-} volatile reporttype;
+} reporttype;
 
 typedef struct statustype {
 	int32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks;
@@ -127,11 +123,7 @@ typedef struct statustype {
 	uint8_t do_cap : 1;
 	uint8_t comm_check, init_check, touch_good, cam_time;
 	uint16_t restart_delay;
-} volatile statustype;
-
-typedef struct flag_var_t {
-	uint8_t CATCH : 1, TOUCH : 1;
-} volatile F;
+} statustype;
 
 typedef struct disp_state_t {
 	uint8_t CATCH, TOUCH, UNTOUCH, LCD_OK,
@@ -146,8 +138,8 @@ volatile disp_state_t S = {FALSE};
 
 /*
  * Old monitors
- * E757389	CarrollTouch use DELL_E224864 setting
- * E224864	CarrollTouch use DELL_E224864 setting
+ * E757389	CarrollTouch obsolete
+ * E224864	CarrollTouch obsolete
  * E779866	SecureTouch  use DELL_E215546 setting
  * E215546	IntelliTouch use DELL_E215546 setting
  * NEW REPLACEMENT MONITORS 1990L 1991L
@@ -157,24 +149,24 @@ volatile disp_state_t S = {FALSE};
  * E005277	power brick
  */
 enum screen_type_t {
-	DELL_E224864, DELL_E215546, OTHER_SCREEN
+	DELL_E215546, OTHER_SCREEN
 };
 
 enum emulat_type_t {
 	VIISION, E220, OTHER_MECH
 };
 
-volatile enum screen_type_t screen_type;
-volatile enum emulat_type_t emulat_type;
+enum screen_type_t screen_type;
+enum emulat_type_t emulat_type;
 
-volatile int32_t j = 0;
-volatile float xs = X_SCALE, ys = Y_SCALE, xs_ss = X_SCALE_SS, ys_ss = Y_SCALE_SS; // defaults
-volatile uint16_t timer0_off = TIMEROFFSET;
+int32_t j = 0;
+float xs = X_SCALE, ys = Y_SCALE, xs_ss = X_SCALE_SS, ys_ss = Y_SCALE_SS; // defaults
+uint16_t timer0_off = TIMEROFFSET;
 
 volatile uint8_t elobuf[BUF_SIZE], elobuf_out[BUF_SIZE_V80], elobuf_in[BUF_SIZE_V80], xl = X_LOGICAL, yl = Y_LOGICAL;
-volatile uint8_t ssbuf[BUF_SIZE];
+uint8_t ssbuf[BUF_SIZE];
 
-volatile struct reporttype ssreport;
+reporttype ssreport;
 volatile struct statustype status = {
 	.ticks = 0,
 };
@@ -226,13 +218,10 @@ uint8_t elocodes_e7[] = {// dummy packet
 
 uint16_t touch_corner1 = 0, touch_corner_timed = 0;
 
-volatile uint8_t host_rec[CAP_SIZE] = "H";
-volatile uint8_t scrn_rec[CAP_SIZE] = "S";
-volatile uint8_t sum = 0xAA + 'U', idx = 0;
-volatile uint8_t c = 0, *data_ptr, i = 0, data_pos, data_len, tchar, uchar;
+volatile uint8_t idx = 0;
 uint16_t x_tmp, y_tmp, uvalx, lvalx, uvaly, lvaly;
 
-char buffer[64], opbuffer[64];
+char buffer[64], opbuffer[24];
 
 void tmr0isr(void);
 void uart1risr(void);
@@ -240,6 +229,9 @@ void uart2work(void);
 
 void uart2work(void)
 {
+	uint8_t c, i, uchar;
+	static uint8_t sum = 0xAA + 'U';
+
 	if (emulat_type == E220) {
 		// is data from touchscreen COMM2
 		PIR3bits.TMR0IF = 0;
@@ -366,8 +358,6 @@ void uart2work(void)
 
 					if (uchar) { /* only send valid data to HOST */
 						for (int e = 0; e < HOST_CMD_SIZE_V80; e++) { // send buffered data
-							while (!UART1_is_tx_done()) {
-							}; // wait until the usart is clear
 							putc1(elobuf_out[e]); // send to host
 						}
 						status.touch_count++;
@@ -401,8 +391,13 @@ void uart2work(void)
 	}
 };
 
+/*
+ * check host transmit data
+ */
 void uart1risr(void)
 {
+	uint8_t tchar;
+
 	tchar = U1RXB; // read from host
 	S.DATA1 = TRUE; // usart is connected to data
 	if (tchar == (uint8_t) 0x46) { // send one report to host
@@ -418,8 +413,9 @@ void uart1risr(void)
 	}
 };
 
-// check timer0 irq 1 second timer
-
+/*
+ * check timer0 irq 1 second time
+ */
 void tmr0isr(void)
 {
 	//check for TMR0 overflow
@@ -440,9 +436,7 @@ void tmr0isr(void)
 	if ((status.comm_check++ >COMM_CHK_TIME) && !S.CATCH) { // check for LCD screen connection
 		status.comm_check = 0; // reset connect heartbeat counter
 		S.LCD_OK = FALSE; // reset the connect flag while waiting for response from controller.
-		if (screen_type == DELL_E215546) {
-			DB1_SetHigh();
-		}
+		DB1_SetHigh();
 	}
 }
 
@@ -466,14 +460,18 @@ void touch_cam(void)
 		status.cam_time = 0;
 		touch_corner1 = 0;
 		CAM_RELAY = 1; // set primary VGA/CAM switch
-		elobuf[0] = 0;
+		elobuf[0] = 0; // clear last touch values
 		elobuf[1] = 0;
 	};
 }
 
+/*
+ * busy loop delay with WDT reset
+ */
 void wdtdelay(const uint32_t delay)
 {
 	uint32_t dcount;
+	
 	for (dcount = 0; dcount <= delay; dcount++) { // delay a bit
 		ClrWdt(); // reset the WDT timer
 	};
@@ -481,21 +479,13 @@ void wdtdelay(const uint32_t delay)
 
 void elocmdout(uint8_t * elostr)
 {
-	while (!UART2_is_tx_done()) {
-	}; // wait until the usart is clear
 	putc2(elostr[0]);
-	while (!UART2_is_tx_done()) {
-	}; // wait until the usart is clear
 	wdtdelay(2000);
 }
 
 void eloSScmdout(const uint8_t elostr)
 {
-	while (!UART2_is_tx_done()) {
-	}; // wait until the usart is clear
 	putc2(elostr);
-	while (!UART2_is_tx_done()) {
-	}; // wait until the usart is clear
 	wdtdelay(2000); // inter char delay
 }
 
@@ -527,8 +517,6 @@ void elocmdout_v80(const uint8_t * elostr)
 {
 	uint8_t elo_char;
 	for (int e = 0; e < ELO_SIZE_V80; e++) { // send buffered data
-		while (!UART2_is_tx_done()) {
-		}; // wait until the usart is clear
 		elo_char = elostr[e];
 		putc2(elo_char); // send to LCD touch
 		wdtdelay(2000); // inter char delay
@@ -569,11 +557,6 @@ void start_delay(void)
 
 uint8_t Test_Screen(void)
 {
-	while (!UART2_is_tx_done()) {
-	}; // wait until the USART is clear
-	if (screen_type == DELL_E224864) {
-		return TRUE;
-	}
 	putc2(0x46);
 	wdtdelay(30000);
 	setup_lcd(); // send lcd touch controller setup codes
