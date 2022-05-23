@@ -53,8 +53,6 @@ void SYSTEM_Initialize(void)
     PMD_Initialize();
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
-    DMA2_Initialize();
-    DMA3_Initialize();
     DMA1_Initialize();
     TMR1_Initialize();
     TMR0_Initialize();
@@ -66,14 +64,14 @@ void SYSTEM_Initialize(void)
 
 void OSCILLATOR_Initialize(void)
 {
-    // NOSC EXTOSC; NDIV 1; 
-    OSCCON1 = 0x70;
+    // NOSC EXTOSC   with 4x PLL; NDIV 1; 
+    OSCCON1 = 0x20;
     // CSWHOLD may proceed; SOSCPWR Low power; 
     OSCCON3 = 0x00;
     // MFOEN disabled; LFOEN disabled; ADOEN disabled; PLLEN enabled; SOSCEN disabled; EXTOEN disabled; HFOEN disabled; 
     OSCEN = 0x01;
-    // HFFRQ 16_MHz; 
-    OSCFRQ = 0x05;
+    // HFFRQ 64_MHz; 
+    OSCFRQ = 0x08;
     // TUN 0; 
     OSCTUNE = 0x00;
     // ACTUD enabled; ACTEN disabled; 

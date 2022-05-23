@@ -37,6 +37,8 @@ bool SPI1_Config(void)
  */
 bool init_display(void)
 {
+	return true; // DEBUG
+	
 	SPI1_Close();
 	if (!SPI1_Config()) {
 		return false;
@@ -203,6 +205,9 @@ void eaDogM_WriteStringAtPos(const uint8_t r, const uint8_t c, char *strPtr)
 		row = 0x00;
 		break;
 	}
+	
+	return;  // DEBUG
+	
 	send_lcd_cmd(0x45);
 	send_lcd_data(row + c);
 	wait_lcd_done();

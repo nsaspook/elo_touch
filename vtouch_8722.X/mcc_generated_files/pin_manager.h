@@ -173,25 +173,25 @@
 #define CS_SetAnalogMode()      do { ANSELBbits.ANSELB6 = 1; } while(0)
 #define CS_SetDigitalMode()     do { ANSELBbits.ANSELB6 = 0; } while(0)
 
-// get/set IO_RB7 aliases
-#define IO_RB7_TRIS                 TRISBbits.TRISB7
-#define IO_RB7_LAT                  LATBbits.LATB7
-#define IO_RB7_PORT                 PORTBbits.RB7
-#define IO_RB7_WPU                  WPUBbits.WPUB7
-#define IO_RB7_OD                   ODCONBbits.ODCB7
-#define IO_RB7_ANS                  ANSELBbits.ANSELB7
-#define IO_RB7_SetHigh()            do { LATBbits.LATB7 = 1; } while(0)
-#define IO_RB7_SetLow()             do { LATBbits.LATB7 = 0; } while(0)
-#define IO_RB7_Toggle()             do { LATBbits.LATB7 = ~LATBbits.LATB7; } while(0)
-#define IO_RB7_GetValue()           PORTBbits.RB7
-#define IO_RB7_SetDigitalInput()    do { TRISBbits.TRISB7 = 1; } while(0)
-#define IO_RB7_SetDigitalOutput()   do { TRISBbits.TRISB7 = 0; } while(0)
-#define IO_RB7_SetPullup()          do { WPUBbits.WPUB7 = 1; } while(0)
-#define IO_RB7_ResetPullup()        do { WPUBbits.WPUB7 = 0; } while(0)
-#define IO_RB7_SetPushPull()        do { ODCONBbits.ODCB7 = 0; } while(0)
-#define IO_RB7_SetOpenDrain()       do { ODCONBbits.ODCB7 = 1; } while(0)
-#define IO_RB7_SetAnalogMode()      do { ANSELBbits.ANSELB7 = 1; } while(0)
-#define IO_RB7_SetDigitalMode()     do { ANSELBbits.ANSELB7 = 0; } while(0)
+// get/set MISC aliases
+#define MISC_TRIS                 TRISBbits.TRISB7
+#define MISC_LAT                  LATBbits.LATB7
+#define MISC_PORT                 PORTBbits.RB7
+#define MISC_WPU                  WPUBbits.WPUB7
+#define MISC_OD                   ODCONBbits.ODCB7
+#define MISC_ANS                  ANSELBbits.ANSELB7
+#define MISC_SetHigh()            do { LATBbits.LATB7 = 1; } while(0)
+#define MISC_SetLow()             do { LATBbits.LATB7 = 0; } while(0)
+#define MISC_Toggle()             do { LATBbits.LATB7 = ~LATBbits.LATB7; } while(0)
+#define MISC_GetValue()           PORTBbits.RB7
+#define MISC_SetDigitalInput()    do { TRISBbits.TRISB7 = 1; } while(0)
+#define MISC_SetDigitalOutput()   do { TRISBbits.TRISB7 = 0; } while(0)
+#define MISC_SetPullup()          do { WPUBbits.WPUB7 = 1; } while(0)
+#define MISC_ResetPullup()        do { WPUBbits.WPUB7 = 0; } while(0)
+#define MISC_SetPushPull()        do { ODCONBbits.ODCB7 = 0; } while(0)
+#define MISC_SetOpenDrain()       do { ODCONBbits.ODCB7 = 1; } while(0)
+#define MISC_SetAnalogMode()      do { ANSELBbits.ANSELB7 = 1; } while(0)
+#define MISC_SetDigitalMode()     do { ANSELBbits.ANSELB7 = 0; } while(0)
 
 // get/set MIN0 aliases
 #define MIN0_TRIS                 TRISCbits.TRISC0

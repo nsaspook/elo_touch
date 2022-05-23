@@ -238,6 +238,7 @@ void uart2work(void)
 		// is data from Touchscreen COMM2
 		PIR3bits.TMR0IF = 0;
 		// Write to the Timer0 register
+		TMR0_Reload();
 		if (S.CAM && (status.cam_time > MAX_CAM_TIME)) {
 			CAM_RELAY = 0; // clear video switch
 			S.CAM = FALSE;
@@ -593,6 +594,12 @@ void main(void)
 
 	SYSTEM_Initialize();
 
+	/*
+	 * default state is ON
+	 */
+	RLED_SetLow();
+	MLED_SetLow();
+
 	status.do_cap = DO_CAP;
 	S.c_idx = 0;
 	S.speedup = 0;
@@ -607,29 +614,31 @@ void main(void)
 	 * set touchscreen emulation type code
 	 */
 
-	check_byte = DATAEE_ReadByte(0);
+	check_byte = DATAEE_ReadByte((uint16_t) 0x380000);
 
 	if (check_byte != 0x57) { // invalid eeprom display data
-		DATAEE_WriteByte(0, 0x57);
-		DATAEE_WriteByte(1, z);
+		DATAEE_WriteByte((uint16_t) 0x380000, 0x57);
+		DATAEE_WriteByte((uint16_t) 0x380001, z);
 	}
 
-	check_byte = DATAEE_ReadByte(0);
+	check_byte = DATAEE_ReadByte((uint16_t) 0x380000);
 	if (check_byte == 0x57) { // change config from default settings if needed
-		z = DATAEE_ReadByte(1);
+		z = DATAEE_ReadByte((uint16_t) 0x380001);
 		if (z == 0b11111110 || (!MIN0_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = VIISION;
 			z = 0b11111110;
-			DATAEE_WriteByte(1, z);
+			DATAEE_WriteByte((uint16_t) 0x380001, z);
 			sprintf(opbuffer, "VIISION DELL_E215546");
+			MLED_SetHigh();
 		}
 		if (z == 0b11111101 || (!MIN1_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
-			DATAEE_WriteByte(1, z);
+			DATAEE_WriteByte((uint16_t) 0x380001, z);
 			sprintf(opbuffer, "E220 DELL_E215546");
+			MLED_SetLow();
 		}
 		if (z == 0b11111100) {
 			screen_type = DELL_E215546;
@@ -649,13 +658,13 @@ void main(void)
 	UART1_SetRxInterruptHandler(uart1risr);
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
-
 	// Enable low priority global interrupts.
 	INTERRUPT_GlobalInterruptLowEnable();
 	TMR0_StartTimer();
 	TMR1_StartTimer();
 
 	init_display();
+
 	sprintf(buffer, "%s ", "          ");
 	eaDogM_WriteStringAtPos(0, 0, buffer);
 	sprintf(buffer, "%s ", build_version);
@@ -690,6 +699,9 @@ void main(void)
 			elocmdout_v80(&elocodes[4][0]);
 			elocmdout_v80(&elocodes[5][0]);
 			elocmdout_v80(&elocodes[6][0]);
+		}
+		while (true) {
+			MISC_Toggle();
 		}
 	}
 
@@ -832,7 +844,10 @@ void main(void)
 
 	if (emulat_type == VIISION) {
 		/* Loop forever */
-		while (TRUE) { // busy loop BSG style
+		while (TRUE) { // busy loop
+			while (true) {
+				MISC_Toggle();
+			}
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
