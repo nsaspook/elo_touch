@@ -61,6 +61,10 @@
   Section: Global Variables
 */
 
+static volatile uint8_t uart2TxHead = 0;
+static volatile uint8_t uart2TxTail = 0;
+static volatile uint8_t uart2TxBuffer[UART2_TX_BUFFER_SIZE];
+volatile uint8_t uart2TxBufferRemaining;
 
 static volatile uint8_t uart2RxHead = 0;
 static volatile uint8_t uart2RxTail = 0;
@@ -85,6 +89,8 @@ void UART2_Initialize(void)
     // Disable interrupts before changing states
     PIE8bits.U2RXIE = 0;
     UART2_SetRxInterruptHandler(UART2_Receive_ISR);
+    PIE8bits.U2TXIE = 0;
+    UART2_SetTxInterruptHandler(UART2_Transmit_ISR);
 
     // Set the UART2 module to the options selected in the user interface.
 
@@ -131,6 +137,10 @@ void UART2_Initialize(void)
 
     uart2RxLastError.status = 0;
 
+    // initializing the driver state
+    uart2TxHead = 0;
+    uart2TxTail = 0;
+    uart2TxBufferRemaining = sizeof(uart2TxBuffer);
     uart2RxHead = 0;
     uart2RxTail = 0;
     uart2RxCount = 0;
@@ -146,7 +156,7 @@ bool UART2_is_rx_ready(void)
 
 bool UART2_is_tx_ready(void)
 {
-    return (bool)(PIR8bits.U2TXIF && U2CON0bits.TXEN);
+    return (uart2TxBufferRemaining ? true : false);
 }
 
 bool UART2_is_tx_done(void)
@@ -182,11 +192,33 @@ uint8_t UART2_Read(void)
 
 void UART2_Write(uint8_t txData)
 {
-    while(0 == PIR8bits.U2TXIF)
+    while(0 == uart2TxBufferRemaining)
     {
     }
 
-    U2TXB = txData;    // Write the data byte to the USART.
+    if(0 == PIE8bits.U2TXIE)
+    {
+        U2TXB = txData;
+    }
+    else
+    {
+        PIE8bits.U2TXIE = 0;
+        uart2TxBuffer[uart2TxHead++] = txData;
+        if(sizeof(uart2TxBuffer) <= uart2TxHead)
+        {
+            uart2TxHead = 0;
+        }
+        uart2TxBufferRemaining--;
+    }
+    PIE8bits.U2TXIE = 1;
+}
+
+void __interrupt(irq(U2TX),base(8)) UART2_tx_vect_isr()
+{   
+    if(UART2_TxInterruptHandler)
+    {
+        UART2_TxInterruptHandler();
+    }
 }
 
 void __interrupt(irq(U2RX),base(8)) UART2_rx_vect_isr()
@@ -199,6 +231,25 @@ void __interrupt(irq(U2RX),base(8)) UART2_rx_vect_isr()
 
 
 
+void UART2_Transmit_ISR(void)
+{
+    // use this default transmit interrupt handler code
+    if(sizeof(uart2TxBuffer) > uart2TxBufferRemaining)
+    {
+        U2TXB = uart2TxBuffer[uart2TxTail++];
+       if(sizeof(uart2TxBuffer) <= uart2TxTail)
+        {
+            uart2TxTail = 0;
+        }
+        uart2TxBufferRemaining++;
+    }
+    else
+    {
+        PIE8bits.U2TXIE = 0;
+    }
+    
+    // or set custom function using UART2_SetTxInterruptHandler()
+}
 
 void UART2_Receive_ISR(void)
 {
@@ -260,6 +311,9 @@ void UART2_SetRxInterruptHandler(void (* InterruptHandler)(void)){
     UART2_RxInterruptHandler = InterruptHandler;
 }
 
+void UART2_SetTxInterruptHandler(void (* InterruptHandler)(void)){
+    UART2_TxInterruptHandler = InterruptHandler;
+}
 
 
 /**
