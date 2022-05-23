@@ -559,16 +559,16 @@ void setup_lcd(void)
 
 void putc1(const uint8_t c)
 {
-	while (!UART1_is_tx_done()) {
-	}; // wait until the usart is clear
-	U1TXB = c;
+	UART1_Write(c);
 }
 
 void putc2(const uint8_t c)
 {
-	while (!UART2_is_tx_done()) {
-	}; // wait until the usart is clear
-	U2TXB = c;
+	while (0 == PIR8bits.U2TXIF) {
+	}
+
+	U2TXB = c; // Write the data byte to the USART.
+
 }
 
 void start_delay(void)
@@ -693,15 +693,15 @@ void main(void)
 
 		if (screen_type == DELL_E215546) {
 			elocmdout_v80(&elocodes[7][0]); // reset;
+			while (true) {
+				MISC_Toggle();
+			}
 			wdtdelay(700000); // wait for LCD touch controller reset
 			/* program the display */
 			elocmdout_v80(&elocodes[0][0]);
 			elocmdout_v80(&elocodes[4][0]);
 			elocmdout_v80(&elocodes[5][0]);
 			elocmdout_v80(&elocodes[6][0]);
-		}
-		while (true) {
-			MISC_Toggle();
 		}
 	}
 
@@ -852,7 +852,6 @@ void main(void)
 				uart2work();
 			}
 			if (j++ >= BLINK_RATE_V80) { // delay a bit ok
-
 				if (S.LCD_OK) { // screen status feedback
 					timer0_off = TIMEROFFSET;
 				} else {

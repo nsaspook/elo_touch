@@ -175,8 +175,6 @@ void send_lcd_data_dma(const uint8_t strPtr)
 	DMA1_SetSourceAddress((uint24_t) spi_link.tx1a);
 	DMA1_SetSourceSize(1);
 	DMA1_SetDestinationSize(1);
-	DMA2_SetSourceSize(1);
-	DMA2_SetDestinationSize(1);
 #endif
 	start_lcd(); // start DMA transfer
 #ifdef DEBUG_DISP2
