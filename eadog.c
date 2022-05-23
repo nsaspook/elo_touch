@@ -5,7 +5,6 @@
 
 volatile struct spi_link_type spi_link;
 struct ringBufS_t ring_buf1;
-static uint8_t port_data[max_port_data];
 
 static const spi1_configuration_t spi1_configuration[] = {   
     { 0x2, 0x40, 0x0, 0x2, 0 }
@@ -36,9 +35,7 @@ bool SPI1_Config(void)
  * channel 1 DMA
  */
 bool init_display(void)
-{
-	return true; // DEBUG
-	
+{	
 	SPI1_Close();
 	if (!SPI1_Config()) {
 		return false;
@@ -68,13 +65,6 @@ bool init_display(void)
 	DMA1_SetSCNTIInterruptHandler(clear_lcd_done);
 #endif
 	return true;
-}
-
-/*
- * channel DMA
- */
-void init_port_dma(void)
-{
 }
 
 #ifdef NHD
@@ -244,24 +234,6 @@ void eaDogM_WriteCommand(const uint8_t cmd)
 void eaDogM_WriteChr(const int8_t value)
 {
 	send_lcd_data((uint8_t) value);
-}
-
-/*
- * uses DMA channel 2 for transfers
- */
-void send_port_data_dma(uint16_t dsize)
-{
-	if (dsize > max_port_data) {
-		return;
-	}
-}
-
-/*
- * return pointer to internal data buffer for DMA
- */
-uint8_t* port_data_dma_ptr(void)
-{
-	return port_data;
 }
 
 /*

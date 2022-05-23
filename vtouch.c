@@ -444,7 +444,7 @@ static void tmr0isr(void)
 }
 
 /*
- * check timer1 irq 500ns time
+ * check timer1 irq 500us time
  * update ticks
  */
 static void delayisr(void)
@@ -536,10 +536,8 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 
 void elocmdout_v80(const uint8_t * elostr)
 {
-	uint8_t elo_char;
 	for (int e = 0; e < ELO_SIZE_V80; e++) { // send buffered data
-		elo_char = elostr[e];
-		putc2(elo_char); // send to LCD touch
+		//		putc2(elostr[e]); // send to LCD touch
 		wdtdelay(2000); // inter char delay
 	}
 	wdtdelay(50000); // wait for LCD controller reset
@@ -564,11 +562,7 @@ void putc1(const uint8_t c)
 
 void putc2(const uint8_t c)
 {
-	while (0 == PIR8bits.U2TXIF) {
-	}
-
-	U2TXB = c; // Write the data byte to the USART.
-
+	UART2_Write(c);
 }
 
 void start_delay(void)
@@ -664,7 +658,6 @@ void main(void)
 	TMR1_StartTimer();
 
 	init_display();
-
 	sprintf(buffer, "%s ", "          ");
 	eaDogM_WriteStringAtPos(0, 0, buffer);
 	sprintf(buffer, "%s ", build_version);
@@ -693,9 +686,6 @@ void main(void)
 
 		if (screen_type == DELL_E215546) {
 			elocmdout_v80(&elocodes[7][0]); // reset;
-			while (true) {
-				MISC_Toggle();
-			}
 			wdtdelay(700000); // wait for LCD touch controller reset
 			/* program the display */
 			elocmdout_v80(&elocodes[0][0]);
@@ -726,6 +716,7 @@ void main(void)
 		Test_Screen(); // send touch init commands
 		/* Loop forever */
 		while (TRUE) {
+			MISC_Toggle();
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
@@ -845,9 +836,7 @@ void main(void)
 	if (emulat_type == VIISION) {
 		/* Loop forever */
 		while (TRUE) { // busy loop
-			while (true) {
-				MISC_Toggle();
-			}
+			MISC_Toggle();
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
