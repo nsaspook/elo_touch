@@ -3,66 +3,64 @@
 #include "eadog.h"
 #include "ringbufs.h"
 
-volatile struct spi_link_type spi_link;
+volatile struct spi_link_type spi_link = {
+	.LCD_DATA=false,
+};
 struct ringBufS_t ring_buf1;
 
-static const spi1_configuration_t spi1_configuration[] = {   
-    { 0x2, 0x40, 0x0, 0x2, 0 }
+static const spi1_configuration_t spi1_configuration[] = {
+	{ 0x2, 0x40, 0x0, 0x2, 0}
 };
 
 static void send_lcd_cmd_long(uint8_t); // for display init only
 static void send_lcd_data(uint8_t);
 static void send_lcd_cmd(uint8_t);
-bool SPI1_Config(void);
-
-bool SPI1_Config(void)
-{
-	if (!SPI1CON0bits.EN) {
-		SPI1CON0 = spi1_configuration[0].con0;
-		SPI1CON1 = spi1_configuration[0].con1;
-		SPI1CON2 = spi1_configuration[0].con2 | (_SPI1CON2_SPI1RXR_MASK | _SPI1CON2_SPI1TXR_MASK);
-		SPI1CLK = 0x00;
-		SPI1BAUD = spi1_configuration[0].baud;
-		TRISAbits.TRISA4 = spi1_configuration[0].operation;
-		SPI1CON0bits.EN = 1;
-		return true;
-	}
-	return false;
-}
 
 /*
  * Init the NHD-0420D3Z-NSW-BBW-V3 in 8-bit serial mode
  * channel 1 DMA
  */
 bool init_display(void)
-{	
-	SPI1_Close();
-	if (!SPI1_Config()) {
-		return false;
-	};
+{
 	spi_link.tx1a = &ring_buf1;
 	ringBufS_init(spi_link.tx1a);
+
 #ifdef DEBUG_DISP2
 	DLED2 = true;
 #endif
 #ifdef NHD
-	send_lcd_cmd(0x46); // home cursor
-	wdtdelay(800);
+	SPI1CON0bits.EN = 0;
+	// mode 3
+	SPI1CON1 = 0x20;
+	// SSET disabled; RXR suspended if the RxFIFO is full; TXR required for a transfer; 
+	SPI1CON2 = 0x03;
+	// BAUD 0; 
+	SPI1BAUD = 0x04; // 50kHz SCK
+	// CLKSEL MFINTOSC; 
+	SPI1CLK = 0x02;
+	// BMODE every byte; LSBF MSb first; EN enabled; MST bus master; 
+	SPI1CON0 = 0x83;
+	SPI1CON0bits.EN = 1;
+
+	wdtdelay(350000); // > 400ms power up delay
+	send_lcd_cmd_long(0x46); // home cursor
 	send_lcd_cmd(0x41); // display on
 	wdtdelay(80);
 	send_lcd_cmd(0x53); // set back-light level
 	send_lcd_data(NHD_BL_LOW);
 	wdtdelay(80);
-	send_lcd_cmd(0x51); // clear screen
-	wdtdelay(800);
-#else
+	send_lcd_cmd_long(0x51); // clear screen
+#ifdef USE_DMA
+	SPI1CON0bits.EN = 0;
+	SPI1CON2 = 0x02; //  Received data is not stored in the FIFO
+	SPI1CON0bits.EN = 1;
 #endif
-
+#endif
+	SPI1INTFbits.SPI1TXUIF = 0;
+	DMA1_StopTransfer();
+	SPI1INTFbits.SPI1TXUIF = 1;
 #ifdef DEBUG_DISP2
 	DLED2 = false;
-#endif
-#ifdef USE_DMA
-	DMA1_SetSCNTIInterruptHandler(clear_lcd_done);
 #endif
 	return true;
 }
@@ -117,7 +115,7 @@ void eaDogM_WriteString(char *strPtr)
 		len = max_strlen;
 	}
 	ringBufS_put_dma_cpy(spi_link.tx1a, strPtr, len);
-#ifdef USE_DMA
+#ifdef USE_DMA // DEBUG
 	DMA1_SetSourceAddress((uint24_t) spi_link.tx1a);
 	DMA1_SetSourceSize(len);
 	DMA1_SetDestinationSize(1);
@@ -194,12 +192,9 @@ void eaDogM_WriteStringAtPos(const uint8_t r, const uint8_t c, char *strPtr)
 		break;
 	}
 	
-	return;  // DEBUG
-	
 	send_lcd_cmd(0x45);
 	send_lcd_data(row + c);
 	wait_lcd_done();
-	CS_SetHigh(); /* SPI deselect display */
 	eaDogM_WriteString(strPtr);
 }
 
@@ -262,9 +257,6 @@ void wait_lcd_done(void)
 	while ((bool) spi_link.LCD_DATA) {
 	};
 #endif
-	while (!SPI1STATUSbits.TXBE) {
-	};
-	CS_SetHigh(); /* SPI deselect display */
 }
 
 void clear_lcd_done(void)

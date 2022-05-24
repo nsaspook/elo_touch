@@ -496,7 +496,48 @@ void UART1_SetOverrunErrorHandler(void (* interruptHandler)(void));
 */
 void UART1_SetErrorHandler(void (* interruptHandler)(void));
 
+/**
+  @Summary
+    Maintains the driver's error interrupt state machine and implements its ISR
 
+  @Description
+    This routine is used to maintain the driver's error interrupt state
+    machine.This interrupt service routine is called when the state of the
+    UART1 needs to be maintained in a non polled manner.
+
+  @Preconditions
+    UART1_Initialize() function should have been called
+    for the ISR to execute correctly.
+
+  @Param
+    None
+
+  @Returns
+    None
+*/
+void UART1_FramingError_ISR(void);
+
+/**
+  @Summary
+    Maintains the driver's interrupt state machine while in sleep and implements its ISR
+
+  @Description
+    This routine is used to maintain the driver's interrupt state
+    machine when device is in sleep and UART1 operation is ceased. 
+	This interrupt service routine is called when the state of the
+    UART1 needs to be maintained in a non polled manner.
+
+  @Preconditions
+    UART1_Initialize() function should have been called
+    for the ISR to execute correctly.
+
+  @Param
+    None
+
+  @Returns
+    None
+*/
+void UART1_UartInterrupt_ISR(void);
 
 /**
   @Summary
@@ -534,7 +575,41 @@ void (*UART1_RxInterruptHandler)(void);
 */
 void (*UART1_TxInterruptHandler)(void);
 
+/**
+  @Summary
+    UART1 Framing Error Interrupt Handler
 
+  @Description
+    This is a pointer to the function that will be called upon UART1 framing error interrupt
+
+  @Preconditions
+    Initialize  the UART1 module with UART1 error interrupt (UxEIE) enabled
+
+  @Param
+    None
+
+  @Returns
+    None
+*/
+void (*UART1_FramingErrorInterruptHandler)(void);
+
+/**
+  @Summary
+    UART1 Interrupt Handler
+
+  @Description
+    This is a pointer to the function that will be called upon UART1 interrupt
+
+  @Preconditions
+    Initialize  the UART1 module with UART1 interrupt (UxIE) and Wake-Up Enabled
+
+  @Param
+    None
+
+  @Returns
+    None
+*/
+void (*UART1_UARTInterruptHandler)(void);
 
 /**
   @Summary
@@ -572,7 +647,41 @@ void UART1_SetRxInterruptHandler(void (* InterruptHandler)(void));
 */
 void UART1_SetTxInterruptHandler(void (* InterruptHandler)(void));
 
+/**
+  @Summary
+    Set UART1 Interrupt Handler
 
+  @Description
+    This API sets the function to be called upon UART1 interrupt
+
+  @Preconditions
+    Initialize  the UART1 module with interrupt (UxIE) and Wake-Up enabled before calling this API
+
+  @Param
+    Address of function to be set as interrupt handler
+
+  @Returns
+    None
+*/
+void UART1_SetFramingErrorInterruptHandler(void (* InterruptHandler)(void));
+
+/**
+  @Summary
+    Set UART1 Framing Error Interrupt Handler
+
+  @Description
+    This API sets the function to be called upon UART1 framing error interrupt
+
+  @Preconditions
+    Initialize  the UART1 module with error interrupt (UxEIE) enabled before calling this API
+
+  @Param
+    Address of function to be set as framing error interrupt handler
+
+  @Returns
+    None
+*/
+void UART1_SetUartInterruptHandler(void (* InterruptHandler)(void));
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 

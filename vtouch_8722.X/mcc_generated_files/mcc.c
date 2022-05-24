@@ -90,8 +90,8 @@ void PMD_Initialize(void)
     PMD1 = 0x00;
     // NCO1MD NCO1 enabled; ADCMD ADC enabled; DSM1MD DSM enabled; CWG1MD CWG1 enabled; ACTMD ACT enabled; CM2MD CM2 enabled; DAC1MD DAC1 enabled; 
     PMD2 = 0x00;
-    // PWM2MD PWM2 enabled; PWM1MD PWM1 enabled; PWM3MD PWM3 enabled; SPI2MD SPI2 enabled; SPI1MD SPI1 enabled; U2MD UART2 enabled; U1MD UART1 enabled; I2C1MD I2C1 enabled; 
-    PMD3 = 0x00;
+    // PWM2MD PWM2 enabled; PWM1MD PWM1 enabled; PWM3MD PWM3 enabled; SPI2MD SPI2 disabled; SPI1MD SPI1 enabled; U2MD UART2 enabled; U1MD UART1 enabled; I2C1MD I2C1 enabled; 
+    PMD3 = 0x20;
     // CLC3MD CLC3 enabled; CLC4MD CLC4 enabled; DMA1MD DMA1 enabled; DMA2MD DMA2 enabled; DMA3MD DMA3 enabled; CLC1MD CLC1 enabled; CLC2MD CLC2 enabled; 
     PMD4 = 0x00;
     // DMA4MD DMA4 enabled; OPAMD OPA enabled; DAC2MD DAC2 enabled; 

@@ -91,6 +91,10 @@ void UART2_Initialize(void)
     UART2_SetRxInterruptHandler(UART2_Receive_ISR);
     PIE8bits.U2TXIE = 0;
     UART2_SetTxInterruptHandler(UART2_Transmit_ISR);
+    PIE8bits.U2EIE = 0;
+    UART2_SetFramingErrorInterruptHandler(UART2_FramingError_ISR);
+    PIE8bits.U2IE = 0;
+    UART2_SetUartInterruptHandler(UART2_UartInterrupt_ISR);
 
     // Set the UART2 module to the options selected in the user interface.
 
@@ -103,11 +107,11 @@ void UART2_Initialize(void)
     // P3L 0; 
     U2P3L = 0x00;
 
-    // BRGS high speed; MODE Asynchronous 8-bit mode; RXEN enabled; TXEN enabled; ABDEN enabled; 
-    U2CON0 = 0xF0;
+    // BRGS high speed; MODE Asynchronous 8-bit mode; RXEN enabled; TXEN enabled; ABDEN disabled; 
+    U2CON0 = 0xB0;
 
-    // RXBIMD Set RXBKIF on rising RX input; BRKOVR disabled; WUE disabled; SENDB disabled; ON enabled; 
-    U2CON1 = 0x80;
+    // RXBIMD Set RXBKIF on rising RX input; BRKOVR disabled; WUE enabled; SENDB disabled; ON enabled; 
+    U2CON1 = 0x90;
 
     // TXPOL not inverted; FLO off; RXPOL not inverted; RUNOVF RX input shifter stops all activity; STP Transmit 1Stop bit, receiver verifies first Stop bit; 
     U2CON2 = 0x00;
@@ -147,6 +151,10 @@ void UART2_Initialize(void)
 
     // enable receive interrupt
     PIE8bits.U2RXIE = 1;
+    // enable error interrupt
+    PIE8bits.U2EIE = 1;
+    // enable uart interrupt
+    PIE8bits.U2IE = 1;
 }
 
 bool UART2_is_rx_ready(void)
@@ -229,7 +237,21 @@ void __interrupt(irq(U2RX),base(8)) UART2_rx_vect_isr()
     }
 }
 
+void __interrupt(irq(U2E),base(8)) UART2_framing_err_vect_isr()
+{
+    if(UART2_FramingErrorInterruptHandler)
+    {
+        UART2_FramingErrorInterruptHandler();
+    }
+}
 
+void __interrupt(irq(U2),base(8)) UART2_vect_isr()
+{
+    if(UART2_UARTInterruptHandler)
+    {
+        UART2_UARTInterruptHandler();
+    }
+}
 
 void UART2_Transmit_ISR(void)
 {
@@ -305,7 +327,22 @@ void UART2_SetErrorHandler(void (* interruptHandler)(void)){
     UART2_ErrorHandler = interruptHandler;
 }
 
+void UART2_FramingError_ISR(void)
+{
+    // To clear the interrupt condition, all bits in the UxERRIR register must be cleared
+    U2ERRIR = 0;
+    
+    // add your UART2 error interrupt custom code
 
+}
+
+void UART2_UartInterrupt_ISR(void)
+{
+    // WUIF must be cleared by software to clear UxIF
+    U2UIRbits.WUIF = 0;
+    
+    // add your UART2 interrupt custom code
+}
 
 void UART2_SetRxInterruptHandler(void (* InterruptHandler)(void)){
     UART2_RxInterruptHandler = InterruptHandler;
@@ -315,7 +352,13 @@ void UART2_SetTxInterruptHandler(void (* InterruptHandler)(void)){
     UART2_TxInterruptHandler = InterruptHandler;
 }
 
+void UART2_SetFramingErrorInterruptHandler(void (* InterruptHandler)(void)){
+    UART2_FramingErrorInterruptHandler = InterruptHandler;
+}
 
+void UART2_SetUartInterruptHandler(void (* InterruptHandler)(void)){
+    UART2_UARTInterruptHandler = InterruptHandler;
+}
 /**
   End of File
 */

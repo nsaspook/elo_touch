@@ -234,6 +234,8 @@ void uart2work(void)
 	uint8_t c, i, uchar;
 	static uint8_t sum = 0xAA + 'U';
 
+	MLED_Toggle();
+	
 	if (emulat_type == E220) {
 		// is data from Touchscreen COMM2
 		PIR3bits.TMR0IF = 0;
@@ -537,7 +539,7 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow)
 void elocmdout_v80(const uint8_t * elostr)
 {
 	for (int e = 0; e < ELO_SIZE_V80; e++) { // send buffered data
-		//		putc2(elostr[e]); // send to LCD touch
+		putc2(elostr[e]); // send to LCD touch
 		wdtdelay(2000); // inter char delay
 	}
 	wdtdelay(50000); // wait for LCD controller reset
@@ -650,6 +652,9 @@ void main(void)
 	TMR0_SetInterruptHandler(tmr0isr);
 	TMR1_SetInterruptHandler(delayisr);
 	UART1_SetRxInterruptHandler(uart1risr);
+#ifdef USE_DMA
+	DMA1_SetSCNTIInterruptHandler(clear_lcd_done);
+#endif
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
 	// Enable low priority global interrupts.
