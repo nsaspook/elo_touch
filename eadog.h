@@ -73,8 +73,10 @@ extern "C" {
 #define eaDogM_DisplayOn()       eaDogM_WriteCommand(EADOGM_CMD_DISPLAY_ON)
 #define eaDogM_DisplayOff()      eaDogM_WriteCommand(EADOGM_CMD_DISPLAY_OFF)
 
+	/*
+	 * characters per line on the display
+	 */
 #define max_strlen	20
-#define max_port_data	4
 
 #ifdef	__cplusplus
 }

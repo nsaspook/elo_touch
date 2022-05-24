@@ -77,7 +77,7 @@
         <targetDevice>PIC18F14Q41</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>ICD4Tool</platformTool>
+        <platformTool>pk4hybrid</platformTool>
         <languageToolchain>XC8</languageToolchain>
         <languageToolchainVersion>2.36</languageToolchainVersion>
         <platform>2</platform>

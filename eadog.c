@@ -4,7 +4,7 @@
 #include "ringbufs.h"
 
 volatile struct spi_link_type spi_link = {
-	.LCD_DATA=false,
+	.LCD_DATA = false,
 };
 struct ringBufS_t ring_buf1;
 
@@ -25,8 +25,8 @@ bool init_display(void)
 	spi_link.tx1a = &ring_buf1;
 	ringBufS_init(spi_link.tx1a);
 
-#ifdef DEBUG_DISP2
-	DLED2 = true;
+#ifdef DEBUG_DISP0
+	DB0_LAT = true;
 #endif
 #ifdef NHD
 	SPI1CON0bits.EN = 0;
@@ -59,8 +59,8 @@ bool init_display(void)
 	SPI1INTFbits.SPI1TXUIF = 0;
 	DMA1_StopTransfer();
 	SPI1INTFbits.SPI1TXUIF = 1;
-#ifdef DEBUG_DISP2
-	DLED2 = false;
+#ifdef DEBUG_DISP0
+	DB0_LAT = false;
 #endif
 	return true;
 }
@@ -104,7 +104,7 @@ void eaDogM_WriteString(char *strPtr)
 	uint8_t len = (uint8_t) strlen(strPtr);
 
 #ifdef DEBUG_DISP1
-	DLED1 = true;
+	DB1_LAT = true;
 #endif
 	wait_lcd_done();
 	wait_lcd_set();
@@ -122,15 +122,12 @@ void eaDogM_WriteString(char *strPtr)
 #else
 	SPI1_ExchangeBlock(spi_link.tx1a, len);
 #endif
+#ifndef USE_DMA
 	start_lcd(); // start DMA transfer
-#ifdef DISPLAY_SLOW
-	wdtdelay(9000);
+	wait_lcd_done();
 #endif
 #ifdef DEBUG_DISP1
-	DLED1 = false;
-#endif
-#ifndef USE_DMA
-	wait_lcd_done();
+	DB1_LAT = false;
 #endif
 }
 
@@ -151,8 +148,8 @@ void send_lcd_cmd_dma(const uint8_t strPtr)
  */
 void send_lcd_data_dma(const uint8_t strPtr)
 {
-#ifdef DEBUG_DISP2
-	DLED2 = true;
+#ifdef DEBUG_DISP0
+	DB0_LAT = true;
 #endif
 	wait_lcd_set();
 	/* reset buffer for DMA */
@@ -165,8 +162,8 @@ void send_lcd_data_dma(const uint8_t strPtr)
 	DMA1_SetDestinationSize(1);
 #endif
 	start_lcd(); // start DMA transfer
-#ifdef DEBUG_DISP2
-	DLED2 = false;
+#ifdef DEBUG_DISP0
+	DB0_LAT = false;
 #endif
 }
 
@@ -191,7 +188,7 @@ void eaDogM_WriteStringAtPos(const uint8_t r, const uint8_t c, char *strPtr)
 		row = 0x00;
 		break;
 	}
-	
+
 	send_lcd_cmd(0x45);
 	send_lcd_data(row + c);
 	wait_lcd_done();

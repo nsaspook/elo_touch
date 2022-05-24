@@ -50,6 +50,8 @@
 #define EADOGM_COLSPAN		16
 
 //#define USE_DMA
+#define DEBUG_DISP0
+#define DEBUG_DISP1
 #define NHD		// 4x20 SPI display
 
 struct spi_link_type { // internal SPI state table
