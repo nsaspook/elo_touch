@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#define	DO_CAP      FALSE       // E220 save data for usarts 1&2, save to eeprom
+#define	DO_CAP      false       // E220 save data for usarts 1&2, save to eeprom
 #define	TS_TYPE     0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
 #define BUF_SIZE    32
 #define	CAP_SIZE    8
@@ -25,8 +25,8 @@ extern "C" {
 #define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
 #define ELO_SS_V_SCALE	0.380 
 #define	BLINK_RATE_E220	20000
-#define AUTO_RESTART	FALSE
-#define SINGLE_TOUCH	FALSE
+#define AUTO_RESTART	false
+#define SINGLE_TOUCH	false
 #define GOOD_MAX        128		// max number of chars from TS without expected frames seen
 #define MAX_CAM_TIME	5
 #define MAX_CAM_TIMEOUT	30
@@ -36,16 +36,10 @@ extern "C" {
 #define SCREEN_UPDATE	20
 
 #define BUF_SIZE_V80        16
-#define	CMD_SIZE_V80        4		// CT size of command in bytes from touch screen
 #define	CMD_SIZE_SS_V80	    6		// E281A-4002 software emulation Binary size of command
 #define	HOST_CMD_SIZE_V80   6		// tool command size
 #define	CMD_OVERFLOW_V80    HOST_CMD_SIZE_V80*2
 #define ELO_SEQ_V80         10		// max smartset sequences
-#define ELO_SIZE	    12
-#define ELO_SIZE_V80        14		// number of bytes to send from elocodes_s configuration string
-#define ELO_SIZE_I_V80      10		// max smartset sequence size
-#define FALSE	0
-#define TRUE	1
 #define	BLINK_RATE_V80	25000		// BSG timing
 #define	X_SCALE         1.90		// scaling factor to host screen X logical coords
 #define	Y_SCALE         1.75		// scaling factor to host screen Y logical coords
