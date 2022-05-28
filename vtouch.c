@@ -233,7 +233,6 @@ void uart2work(void)
 
 	if (emulat_type == E220) {
 		// is data from Touchscreen COMM2
-		PIR3bits.TMR0IF = 0;
 		// Write to the Timer0 register
 		TMR0_Reload();
 		if (S.CAM && (status.cam_time > MAX_CAM_TIME)) {
@@ -372,6 +371,7 @@ void uart2work(void)
 							// Write to the Timer0 register
 							TMR0_Reload();
 						}
+						RLED_Toggle();
 					}
 				} else {
 					if (ssbuf[1] == 'I') {
@@ -786,6 +786,7 @@ void main(void)
 						scaled_char = ((uint8_t) (rez_parm_v));
 						elobuf[1] = scaled_char;
 						putc1(scaled_char); // send v scaled touch coord
+						RLED_Toggle();
 					}
 					putc1(0xFF); // send end of report to host
 					status.touch_count++;
