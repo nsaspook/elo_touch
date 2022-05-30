@@ -12,15 +12,19 @@
 extern "C" {
 #endif
 
-#define	DO_CAP      false       // E220 save data for usarts 1&2, save to eeprom
-#define	TS_TYPE     0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
-#define BUF_SIZE    32
-#define	CAP_SIZE    8
+#define	DO_CAP		false       // E220 save data for usarts 1&2, save to eeprom
+#define	TS_TYPE		0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
+#define BUF_SIZE	32
+#define	CAP_SIZE	8
 
-#define	CMD_SIZE    2
+#define	CMD_SIZE	2
 #define	CMD_OVERFLOW	CMD_SIZE*12
-#define ELO_SIZE    12
-#define ELO_SEQ     10
+#define ELO_SIZE	12
+#define ELO_SEQ		10
+#define ELO_TEST	5
+#define ELO_IT		0x80 // ELO T response status byte for inital touch
+#define ELO_ST		0x81 // ELO T response status byte for steam touch
+#define ELO_UT		0x82 // ELO T response status byte for untouch
 #define ELO_REV_H	4096
 #define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
 #define ELO_SS_V_SCALE	0.380 

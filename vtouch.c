@@ -129,7 +129,7 @@ typedef struct disp_state_t {
 	bool CATCH, TOUCH, UNTOUCH, LCD_OK,
 	SCREEN_INIT,
 	CATCH46, CATCH37, TSTATUS, CAM;
-	bool DATA1, DATA2;
+	bool DATA1, DATA2, TEST_MODE;
 	uint16_t c_idx;
 	int16_t speedup;
 } disp_state_t;
@@ -165,7 +165,9 @@ uint8_t elobuf[BUF_SIZE], elobuf_out[BUF_SIZE_V80], elobuf_in[BUF_SIZE_V80], xl 
 uint8_t ssbuf[BUF_SIZE];
 
 reporttype ssreport;
-volatile disp_state_t S;
+volatile disp_state_t S = {
+	.TEST_MODE = false,
+};
 volatile struct statustype status = {
 	.ticks = 0,
 };
@@ -213,6 +215,14 @@ uint8_t elocodes_e7[] = {// dummy packet
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
+const uint8_t testcodes[ELO_TEST][ELO_SEQ] = {
+	0x55, 0x54, 0x81, 0x54, 0x00, 0x88, 0x00, 0x2d, 0x00, 0xdd, // touch corners X,Y 54,136
+	0x55, 0x54, 0x81, 0x45, 0x00, 0x83, 0x0f, 0x1a, 0x00, 0xc5, // 69,3971
+	0x55, 0x54, 0x81, 0xbf, 0x0f, 0x81, 0x0f, 0x1d, 0x00, 0x4f, // 4031,29
+	0x55, 0x54, 0x81, 0xb3, 0x0f, 0x8c, 0x00, 0x1d, 0x00, 0x3f, // 4019,29
+	0x55, 0x54, 0x82, 0x57, 0x0f, 0x36, 0x08, 0x4f, 0x00, 0xc8 //  untouch 3927,2102
+};
+
 uint16_t touch_corner1 = 0, touch_corner_timed = 0, x_tmp, y_tmp;
 uint8_t idx = 0;
 
@@ -222,7 +232,30 @@ static void tmr0isr(void);
 static void delayisr(void);
 static void uart1risr(void);
 uint32_t get_ticks(void);
+void clear_ticks(void);
 void uart2work(void);
+uint8_t uart_stuff(uint8_t);
+
+/*
+ * sim touchscreen presses
+ */
+uint8_t uart_stuff(uint8_t touch)
+{
+	static uint8_t line = 0;
+
+	if (touch >= ELO_TEST) {
+		touch = 0;
+	}
+
+	if (line >= ELO_TEST) {
+		line = touch;
+	}
+
+	for (uint8_t i = 0; i < ELO_SEQ; i++) {
+		UART2_RxDataStuff(testcodes[line][i]);
+	}
+	return line++;
+}
 
 void uart2work(void)
 {
@@ -344,7 +377,7 @@ void uart2work(void)
 					elobuf_out[4] = 0x00;
 					elobuf_out[5] = 0x0f;
 
-					if (ssbuf[2]&0b001) { // Untouch
+					if (ssbuf[2] == 0x82) { // Untouch
 						S.UNTOUCH = true; // untouch sequence found
 						elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
 						elobuf_out[1] = 0x80;
@@ -440,6 +473,9 @@ static void tmr0isr(void)
 	//check for TMR0 overflow
 	idx = 0; // reset packet char index counter
 	status.tohost = false; // when packets stop allow for next updates
+	if (S.TEST_MODE) {
+		TMR0_WriteTimer(0x01ff);
+	}
 	RLED_Toggle();
 
 	if (S.LCD_OK) {
@@ -476,6 +512,13 @@ uint32_t get_ticks(void)
 	tmp = (uint32_t) status.ticks;
 	PIE3bits.TMR1IE = 1;
 	return tmp;
+}
+
+void clear_ticks(void)
+{
+	PIE3bits.TMR1IE = 0;
+	status.ticks = 0;
+	PIE3bits.TMR1IE = 1;
 }
 
 void touch_cam(void)
@@ -640,9 +683,12 @@ void main(void)
 			z = 0b11111110;
 			DATAEE_WriteByte((uint16_t) 0x380001, z);
 			sprintf(opbuffer, "VIISION DELL_E215546");
+			if (!MIN1_GetValue()) { // check for double jumper to start test-mode
+				S.TEST_MODE = true;
+			}
 			MLED_SetHigh();
 		}
-		if (z == 0b11111101 || (!MIN1_GetValue())) {
+		if (z == 0b11111101 || (!MIN1_GetValue() && MIN0_GetValue())) {
 			screen_type = DELL_E215546;
 			emulat_type = E220;
 			z = 0b11111101;
@@ -839,6 +885,10 @@ void main(void)
 		/* Loop forever */
 		while (true) { // busy loop
 			MISC_Toggle();
+			if (S.TEST_MODE && (get_ticks() > 250)) {
+				uart_stuff(0);
+				clear_ticks();
+			}
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
