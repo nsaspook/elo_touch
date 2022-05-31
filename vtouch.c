@@ -154,6 +154,14 @@ enum emulat_type_t {
 	VIISION, E220, OTHER_MECH
 };
 
+enum test_type {
+	TUL = 0, // touch upper left
+	TUR,
+	TLL,
+	TLR,
+	TUT, // touch untouch
+};
+
 enum screen_type_t screen_type;
 enum emulat_type_t emulat_type;
 
@@ -237,11 +245,11 @@ void uart2work(void);
 uint8_t uart_stuff(uint8_t);
 
 /*
- * sim touchscreen presses
+ * simulate touchscreen presses
  */
 uint8_t uart_stuff(uint8_t touch)
 {
-	static uint8_t line = 0;
+	static uint8_t line = 0; // keep track of current touch string
 
 	if (touch >= ELO_TEST) {
 		touch = 0;
@@ -370,7 +378,7 @@ void uart2work(void)
 					y_tmp = (y_tmp >> (uint16_t) 4); // rescale y
 					elobuf_in[1] = (uint8_t) x_tmp; // X to 8-bit var
 					elobuf_in[2] = (uint8_t) y_tmp; // Y
-					elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into binary 4002 format
+					elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into special Varian binary 4002 format
 					elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
 					elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
 					elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
@@ -886,7 +894,7 @@ void main(void)
 		while (true) { // busy loop
 			MISC_Toggle();
 			if (S.TEST_MODE && (get_ticks() > 250)) {
-				uart_stuff(0);
+				uart_stuff(TUL);
 				clear_ticks();
 			}
 			if (UART2_is_rx_ready()) {
