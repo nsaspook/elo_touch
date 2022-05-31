@@ -184,7 +184,7 @@ volatile struct statustype status = {
  * Viision setup codes
  */
 const uint8_t elocodes[ELO_SEQ_V80][ELO_SEQ] = {// elo 2210/2216 program codes
-	'U', 'M', 0x00, 0x87, 0x40, '0', '0', '0', '0', '0', // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
+	'U', 'M', 0x00, 0x85, 0x40, '0', '0', '0', '0', '0', // initial touch, NO stream Point,untouch,Z-axis,no scaling, tracking
 	'U', 'S', 'X', 0x00, 0x0ff, 0x00, 0x01, '0', '0', '0', // scale x: X,Y,Z scaling Not Used
 	'U', 'S', 'Y', 0x00, 0x0ff, 0x00, 0x01, '0', '0', '0', // scale y
 	'U', 'S', 'Z', 0x00, 0x01, 0x00, 0x0f, '0', '0', '0', // scale z
@@ -365,13 +365,13 @@ void uart2work(void)
 				if (ssbuf[1] == 'T') {
 					status.restart_delay = 0;
 					// Touch
-					ssreport.x_cord = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8));
-					ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8));
+					ssreport.x_cord = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
+					ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)); // get 12-bit Y result
 					S.TOUCH = true; // first touch sequence has been sent
 					x_tmp = ssreport.x_cord;
 					y_tmp = ssreport.y_cord;
-					//x_tmp = 4095 - x_tmp; // FLIP X
-					//y_tmp = 4095 - y_tmp; // FLIP Y
+					x_tmp = 4095 - x_tmp; // FLIP X
+					y_tmp = 4095 - y_tmp; // FLIP Y
 					x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
 					y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
 					x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
@@ -617,7 +617,7 @@ void setup_lcd_v80(void)
 		/* program the display */
 		elopacketout((uint8_t*) & elocodes[0][0], ELO_SEQ, 0); // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
 		elopacketout((uint8_t*) & elocodes[4][0], ELO_SEQ, 0); // packet delays to match old terminal
-		elopacketout((uint8_t*) & elocodes[5][0], ELO_SEQ, 0); // emulation E281A-4002 Binary (Z=1-255 on touch, Z=0 on untouch)
+		//		elopacketout((uint8_t*) & elocodes[5][0], ELO_SEQ, 0); // emulation E281A-4002 Binary (Z=1-255 on touch, Z=0 on untouch)
 		elopacketout((uint8_t*) & elocodes[6][0], ELO_SEQ, 0); // nvram save
 	}
 }
@@ -820,6 +820,8 @@ void main(void)
 						sprintf(opbuffer, "E220 DELL_E224864");
 					}
 					eaDogM_WriteStringAtPos(3, 0, opbuffer);
+					sprintf(buffer, " X %u Y %u  ", ssreport.x_cord, ssreport.y_cord);
+					eaDogM_WriteStringAtPos(1, 0, buffer);
 				}
 			}
 
