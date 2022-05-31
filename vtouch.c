@@ -116,7 +116,7 @@ typedef struct reporttype {
 } reporttype;
 
 typedef struct statustype {
-	uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks;
+	uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks, id;
 	bool host_write;
 	bool scrn_write;
 	bool do_cap;
@@ -224,11 +224,11 @@ uint8_t elocodes_e7[] = {// dummy packet
 };
 
 const uint8_t testcodes[ELO_TEST][ELO_SEQ] = {
-	0x55, 0x54, 0x81, 0x54, 0x00, 0x88, 0x00, 0x2d, 0x00, 0xdd, // touch corners X,Y 54,136
-	0x55, 0x54, 0x81, 0x45, 0x00, 0x83, 0x0f, 0x1a, 0x00, 0xc5, // 69,3971
-	0x55, 0x54, 0x81, 0xbf, 0x0f, 0x81, 0x0f, 0x1d, 0x00, 0x4f, // 4031,29
-	0x55, 0x54, 0x81, 0xb3, 0x0f, 0x8c, 0x00, 0x1d, 0x00, 0x3f, // 4019,29
-	0x55, 0x54, 0x82, 0x57, 0x0f, 0x36, 0x08, 0x4f, 0x00, 0xc8 //  untouch 3927,2102
+	0x55, 0x54, 0x81, 0x54, 0x00, 0x88, 0x00, 0x2d, 0x00, 0xdd, // touch corners X,Y 54, 136
+	0x55, 0x54, 0x81, 0x45, 0x00, 0x83, 0x0f, 0x1a, 0x00, 0xc5, // 69, 3971
+	0x55, 0x54, 0x81, 0xbf, 0x0f, 0x81, 0x0f, 0x1d, 0x00, 0x4f, // 4031, 29
+	0x55, 0x54, 0x81, 0xb3, 0x0f, 0x8c, 0x00, 0x1d, 0x00, 0x3f, // 4019, 3869
+	0x55, 0x54, 0x84, 0x57, 0x0f, 0x36, 0x08, 0x4f, 0x00, 0xc8 //  untouch 3927,2102
 };
 
 uint16_t touch_corner1 = 0, touch_corner_timed = 0, x_tmp, y_tmp;
@@ -298,7 +298,7 @@ void uart2work(void)
 
 					idx = 0;
 					if (c != sum) { // bad checksum
-
+						status.id++;
 						break;
 					}
 					if (ssbuf[1] == 'T') {
@@ -307,6 +307,8 @@ void uart2work(void)
 						if (!status.tohost) {
 							ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4;
 							ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
+							x_tmp = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
+							y_tmp = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)); // get 12-bit Y result
 						}
 					} else {
 						if (ssbuf[1] == 'I') {
@@ -360,6 +362,7 @@ void uart2work(void)
 			case 9: // end of touch controller packet
 				idx = 0;
 				if (c != sum) { // bad checksum
+					status.id++;
 					break;
 				}
 				if (ssbuf[1] == 'T') {
@@ -385,7 +388,7 @@ void uart2work(void)
 					elobuf_out[4] = 0x00;
 					elobuf_out[5] = 0x0f;
 
-					if (ssbuf[2] == 0x82) { // Untouch
+					if (ssbuf[2] == 0x84) { // Untouch
 						S.UNTOUCH = true; // untouch sequence found
 						elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
 						elobuf_out[1] = 0x80;
@@ -428,7 +431,6 @@ void uart2work(void)
 					if (ssbuf[1] == 'A') {
 						status.restart_delay = 0;
 						RLED_SetHigh(); // connect  led ON
-						S.speedup = -10000;
 					}
 				}
 				break;
@@ -617,7 +619,6 @@ void setup_lcd_v80(void)
 		/* program the display */
 		elopacketout((uint8_t*) & elocodes[0][0], ELO_SEQ, 0); // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
 		elopacketout((uint8_t*) & elocodes[4][0], ELO_SEQ, 0); // packet delays to match old terminal
-		//		elopacketout((uint8_t*) & elocodes[5][0], ELO_SEQ, 0); // emulation E281A-4002 Binary (Z=1-255 on touch, Z=0 on untouch)
 		elopacketout((uint8_t*) & elocodes[6][0], ELO_SEQ, 0); // nvram save
 	}
 }
@@ -693,6 +694,7 @@ void main(void)
 			sprintf(opbuffer, "VIISION DELL_E215546");
 			if (!MIN1_GetValue()) { // check for double jumper to start test-mode
 				S.TEST_MODE = true;
+				ssreport.id_type = 0x32;
 			}
 			MLED_SetHigh();
 		}
@@ -701,13 +703,13 @@ void main(void)
 			emulat_type = E220;
 			z = 0b11111101;
 			DATAEE_WriteByte((uint16_t) 0x380001, z);
-			sprintf(opbuffer, "E220 DELL_E215546");
+			sprintf(opbuffer, "E220 DELL_E215546  ");
 			MLED_SetLow();
 		}
 		if (z == 0b11111100) {
 			screen_type = DELL_E215546;
 			emulat_type = OTHER_MECH;
-			sprintf(opbuffer, "OTHER DELL_E215546");
+			sprintf(opbuffer, "OTHER DELL_E215546 ");
 		}
 	}
 
@@ -775,7 +777,7 @@ void main(void)
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
-			if (j++ >= (BLINK_RATE_E220 + S.speedup)) { // delay a bit ok
+			if (j++ >= (BLINK_RATE_E220)) { // delay a bit ok
 #ifdef	DEBUG_CAM
 				CAM_RELAY = !CAM_RELAY;
 #endif
@@ -808,10 +810,10 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, get_ticks(), ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
-						sprintf(opbuffer, "NO SCREEN DETECTED  ");
+						sprintf(opbuffer, "E220 DEFAULT     ");
 					}
 					if (ssreport.id_type == 0x32) {
 						sprintf(opbuffer, "E220 DELL_E215546");
@@ -820,8 +822,10 @@ void main(void)
 						sprintf(opbuffer, "E220 DELL_E224864");
 					}
 					eaDogM_WriteStringAtPos(3, 0, opbuffer);
-					sprintf(buffer, " X %u Y %u  ", ssreport.x_cord, ssreport.y_cord);
+					sprintf(buffer, "T-R: X%4u Y%4u           ", x_tmp, y_tmp);
 					eaDogM_WriteStringAtPos(1, 0, buffer);
+					sprintf(buffer, "T-S: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
+					eaDogM_WriteStringAtPos(2, 0, buffer);
 				}
 			}
 
@@ -892,6 +896,9 @@ void main(void)
 	}
 
 	if (emulat_type == VIISION) {
+		putc2(0x46);
+		wdtdelay(30000);
+		setup_lcd_v80();
 		/* Loop forever */
 		while (true) { // busy loop
 			MISC_Toggle();
@@ -911,18 +918,22 @@ void main(void)
 				j = 0;
 				if (update_screen++ >= SCREEN_UPDATE) {
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.status_count, status.touch_count, get_ticks(), ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
-						sprintf(opbuffer, "NO SCREEN DETECTED  ");
+						sprintf(opbuffer, "VIISION DEFAULT      ");
 					}
 					if (ssreport.id_type == 0x32) {
-						sprintf(opbuffer, "E220 DELL_E215546");
+						sprintf(opbuffer, "VIISION DELL_E215546 ");
 					}
 					if (ssreport.id_type == 0x33) {
-						sprintf(opbuffer, "E220 DELL_E224864");
+						sprintf(opbuffer, "VIISION DELL_E224864 ");
 					}
 					eaDogM_WriteStringAtPos(3, 0, opbuffer);
+					sprintf(buffer, "T-R: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
+					eaDogM_WriteStringAtPos(1, 0, buffer);
+					sprintf(buffer, "T-S: X%4u Y%4u           ", x_tmp, y_tmp);
+					eaDogM_WriteStringAtPos(2, 0, buffer);
 				}
 			}
 			ClrWdt(); // reset the WDT timer

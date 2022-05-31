@@ -28,7 +28,8 @@ extern "C" {
 #define ELO_REV_H	4096
 #define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
 #define ELO_SS_V_SCALE	0.380 
-#define	BLINK_RATE_E220	20000
+#define	BLINK_RATE_E220	100
+#define	BLINK_RATE_V80	100
 #define AUTO_RESTART	false
 #define SINGLE_TOUCH	false
 #define GOOD_MAX        128		// max number of chars from TS without expected frames seen
@@ -37,14 +38,13 @@ extern "C" {
 #define MAX_CAM_TOUCH	5
 #define CAM_RELAY       RELAY_LAT
 #define	TIMERPACKET     41000
-#define SCREEN_UPDATE	20
+#define SCREEN_UPDATE	500
 
 #define BUF_SIZE_V80        16
 #define	CMD_SIZE_SS_V80	    6		// E281A-4002 software emulation Binary size of command
 #define	HOST_CMD_SIZE_V80   6		// tool command size
 #define	CMD_OVERFLOW_V80    HOST_CMD_SIZE_V80*2
 #define ELO_SEQ_V80         10		// max smartset sequences
-#define	BLINK_RATE_V80	25000		// BSG timing
 #define	X_SCALE         1.90		// scaling factor to host screen X logical coords
 #define	Y_SCALE         1.75		// scaling factor to host screen Y logical coords
 #define	X_SCALE_SS      0.905		// scaling factor to host screen X logical coords
