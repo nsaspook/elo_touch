@@ -357,13 +357,13 @@ void uart2work(void)
 				if (ssbuf[1] == 'T') {
 					status.restart_delay = 0;
 					// Touch
-					ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4;
-					ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
+					ssreport.x_cord = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8));
+					ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8));
 					S.TOUCH = true; // first touch sequence has been sent
 					x_tmp = ssreport.x_cord;
 					y_tmp = ssreport.y_cord;
-					x_tmp = 4095 - x_tmp; // FLIP X
-					y_tmp = 4095 - y_tmp; // FLIP Y
+					//x_tmp = 4095 - x_tmp; // FLIP X
+					//y_tmp = 4095 - y_tmp; // FLIP Y
 					x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
 					y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
 					x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
