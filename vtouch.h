@@ -39,7 +39,7 @@ extern "C" {
 #define CAM_RELAY       RELAY_LAT
 #define	TIMERPACKET     41000
 #define SCREEN_UPDATE	500
-#define TEST_UPDATE	66
+#define TEST_UPDATE	50	// 40 min timeing value for 20ms per touch string
 
 #define BUF_SIZE_V80        16
 #define	CMD_SIZE_SS_V80	    6		// E281A-4002 software emulation Binary size of command
