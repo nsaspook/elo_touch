@@ -22,10 +22,10 @@ extern "C" {
 #define ELO_SIZE	12
 #define ELO_SEQ		10
 #define ELO_TEST	5
-#define ELO_IT		0x80 // ELO T response status byte for inital touch
-#define ELO_ST		0x81 // ELO T response status byte for steam touch
-#define ELO_UT		0x82 // ELO T response status byte for untouch
-#define ELO_REV_H	4096
+#define ELO_IT		0x81 // ELO T response status byte for inital touch
+#define ELO_ST		0x82 // ELO T response status byte for steam touch
+#define ELO_UT		0x84 // ELO T response status byte for untouch
+#define ELO_REV_H	4095
 #define ELO_SS_H_SCALE	0.470 // old value 0.483 V4.03
 #define ELO_SS_V_SCALE	0.380 
 #define	BLINK_RATE_E220	100
@@ -39,6 +39,7 @@ extern "C" {
 #define CAM_RELAY       RELAY_LAT
 #define	TIMERPACKET     41000
 #define SCREEN_UPDATE	500
+#define TEST_UPDATE	66
 
 #define BUF_SIZE_V80        16
 #define	CMD_SIZE_SS_V80	    6		// E281A-4002 software emulation Binary size of command

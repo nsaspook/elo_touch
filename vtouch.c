@@ -244,6 +244,7 @@ uint32_t get_ticks(void);
 void clear_ticks(void);
 void uart2work(void);
 uint8_t uart_stuff(uint8_t);
+void setup_lcd_e220(void);
 
 /*
  * simulate touchscreen presses
@@ -374,8 +375,8 @@ void uart2work(void)
 					S.TOUCH = true; // first touch sequence has been sent
 					x_tmp = ssreport.x_cord;
 					y_tmp = ssreport.y_cord;
-					x_tmp = 4095 - x_tmp; // FLIP X
-					y_tmp = 4095 - y_tmp; // FLIP Y
+					x_tmp = ELO_REV_H - x_tmp; // FLIP X
+					y_tmp = ELO_REV_H - y_tmp; // FLIP Y
 					x_tmp = (uint16_t) ((float) x_tmp * (float) xs_ss); // X rescale range
 					y_tmp = (uint16_t) ((float) y_tmp * (float) ys_ss); // Y rescale
 					x_tmp = (x_tmp >> (uint16_t) 4); // rescale x to 8-bit value
@@ -389,7 +390,7 @@ void uart2work(void)
 					elobuf_out[4] = 0x00;
 					elobuf_out[5] = 0x0f;
 
-					if (ssbuf[2] == 0x84) { // Untouch
+					if (ssbuf[2] == ELO_UT) { // Untouch
 						S.UNTOUCH = true; // untouch sequence found
 						elobuf_out[0] = 0xc0; // restuff the buffer with needed varian untouch sequence
 						elobuf_out[1] = 0x80;
@@ -774,7 +775,6 @@ void main(void)
 		Test_Screen(); // send touch init commands
 		/* Loop forever */
 		while (true) {
-			MISC_Toggle();
 			if (UART2_is_rx_ready()) {
 				uart2work();
 			}
@@ -827,6 +827,7 @@ void main(void)
 					eaDogM_WriteStringAtPos(1, 0, buffer);
 					sprintf(buffer, "T-S: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
 					eaDogM_WriteStringAtPos(2, 0, buffer);
+					MISC_Toggle();
 				}
 			}
 
@@ -897,13 +898,10 @@ void main(void)
 	}
 
 	if (emulat_type == VIISION) {
-		putc2(0x46);
-		wdtdelay(30000);
 		setup_lcd_v80();
 		/* Loop forever */
 		while (true) { // busy loop
-			MISC_Toggle();
-			if (S.TEST_MODE && (get_ticks() > 250)) {
+			if (S.TEST_MODE && (get_ticks() > TEST_UPDATE)) {
 				uart_stuff(TUL);
 				clear_ticks();
 			}
@@ -935,6 +933,7 @@ void main(void)
 					eaDogM_WriteStringAtPos(1, 0, buffer);
 					sprintf(buffer, "T-S: X%4u Y%4u           ", x_tmp, y_tmp);
 					eaDogM_WriteStringAtPos(2, 0, buffer);
+					MISC_Toggle();
 				}
 			}
 			ClrWdt(); // reset the WDT timer
