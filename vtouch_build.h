@@ -17,7 +17,7 @@ extern "C" {
 #include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
 #include "vtouch_8722.X/mcc_generated_files/memory.h"
 
-	const char build_version[] = "V5.00 Vtouch Q41 ";
+	const char build_version[] = "V5.10 Vtouch Q41 ";
 
 	void wdtdelay(const uint32_t);
 	void putc1(const uint8_t);
