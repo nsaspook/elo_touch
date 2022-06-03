@@ -23,7 +23,7 @@
  * V1.01	pre compute X/Y scale values
  * V1.02	Clean up port setup code and WDT (remove clrwdt from isr)
  * V1.03        New touchscreen support.
- * V1.04	xmit rs232 uses int mode in ISR
+ * V1.04	xmit RS232 uses int mode in ISR
  * V1.05	Configuration for touch code repeats sending to host
  * V1.06	Set touch repeats to zero
  * V1.07        Set Z touch value to max 0x0F
@@ -67,7 +67,7 @@
 
 /* E220/E500 terminal code */
 /*
- * This program converts the rs-232 output from a ELO touch-screen controller
+ * This program converts the RS-232 output from a ELO touch-screen controller
  * to a format that can be used with the Varian E220/E500 Implanter
  * The touch controller must be first programmed
  * USART1 is the host comm port
