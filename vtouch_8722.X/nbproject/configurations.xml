@@ -18,6 +18,7 @@
         <itemPath>mcc_generated_files/memory.h</itemPath>
         <itemPath>mcc_generated_files/dma1.h</itemPath>
         <itemPath>mcc_generated_files/tmr1.h</itemPath>
+        <itemPath>mcc_generated_files/crc.h</itemPath>
       </logicalFolder>
       <itemPath>../vtouch.h</itemPath>
       <itemPath>../vtouch_build.h</itemPath>
@@ -47,6 +48,7 @@
         <itemPath>mcc_generated_files/memory.c</itemPath>
         <itemPath>mcc_generated_files/dma1.c</itemPath>
         <itemPath>mcc_generated_files/tmr1.c</itemPath>
+        <itemPath>mcc_generated_files/crc.c</itemPath>
       </logicalFolder>
       <itemPath>../vtouch.c</itemPath>
       <itemPath>../ringbufs.c</itemPath>
