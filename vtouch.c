@@ -59,6 +59,7 @@
  * DIO2/SPI plug
  * 1..2 MIN0 jumper: DELL_E215546 VIISION
  * 3..4 MIN1 jumper: DELL_E215546 E220
+ * Both jumpers for auto touch test mode
  *
  * HFBR-0501Z light link converter for VIISION front controller
  * connected to host USART1 xmit output pin
@@ -85,7 +86,7 @@
  * Male         Red   2-3-rx
  *              White 3-2-tx
  *
- * relay output 
+ * relay output
  * DIO3 pin1 relay power +5vdc
  *	pin2 relay ground
  * VGA converter box relay
@@ -100,40 +101,9 @@
 #pragma warning disable 520
 #pragma warning disable 1498
 
-#include <xc.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include "vtouch.h"
 #include "vtouch_build.h"
 #include "eadog.h"
-
-const char *build_date = __DATE__, *build_time = __TIME__;
-
-typedef struct reporttype {
-	uint8_t headder, status;
-	uint16_t x_cord, y_cord, z_cord;
-	uint8_t checksum;
-	uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
-} reporttype;
-
-typedef struct statustype {
-	uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks, id;
-	bool host_write;
-	bool scrn_write;
-	bool do_cap;
-	bool tohost;
-	uint8_t comm_check, init_check, cam_time;
-	uint16_t restart_delay;
-} statustype;
-
-typedef struct disp_state_t {
-	bool CATCH, TOUCH, UNTOUCH, LCD_OK,
-	SCREEN_INIT,
-	CATCH46, CATCH37, TSTATUS, CAM;
-	bool DATA1, DATA2, TEST_MODE;
-	uint16_t c_idx;
-	int16_t speedup;
-} disp_state_t;
 
 /*
  * Old monitors
@@ -147,21 +117,6 @@ typedef struct disp_state_t {
  * E483757	new remote OSD
  * E005277	power brick
  */
-enum screen_type_t {
-	DELL_E215546, OTHER_SCREEN
-};
-
-enum emulat_type_t {
-	VIISION, E220, OTHER_MECH
-};
-
-enum test_type {
-	TUL = 0, // touch upper left
-	TUR,
-	TLL,
-	TLR,
-	TUT, // touch untouch
-};
 
 enum screen_type_t screen_type;
 enum emulat_type_t emulat_type;
@@ -247,7 +202,7 @@ uint8_t uart_stuff(uint8_t);
 void setup_lcd_e220(void);
 
 /*
- * simulate touchscreen presses
+ * push touchscreen presses to serial buffer
  */
 uint8_t uart_stuff(uint8_t touch)
 {
@@ -267,6 +222,9 @@ uint8_t uart_stuff(uint8_t touch)
 	return line++;
 }
 
+/*
+ * protocol processing functions
+ */
 void uart2work(void)
 {
 	uint8_t c, i, uchar;
@@ -326,7 +284,6 @@ void uart2work(void)
 						if (ssbuf[1] == 'A') {
 							status.restart_delay = 0;
 							RLED_SetHigh(); // connect  led ON
-							S.speedup = -10000;
 						}
 					}
 					break;
@@ -666,7 +623,6 @@ void main(void)
 
 	status.do_cap = DO_CAP;
 	S.c_idx = 0;
-	S.speedup = 0;
 
 	// default interface
 	screen_type = DELL_E215546;
@@ -803,7 +759,6 @@ void main(void)
 					} else {
 						if ((status.restart_delay >= (uint16_t) 150) && (S.TSTATUS)) { // after delay restart TS status.
 							S.TSTATUS = false; // lost comms while connected
-							S.speedup = 0;
 							status.restart_delay = 0;
 						};
 					};

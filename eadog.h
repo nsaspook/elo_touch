@@ -6,7 +6,7 @@
  */
 
 /* Parts taken from:
- * Modified for C18 and PIC18F45K80 with SPI using ring buffers with interrupts
+ * Modified for XC8 and with SPI using ring buffers with interrupts
  *
  *            file: EA-DOGM_MIO.c
  *         version: 2.03

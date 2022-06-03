@@ -12,6 +12,11 @@
 extern "C" {
 #endif
 
+#include <xc.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 #define	DO_CAP			false       // E220 save data for usarts 1&2, save to eeprom
 #define	TS_TYPE			0		// E220 original screen type: 0 for old CRT type screens, 1 for newer Varian LCD screens with Carroll-Touch
 #define BUF_SIZE		32
@@ -27,11 +32,10 @@ extern "C" {
 #define ELO_UT			0x84 // ELO T response status byte for untouch
 #define ELO_REV_H		4095
 #define ELO_SS_H_SCALE		0.470 // old value 0.483 V4.03
-#define ELO_SS_V_SCALE		0.380 
+#define ELO_SS_V_SCALE		0.380
 #define	BLINK_RATE_E220		100
 #define	BLINK_RATE_V80		100
 #define AUTO_RESTART		false
-#define SINGLE_TOUCH		false
 #define GOOD_MAX		128		// max number of chars from TS without expected frames seen
 #define MAX_CAM_TIME		5
 #define MAX_CAM_TIMEOUT		30
@@ -39,7 +43,7 @@ extern "C" {
 #define CAM_RELAY		RELAY_LAT
 #define	TIMERPACKET		41000
 #define SCREEN_UPDATE		500
-#define TEST_UPDATE		50	// 40 min timeing value for 20ms per touch string
+#define TEST_UPDATE		66	// 40 min timing value for 20ms per touch string, 666 gives scrooling X,Y display
 
 #define BUF_SIZE_V80		16
 #define	CMD_SIZE_SS_V80		6		// E281A-4002 software emulation Binary size of command
@@ -61,6 +65,50 @@ extern "C" {
 #define	TIMERFAST		58974		// fast flash or testing
 #define	COMM_CHK_TIME		30		// LCD comm heartbeat
 #define	LCD_CHK_TIME		36		// LCD heartbeat timeout
+
+
+	const char *build_date = __DATE__, *build_time = __TIME__;
+
+	typedef struct reporttype {
+		uint8_t headder, status;
+		uint16_t x_cord, y_cord, z_cord;
+		uint8_t checksum;
+		uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
+	} reporttype;
+
+	typedef struct statustype {
+		uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks, id;
+		bool host_write;
+		bool scrn_write;
+		bool do_cap;
+		bool tohost;
+		uint8_t comm_check, init_check, cam_time;
+		uint16_t restart_delay;
+	} statustype;
+
+	typedef struct disp_state_t {
+		bool CATCH, TOUCH, UNTOUCH, LCD_OK,
+		SCREEN_INIT,
+		CATCH46, CATCH37, TSTATUS, CAM;
+		bool DATA1, DATA2, TEST_MODE;
+		uint16_t c_idx;
+	} disp_state_t;
+
+	enum screen_type_t {
+		DELL_E215546, OTHER_SCREEN
+	};
+
+	enum emulat_type_t {
+		VIISION, E220, OTHER_MECH
+	};
+
+	enum test_type {
+		TUL = 0, // touch upper left
+		TUR,
+		TLL,
+		TLR,
+		TUT, // touch untouch
+	};
 
 #ifdef	__cplusplus
 }
