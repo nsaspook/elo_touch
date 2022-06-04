@@ -49,7 +49,7 @@ extern "C" {
 #define	CMD_SIZE_SS_V80		6		// E281A-4002 software emulation Binary size of command
 #define	HOST_CMD_SIZE_V80	6		// tool command size
 #define	CMD_OVERFLOW_V80	HOST_CMD_SIZE_V80*2
-#define ELO_SEQ_V80		10		// max smartset sequences
+#define ELO_SEQ_V80		4		// max smartset sequences
 #define	X_SCALE			1.90		// scaling factor to host screen X logical coords
 #define	Y_SCALE			1.75		// scaling factor to host screen Y logical coords
 #define	X_SCALE_SS		0.905		// scaling factor to host screen X logical coords
@@ -67,48 +67,48 @@ extern "C" {
 #define	LCD_CHK_TIME		36		// LCD heartbeat timeout
 
 
-	const char *build_date = __DATE__, *build_time = __TIME__;
+    const char *build_date = __DATE__, *build_time = __TIME__;
 
-	typedef struct reporttype {
-		uint8_t headder, status;
-		uint16_t x_cord, y_cord, z_cord;
-		uint8_t checksum;
-		uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
-	} reporttype;
+    typedef struct reporttype {
+        uint8_t headder, status;
+        uint16_t x_cord, y_cord, z_cord;
+        uint8_t checksum;
+        uint8_t id_type, id_io, id_features, id_minor, id_major, id_p, id_class;
+    } reporttype;
 
-	typedef struct statustype {
-		uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks, id;
-		bool host_write;
-		bool scrn_write;
-		bool do_cap;
-		bool tohost;
-		uint8_t comm_check, init_check, cam_time;
-		uint16_t restart_delay;
-	} statustype;
+    typedef struct statustype {
+        uint32_t alive_led, touch_count, resync_count, rawint_count, status_count, ticks, id, crc;
+        bool host_write;
+        bool scrn_write;
+        bool do_cap;
+        bool tohost;
+        uint8_t comm_check, init_check, cam_time;
+        uint16_t restart_delay;
+    } statustype;
 
-	typedef struct disp_state_t {
-		bool CATCH, TOUCH, UNTOUCH, LCD_OK,
-		SCREEN_INIT,
-		CATCH46, CATCH37, TSTATUS, CAM;
-		bool DATA1, DATA2, TEST_MODE;
-		uint16_t c_idx;
-	} disp_state_t;
+    typedef struct disp_state_t {
+        bool CATCH, TOUCH, UNTOUCH, LCD_OK,
+        SCREEN_INIT,
+        CATCH46, CATCH37, TSTATUS, CAM;
+        bool DATA1, DATA2, TEST_MODE;
+        uint16_t c_idx;
+    } disp_state_t;
 
-	enum screen_type_t {
-		DELL_E215546, OTHER_SCREEN
-	};
+    enum screen_type_t {
+        DELL_E215546, OTHER_SCREEN
+    };
 
-	enum emulat_type_t {
-		VIISION, E220, OTHER_MECH
-	};
+    enum emulat_type_t {
+        VIISION, E220, OTHER_MECH
+    };
 
-	enum test_type {
-		TUL = 0, // touch upper left
-		TUR,
-		TLL,
-		TLR,
-		TUT, // touch untouch
-	};
+    enum test_type {
+        TUL = 0, // touch upper left
+        TUR,
+        TLL,
+        TLR,
+        TUT, // touch untouch
+    };
 
 #ifdef	__cplusplus
 }
