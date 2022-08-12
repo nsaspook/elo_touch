@@ -65,7 +65,7 @@
  *
  * HFBR-0501Z light link converter for VIISION front controller
  * connected to host USART1 xmit output pin
- * Jumper from RELAY pin to GND sets UART1 TX inverted output for possible light-link issues
+ * Jumper DIO3 from RELAY pin#1 to GND pin#2 sets UART1 TX inverted output for possible light-link issues at boot
  */
 
 /* E220/E500 terminal code */
@@ -90,7 +90,7 @@
  *              White 3-2-tx
  *
  * relay output
- * DIO3 pin1 relay power +5vdc
+ * DIO3 pin1 relay power PIn +5vdc
  *	pin2 relay ground
  * VGA converter box relay
  * Omron
@@ -600,6 +600,7 @@ void main(void)
 	uint8_t scaled_char;
 	float rez_scale_h = 1.0, rez_parm_h, rez_scale_v = 1.0, rez_parm_v;
 	float rez_scale_h_ss = ELO_SS_H_SCALE, rez_scale_v_ss = ELO_SS_V_SCALE;
+	bool TX1INV = false;
 
 	SYSTEM_Initialize();
 	//    CRC_StartScanner();
@@ -844,10 +845,15 @@ void main(void)
 	if (emulat_type == VIISION) {
 		setup_lcd_v80();
 		RELAY_SetHigh();
-		if (!RELAY_GetValue()) { // we have a jumper on the RELAY output line to round, invert UART1 TX line
-			RELAY_SetLow(); // pull the RELAY line to zero
+		RELAY_SetDigitalInput();
+		RELAY_SetPullup();
+		if (RELAY_GetValue() == 0) { // we have a jumper on the RELAY output line to round, invert UART1 TX line
 			U1CON2 = 0x04; // TX1 inverted
+			TX1INV = true;
 		}
+		RELAY_SetLow(); // pull the RELAY line to zero
+		RELAY_SetDigitalOutput();
+
 		/* Loop forever */
 		while (true) { // busy loop
 			if (S.TEST_MODE && (get_ticks() > TEST_UPDATE)) {
@@ -864,7 +870,11 @@ void main(void)
 					//                        status.crc = (uint32_t) CRCOUTL;
 					//                    }
 					update_screen = 0;
-					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					if (!TX1INV) {
+						sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					} else {
+						sprintf(buffer, "I %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
+					}
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
 						sprintf(opbuffer, "VIISION DEFAULT      ");
