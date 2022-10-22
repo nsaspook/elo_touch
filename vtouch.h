@@ -27,7 +27,7 @@ extern "C" {
 #define ELO_SIZE		12
 #define ELO_SEQ			10
 #define ELO_TEST		5
-#define ELO_IT			0x81 // ELO T response status byte for inital touch
+#define ELO_IT			0x81 // ELO T response status byte for inital touch, for smart-touch, accu-touch has zero instead of 8
 #define ELO_ST			0x82 // ELO T response status byte for steam touch
 #define ELO_UT			0x84 // ELO T response status byte for untouch
 #define ELO_REV_H		4095
