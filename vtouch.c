@@ -131,7 +131,7 @@ uint16_t timer0_off = TIMEROFFSET;
 
 uint8_t elobuf[BUF_SIZE], elobuf_out[BUF_SIZE_V80], elobuf_in[BUF_SIZE_V80], xl = X_LOGICAL, yl = Y_LOGICAL;
 uint8_t ssbuf[BUF_SIZE];
-volatile uint8_t offset = 0x14; // touch origin offset for accutouch
+volatile uint8_t offset = 0x1B; // touch origin offset for accutouch
 
 reporttype ssreport;
 volatile disp_state_t S = {
@@ -329,6 +329,8 @@ void uart2work(void) {
                             xy_flip = true;
                         } else {
                             xy_flip = false; // DON'T FLIP with accutouch
+                            xs_ss = X_SCALE_SS_A;
+                            ys_ss = Y_SCALE_SS_A;
                         }
                         // Touch
                         ssreport.x_cord = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
@@ -352,7 +354,7 @@ void uart2work(void) {
                         elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
                         elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
                         elobuf_out[4] = 0x00;
-                        elobuf_out[5] = 0x15;
+                        elobuf_out[5] = 0xff;
 
                         if ((ssbuf[2] | 0x80) == ELO_UT) { // Untouch
                             S.UNTOUCH = true; // untouch sequence found
@@ -557,9 +559,9 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow) {
 void setup_lcd_e220(void) {
     if (screen_type == DELL_E215546) {
         elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
-        wdtdelay(30000);
+        wdtdelay(100000);
         elopacketout(elocodes_e3, ELO_SEQ, 0); // reset to default smartset
-        wdtdelay(700000); // wait for LCD touch controller reset
+        wdtdelay(1000000); // wait for LCD touch controller reset
         elopacketout(elocodes_e0, ELO_SEQ, 0); // set touch packet spacing and timing
         elopacketout(elocodes_e2, ELO_SEQ, 0); // nvram save
     }
@@ -568,9 +570,9 @@ void setup_lcd_e220(void) {
 void setup_lcd_v80(void) {
     if (screen_type == DELL_E215546) {
         elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
-        wdtdelay(30000);
-        elopacketout((uint8_t*) & elocodes[3][0], ELO_SEQ, 0); // reset;
-        wdtdelay(700000); // wait for LCD touch controller reset
+        wdtdelay(100000);
+        elopacketout(elocodes_e3, ELO_SEQ, 0); // reset;
+        wdtdelay(1000000); // wait for LCD touch controller reset
         /* program the display */
         elopacketout((uint8_t*) & elocodes[0][0], ELO_SEQ, 0); // initial touch,stream Point,untouch,Z-axis,no scaling, tracking
         elopacketout((uint8_t*) & elocodes[1][0], ELO_SEQ, 0); // packet delays to match old terminal
@@ -621,7 +623,7 @@ void main(void) {
     screen_type = DELL_E215546;
     emulat_type = E220;
     z = 0b11111101;
-    sprintf(opbuffer, "E220 DELL_E215546");
+    sprintf(opbuffer, "E220 E215546");
 
     /*
      * set touchscreen emulation type code
@@ -642,7 +644,7 @@ void main(void) {
             emulat_type = VIISION;
             z = 0b11111110;
             DATAEE_WriteByte((uint16_t) 0x380001, z);
-            sprintf(opbuffer, "VIISION DELL_E215546");
+            sprintf(opbuffer, "VIISION E215546");
             if (!MIN1_GetValue()) { // check for double jumper to start test-mode
                 S.TEST_MODE = true;
                 ssreport.id_type = 0x32;
@@ -654,13 +656,13 @@ void main(void) {
             emulat_type = E220;
             z = 0b11111101;
             DATAEE_WriteByte((uint16_t) 0x380001, z);
-            sprintf(opbuffer, "E220 DELL_E215546  ");
+            sprintf(opbuffer, "E220 E215546  ");
             MLED_SetLow();
         }
         if (z == 0b11111100) {
             screen_type = DELL_E215546;
             emulat_type = OTHER_MECH;
-            sprintf(opbuffer, "OTHER DELL_E215546 ");
+            sprintf(opbuffer, "OTHER E215546 ");
         }
     }
 
@@ -762,13 +764,13 @@ void main(void) {
                     sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
                     eaDogM_WriteStringAtPos(0, 0, buffer);
                     if (ssreport.id_type == 0) {
-                        sprintf(opbuffer, "E220 DEFAULT     ");
+                        sprintf(opbuffer, "E220 DEFAULT ");
                     }
                     if (ssreport.id_type == 0x32) {
-                        sprintf(opbuffer, "E220 DELL_E215546");
+                        sprintf(opbuffer, "E220 E215546");
                     }
                     if (ssreport.id_type == 0x33) {
-                        sprintf(opbuffer, "E220 DELL_E224864");
+                        sprintf(opbuffer, "E220 E224864");
                     }
                     eaDogM_WriteStringAtPos(3, 0, opbuffer);
                     sprintf(buffer, "T-R: X%4u Y%4u           ", x_tmp, y_tmp);
@@ -880,13 +882,14 @@ void main(void) {
                     }
                     eaDogM_WriteStringAtPos(0, 0, buffer);
                     if (ssreport.id_type == 0) {
-                        sprintf(opbuffer, "VIISION DEFAULT      ");
+                        sprintf(opbuffer, "VIISION DEFAULT ");
                     }
+                    // 0x30 ID code for accutouch screen
                     if (ssreport.id_type == 0x32) {
-                        sprintf(opbuffer, "VIISION DELL_E215546 ");
+                        sprintf(opbuffer, "VIISION E215546 ");
                     }
                     if (ssreport.id_type == 0x33) {
-                        sprintf(opbuffer, "VIISION DELL_E224864 ");
+                        sprintf(opbuffer, "VIISION E224864 ");
                     }
                     eaDogM_WriteStringAtPos(3, 0, opbuffer);
                     sprintf(buffer, "T-R: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
