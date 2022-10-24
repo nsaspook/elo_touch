@@ -48,6 +48,7 @@
  * V5.10	Q41 fixed for V80 and E220 output codes and 20X4 status character display via SPI
  * V5.11	add invert host TX pin invert jumper on RELAY pin
  * V5.12        fix codes to work with ACCUTOUCH screens
+ * V5.13	code cleanup of ACCUTOUCH code
  *
  *
  *
@@ -67,6 +68,7 @@
  * HFBR-0501Z light link converter for VIISION front controller
  * connected to host USART1 xmit output pin
  * Jumper DIO3 from RELAY pin#1 to GND pin#2 sets UART1 TX inverted output for possible light-link issues at boot
+ * board rev. 1.3 corrected hardware UART1 TX inverted output bug
  */
 
 /* E220/E500 terminal code */
@@ -146,7 +148,7 @@ volatile bool xy_flip = true;
 /*
  * Viision setup codes
  */
-const uint8_t elocodes[ELO_SEQ_V80][ELO_SEQ] = {// elo 2210/2216 program codes
+uint8_t elocodes[ELO_SEQ_V80][ELO_SEQ] = {// elo 2210/2216 program codes
     'U', 'M', 0x00, 0x85, 0x40, '0', '0', '0', '0', '0', // initial touch, NO stream Point,untouch,Z-axis,no scaling, tracking
     'U', 'B', 5, 20, 0x00, 0x00, 0x0f, '0', '0', '0', // packet delays to match old terminal
     'U', 'N', '1', '7', '0', '0', '0', '0', '0', '0', // nvram save

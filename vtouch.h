@@ -43,7 +43,7 @@ extern "C" {
 #define CAM_RELAY  RELAY_LAT
 #define TIMERPACKET  41000
 #define SCREEN_UPDATE  500
-#define TEST_UPDATE  66 // 40 min timing value for 20ms per touch string, 666 gives scrooling X,Y display
+#define TEST_UPDATE  66 // 40 min timing value for 20ms per touch string, 666 gives scrolling X,Y display
 
 #define BUF_SIZE_V80  16
 #define CMD_SIZE_SS_V80  6  // E281A-4002 software emulation Binary size of command
@@ -54,8 +54,8 @@ extern "C" {
 #define Y_SCALE   1.75  // scaling factor to host screen Y logical coords
 #define X_SCALE_SS  0.905  // scaling factor to host screen X logical coords
 #define Y_SCALE_SS  0.650  // scaling factor to host screen Y logical coords
-#define X_SCALE_SS_A  1.137  // scaling factor to host screen X logical coords
-#define Y_SCALE_SS_A  0.865  // scaling factor to host screen Y logical coords
+#define X_SCALE_SS_A  1.137  // scaling factor to host screen X logical coords for ACCUTOUCH
+#define Y_SCALE_SS_A  0.865  // scaling factor to host screen Y logical coords for ACCUTOUCH
 #define X_LOGICAL  119  // LCD touchscreen logical X frame coords
 #define Y_LOGICAL  94  // LCD touchscreen logical Y frame coords
 #define X_TOOL   202
@@ -69,7 +69,7 @@ extern "C" {
 #define LCD_CHK_TIME  36  // LCD heartbeat timeout
 
 
-    const char *build_date = __DATE__, *build_time = __TIME__;
+    char *build_date = __DATE__, *build_time = __TIME__;
 
     typedef struct reporttype {
         uint8_t headder, status;
