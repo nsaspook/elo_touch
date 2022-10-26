@@ -97,7 +97,7 @@ extern "C" {
     } disp_state_t;
 
     enum screen_type_t {
-        DELL_E215546, OTHER_SCREEN
+        E215546, E326541, OTHER_SCREEN
     };
 
     enum emulat_type_t {

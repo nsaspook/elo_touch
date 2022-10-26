@@ -60,8 +60,8 @@
  *              3-2-tx
  *
  * DIO2/SPI plug
- * 1..2 MIN0 jumper: DELL_E215546 VIISION
- * 3..4 MIN1 jumper: DELL_E215546 E220
+ * 1..2 MIN0 jumper: E215546 VIISION
+ * 3..4 MIN1 jumper: E215546 E220
  * Both jumpers for auto touch test mode
  * 
  *
@@ -115,11 +115,12 @@
  * Old monitors
  * E757389	CarrollTouch obsolete
  * E224864	CarrollTouch obsolete
- * E779866	SecureTouch  use DELL_E215546 setting
- * E215546	IntelliTouch use DELL_E215546 setting
+ * E779866	SecureTouch  use E215546 setting
+ * E215546	IntelliTouch use E215546 setting
  * NEW REPLACEMENT MONITORS 1990L 1991L
- * E328700	IntelliTouch use DELL_E215546 setting
- * E328497	IntelliTouch use DELL_E215546 setting
+ * E328700	IntelliTouch use E215546 setting
+ * E328497	IntelliTouch use E215546 setting
+ * E326541      ACCUTOUCH    use E215546 setting
  * E483757	new remote OSD
  * E005277	power brick
  */
@@ -236,7 +237,7 @@ void uart2work(void) {
         c = UART2_Read(); // read data from touchscreen
         if (status.do_cap) {
         } else {
-            if (screen_type == DELL_E215546) { // IntelliTouch
+            if (screen_type == E215546) { // IntelliTouch
 
                 ssbuf[idx] = c;
                 switch (idx++) {
@@ -307,7 +308,7 @@ void uart2work(void) {
      * emulation of E281A-4002 Binary (Z=1-255 on touch, Z=0 on untouch)
      */
     if (emulat_type == VIISION) {
-        if (screen_type == DELL_E215546) { // IntelliTouch smart to binary
+        if (screen_type == E215546) { // IntelliTouch smart to binary
             c = UART2_Read(); // read data from touchscreen
             status.status_count++;
 
@@ -559,7 +560,7 @@ void elopacketout(uint8_t *strptr, uint8_t strcount, uint8_t slow) {
 }
 
 void setup_lcd_e220(void) {
-    if (screen_type == DELL_E215546) {
+    if (screen_type == E215546) {
         elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
         wdtdelay(100000);
         elopacketout(elocodes_e3, ELO_SEQ, 0); // reset to default smartset
@@ -570,7 +571,7 @@ void setup_lcd_e220(void) {
 }
 
 void setup_lcd_v80(void) {
-    if (screen_type == DELL_E215546) {
+    if (screen_type == E215546) {
         elopacketout(elocodes_e5, ELO_SEQ, 0); // ask for ID
         wdtdelay(100000);
         elopacketout(elocodes_e3, ELO_SEQ, 0); // reset;
@@ -622,7 +623,7 @@ void main(void) {
     S.c_idx = 0;
 
     // default interface
-    screen_type = DELL_E215546;
+    screen_type = E215546;
     emulat_type = E220;
     z = 0b11111101;
     sprintf(opbuffer, "E220 E215546");
@@ -642,7 +643,7 @@ void main(void) {
     if (check_byte == 0x57) { // change config from default settings if needed
         z = DATAEE_ReadByte((uint16_t) 0x380001);
         if (z == 0b11111110 || (!MIN0_GetValue())) {
-            screen_type = DELL_E215546;
+            screen_type = E215546;
             emulat_type = VIISION;
             z = 0b11111110;
             DATAEE_WriteByte((uint16_t) 0x380001, z);
@@ -654,7 +655,7 @@ void main(void) {
             MLED_SetHigh();
         }
         if (z == 0b11111101 || (!MIN1_GetValue() && MIN0_GetValue())) {
-            screen_type = DELL_E215546;
+            screen_type = E215546;
             emulat_type = E220;
             z = 0b11111101;
             DATAEE_WriteByte((uint16_t) 0x380001, z);
@@ -662,7 +663,7 @@ void main(void) {
             MLED_SetLow();
         }
         if (z == 0b11111100) {
-            screen_type = DELL_E215546;
+            screen_type = E215546;
             emulat_type = OTHER_MECH;
             sprintf(opbuffer, "OTHER E215546 ");
         }
@@ -789,7 +790,7 @@ void main(void) {
                 if (S.CATCH) { // send the buffered touch report
                     __delay_ms(75);
                     putc1(0xFE); // send position report header to host
-                    if (screen_type == DELL_E215546) {
+                    if (screen_type == E215546) {
                         status.tohost = true;
                         rez_parm_h = ((float) (ssreport.x_cord)) * rez_scale_h_ss;
                         rez_parm_v = ((float) (ssreport.y_cord)) * rez_scale_v_ss;
@@ -819,7 +820,7 @@ void main(void) {
                 __delay_ms(75);
                 rez_scale_h = 1.0; // LCD touch screen real H/V rez
                 rez_scale_v = 1.0;
-                if (!(screen_type == DELL_E215546)) {
+                if (!(screen_type == E215546)) {
                     putc2(0x3D); // send clear buffer to touch
                 }
 
