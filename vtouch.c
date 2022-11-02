@@ -257,20 +257,25 @@ void uart2work(void) {
                         if (ssbuf[1] == 'T') {
                             status.restart_delay = 0;
                             if (ssbuf[2] & 0x80) { // check for accutouch format screen
-                                xy_flip = false;
+                                xy_flip = true; // intelltouch
                             } else {
-                                xy_flip = true; // FLIP with accutouch
+                                xy_flip = false; // accutouch
                             }
                             S.CATCH = true;
                             if (!status.tohost) {
                                 ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4;
                                 ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
+                                x_tmp = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
+                                y_tmp = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)); // get 12-bit Y result
                                 if (xy_flip) {
                                     ssreport.x_cord = ELO_REV_H - ssreport.x_cord; // FLIP X
                                     ssreport.y_cord = ELO_REV_H - ssreport.y_cord; // FLIP Y
+                                } else {
+                                    ssreport.x_cord = x_tmp - 350;
+                                    ssreport.y_cord = y_tmp - 550;
+//                                    ssreport.x_cord = ELO_REV_H - ssreport.x_cord; // FLIP X;
+                                    ssreport.y_cord = ELO_REV_H - ssreport.y_cord; // FLIP Y;
                                 }
-                                x_tmp = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
-                                y_tmp = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)); // get 12-bit Y result
                             }
                         } else {
                             if (ssbuf[1] == 'I') {
