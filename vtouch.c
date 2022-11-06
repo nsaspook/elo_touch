@@ -265,12 +265,13 @@ void uart2work(void)
 						}
 						S.CATCH = true;
 						if (!status.tohost) {
-							ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) - 400 >> 4; // 8-bit Y result 
+							ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4; // 8-bit Y result 
 							x_tmp = (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)); // get 12-bit X result
 							y_tmp = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)); // get 12-bit Y result
 							if (xy_flip) {
-								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)) - 350) >> (uint16_t) 4; // 8-bit X result
+								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4; // 8-bit X result
 							} else {
+								ssreport.y_cord = (ELO_REV_H - (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) - 530) >> 4; // 8-bit Y result
 								ssreport.x_cord = ((((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8)) - 350) >> (uint16_t) 4; // 8-bit X result
 							}
 						}
@@ -644,7 +645,7 @@ void main(void)
 	screen_type = E215546;
 	emulat_type = E220;
 	z = 0b11111101;
-	sprintf(opbuffer, "E220 E215546");
+	//	sprintf(opbuffer, "E220 E215546");
 
 	/*
 	 * set touchscreen emulation type code
@@ -665,7 +666,7 @@ void main(void)
 			emulat_type = VIISION;
 			z = 0b11111110;
 			DATAEE_WriteByte((uint16_t) 0x380001, z);
-			sprintf(opbuffer, "VIISION E215546");
+			sprintf(opbuffer, "VII E215546");
 			if (!MIN1_GetValue()) { // check for double jumper to start test-mode
 				S.TEST_MODE = true;
 				ssreport.id_type = 0x32;
@@ -677,13 +678,13 @@ void main(void)
 			emulat_type = E220;
 			z = 0b11111101;
 			DATAEE_WriteByte((uint16_t) 0x380001, z);
-			sprintf(opbuffer, "E220 E215546  ");
+			sprintf(opbuffer, "E E215546");
 			MLED_SetLow();
 		}
 		if (z == 0b11111100) {
 			screen_type = E215546;
 			emulat_type = OTHER_MECH;
-			sprintf(opbuffer, "OTHER E215546 ");
+			sprintf(opbuffer, "O E215546");
 		}
 	}
 
@@ -738,11 +739,6 @@ void main(void)
 		S.DATA1 = false; // reset COMM flags.
 		S.DATA2 = false; // reset touch COMM flag
 		// leds from outputs to ground via resistor.
-		while (status.do_cap) {
-			ClrWdt();
-			if (status.host_write || status.scrn_write) {
-			}
-		}
 
 		Test_Screen(); // send touch init commands
 		/* Loop forever */
@@ -785,18 +781,18 @@ void main(void)
 					sprintf(buffer, "E %lu %lu %lu %2.2x %u.%u %2.2x ", status.id, status.status_count, status.touch_count, ssreport.id_type, ssreport.id_major, ssreport.id_minor, ssreport.id_class);
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
-						sprintf(opbuffer, "E220 DEFAULT ");
+						sprintf(opbuffer, "E DEF ");
 					}
 					if (ssreport.id_type == 0x32) {
-						sprintf(opbuffer, "E220 E215546");
+						sprintf(opbuffer, "E E215546");
 					}
 					if (ssreport.id_type == 0x33) {
-						sprintf(opbuffer, "E220 E224864");
+						sprintf(opbuffer, "E E224864");
 					}
 					eaDogM_WriteStringAtPos(3, 0, opbuffer);
-					sprintf(buffer, "T-R: X%4u Y%4u           ", x_tmp, y_tmp);
+					sprintf(buffer, "T-R: X%4u Y%4u ", x_tmp, y_tmp);
 					eaDogM_WriteStringAtPos(1, 0, buffer);
-					sprintf(buffer, "T-S: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
+					sprintf(buffer, "T-S: X%4u Y%4u ", ssreport.x_cord, ssreport.y_cord);
 					eaDogM_WriteStringAtPos(2, 0, buffer);
 					MISC_Toggle();
 				}
@@ -810,6 +806,10 @@ void main(void)
 					putc1(0xFE); // send position report header to host
 					if (screen_type == E215546) {
 						status.tohost = true;
+						if (!xy_flip) {
+							rez_scale_h_ss = ELO_SS_H_SCALE_A;
+							rez_scale_v_ss = ELO_SS_V_SCALE_A;
+						}
 						rez_parm_h = ((float) (ssreport.x_cord)) * rez_scale_h_ss;
 						rez_parm_v = ((float) (ssreport.y_cord)) * rez_scale_v_ss;
 						status.tohost = false;
@@ -903,19 +903,19 @@ void main(void)
 					}
 					eaDogM_WriteStringAtPos(0, 0, buffer);
 					if (ssreport.id_type == 0) {
-						sprintf(opbuffer, "VIISION DEFAULT ");
+						sprintf(opbuffer, "VII DEF ");
 					}
 					// 0x30 ID code for accutouch screen
 					if (ssreport.id_type == 0x32) {
-						sprintf(opbuffer, "VIISION E215546 ");
+						sprintf(opbuffer, "VII E215546 ");
 					}
 					if (ssreport.id_type == 0x33) {
-						sprintf(opbuffer, "VIISION E224864 ");
+						sprintf(opbuffer, "VII E224864 ");
 					}
 					eaDogM_WriteStringAtPos(3, 0, opbuffer);
-					sprintf(buffer, "T-R: X%4u Y%4u           ", ssreport.x_cord, ssreport.y_cord);
+					sprintf(buffer, "T-R: X%4u Y%4u ", ssreport.x_cord, ssreport.y_cord);
 					eaDogM_WriteStringAtPos(1, 0, buffer);
-					sprintf(buffer, "T-S: X%4u Y%4u           ", x_tmp, y_tmp);
+					sprintf(buffer, "T-S: X%4u Y%4u ", x_tmp, y_tmp);
 					eaDogM_WriteStringAtPos(2, 0, buffer);
 					MISC_Toggle();
 				}

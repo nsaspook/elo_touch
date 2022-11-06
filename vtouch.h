@@ -27,23 +27,25 @@ extern "C" {
 #define ELO_SIZE  12
 #define ELO_SEQ   10
 #define ELO_TEST  5
-#define ELO_IT   0x81 // ELO T response status byte for inital touch, for smart-touch, accu-touch has zero instead of 8
-#define ELO_ST   0x82 // ELO T response status byte for steam touch
-#define ELO_UT   0x84 // ELO T response status byte for untouch
-#define ELO_REV_H  4095
-#define ELO_SS_H_SCALE  0.470 // old value 0.483 V4.03
-#define ELO_SS_V_SCALE  0.380
-#define BLINK_RATE_E220  100
-#define BLINK_RATE_V80  100
-#define AUTO_RESTART  false
-#define GOOD_MAX  128  // max number of chars from TS without expected frames seen
-#define MAX_CAM_TIME  5
-#define MAX_CAM_TIMEOUT  30
-#define MAX_CAM_TOUCH  5
-#define CAM_RELAY  RELAY_LAT
-#define TIMERPACKET  41000
-#define SCREEN_UPDATE  500
-#define TEST_UPDATE  66 // 40 min timing value for 20ms per touch string, 666 gives scrolling X,Y display
+#define ELO_IT			0x81 // ELO T response status byte for inital touch, for smart-touch, accu-touch has zero instead of 8
+#define ELO_ST			0x82 // ELO T response status byte for steam touch
+#define ELO_UT			0x84 // ELO T response status byte for untouch
+#define ELO_REV_H		4095
+#define ELO_SS_H_SCALE		0.470 // scaling for Intellitouch
+#define ELO_SS_V_SCALE		0.380
+#define ELO_SS_H_SCALE_A	0.586 // scaling for Accutouch
+#define ELO_SS_V_SCALE_A	0.518
+#define BLINK_RATE_E220		100
+#define BLINK_RATE_V80		100
+#define AUTO_RESTART		false
+#define GOOD_MAX		128  // max number of chars from TS without expected frames seen
+#define MAX_CAM_TIME		5
+#define MAX_CAM_TIMEOUT		30
+#define MAX_CAM_TOUCH		5
+#define CAM_RELAY		RELAY_LAT
+#define TIMERPACKET		41000
+#define SCREEN_UPDATE		500
+#define TEST_UPDATE		66 // 40 min timing value for 20ms per touch string, 666 gives scrolling X,Y display
 
 #define BUF_SIZE_V80  16
 #define CMD_SIZE_SS_V80  6  // E281A-4002 software emulation Binary size of command
