@@ -17407,44 +17407,19 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <junction x="-7.62" y="-30.48"/>
 </segment>
 </net>
-<net name="N$19" class="0">
-<segment>
-<pinref part="IC2" gate="G$1" pin="T1IN"/>
-<wire x1="-30.48" y1="25.4" x2="-40.64" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="25.4" x2="-40.64" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="83.82" x2="60.96" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="RC6"/>
-<wire x1="60.96" y1="83.82" x2="60.96" y2="66.04" width="0.1524" layer="91"/>
-<junction x="-30.48" y="25.4"/>
-<junction x="60.96" y="66.04"/>
-<wire x1="60.96" y1="83.82" x2="60.96" y2="106.68" width="0.1524" layer="91"/>
-<wire x1="60.96" y1="106.68" x2="180.34" y2="106.68" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="106.68" x2="180.34" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="SV5" gate="G$1" pin="7"/>
-<wire x1="180.34" y1="66.04" x2="172.72" y2="66.04" width="0.1524" layer="91"/>
-<junction x="60.96" y="83.82"/>
-<junction x="172.72" y="66.04"/>
-</segment>
-</net>
 <net name="N$20" class="0">
 <segment>
 <pinref part="IC2" gate="G$1" pin="T2IN"/>
 <wire x1="-30.48" y1="22.86" x2="-40.64" y2="22.86" width="0.1524" layer="91"/>
 <wire x1="-40.64" y1="22.86" x2="-40.64" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="-40.64" y1="5.08" x2="-20.32" y2="5.08" width="0.1524" layer="91"/>
 <junction x="-30.48" y="22.86"/>
-<wire x1="-20.32" y1="5.08" x2="20.32" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="5.08" x2="20.32" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="-35.56" x2="20.32" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="-35.56" x2="7.62" y2="-35.56" width="0.1524" layer="91"/>
 <wire x1="7.62" y1="-35.56" x2="7.62" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="SERIAL/ICSP" gate="G$1" pin="1"/>
 <wire x1="7.62" y1="-55.88" x2="20.32" y2="-55.88" width="0.1524" layer="91"/>
 <junction x="20.32" y="-55.88"/>
-<pinref part="XT1" gate="A" pin="C"/>
-<wire x1="-35.56" y1="-22.86" x2="-20.32" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-20.32" y1="-22.86" x2="-20.32" y2="5.08" width="0.1524" layer="91"/>
-<junction x="-20.32" y="5.08"/>
-<junction x="-35.56" y="-22.86"/>
 </segment>
 </net>
 <net name="N$21" class="0">
@@ -18121,6 +18096,34 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="SERIAL/ICSP" gate="G$1" pin="3"/>
 <wire x1="15.24" y1="-66.04" x2="20.32" y2="-66.04" width="0.1524" layer="91"/>
 <junction x="20.32" y="-66.04"/>
+</segment>
+</net>
+<net name="N$24" class="0">
+<segment>
+<pinref part="XT1" gate="A" pin="C"/>
+<junction x="-35.56" y="-22.86"/>
+<wire x1="-35.56" y1="-22.86" x2="-20.32" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="-22.86" x2="-20.32" y2="0" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="0" x2="-48.26" y2="0" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="G$1" pin="T1IN"/>
+<wire x1="-30.48" y1="25.4" x2="-40.64" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="25.4" x2="-40.64" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="33.02" x2="-40.64" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="83.82" x2="60.96" y2="83.82" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="G$1" pin="RC6"/>
+<wire x1="60.96" y1="83.82" x2="60.96" y2="66.04" width="0.1524" layer="91"/>
+<junction x="-30.48" y="25.4"/>
+<junction x="60.96" y="66.04"/>
+<wire x1="60.96" y1="83.82" x2="60.96" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="106.68" x2="180.34" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="106.68" x2="180.34" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="SV5" gate="G$1" pin="7"/>
+<wire x1="180.34" y1="66.04" x2="172.72" y2="66.04" width="0.1524" layer="91"/>
+<junction x="60.96" y="83.82"/>
+<junction x="172.72" y="66.04"/>
+<wire x1="-48.26" y1="0" x2="-48.26" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="33.02" x2="-40.64" y2="33.02" width="0.1524" layer="91"/>
+<junction x="-40.64" y="33.02"/>
 </segment>
 </net>
 </nets>

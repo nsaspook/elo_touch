@@ -16364,6 +16364,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <sheets>
 <sheet>
 <plain>
+<text x="91.44" y="58.42" size="1.778" layer="91">Really 47Q43</text>
+<text x="68.58" y="22.86" size="1.778" layer="91">Really 47Q43</text>
+<text x="66.04" y="50.8" size="1.778" layer="91">Really 47Q43</text>
 </plain>
 <instances>
 <instance part="IC1" gate="G$1" x="53.34" y="50.8" smashed="yes">
