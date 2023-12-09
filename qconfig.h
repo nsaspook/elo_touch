@@ -35,9 +35,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "vtouch_8722.X/mcc_generated_files/spi1.h"
-#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
 #include "ringbufs.h"
+#include "pat_q43.X/mcc_generated_files/mcc.h"
 
 #define EADOGM_CMD_CLR		1
 #define EADOGM_CMD_CURSOR_ON     0b00001111

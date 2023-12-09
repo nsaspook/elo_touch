@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>vtouch_8722</name>
+            <name>pat_q43</name>
             <creation-uuid>c3641c46-7d11-4903-b528-0b32eb3e9326</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
