@@ -294,11 +294,9 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		if (S.LCD_OK) {
 			DEBUG1_SetHigh();
 		} else {
-<<<<<<< HEAD
-			if (status.init_check++ >LCD_CHK_TIME) {
-=======
+
 			if ((status.init_check++ >LCD_CHK_TIME)) {
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
+
 				status.init_check = 0; // reset screen init code counter
 				S.SCREEN_INIT = TRUE; // set init code flag so it can be sent in main loop
 				DEBUG2_SetHigh();
@@ -323,17 +321,12 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 		}
 	}
 
-<<<<<<< HEAD
-	if ((PIE15bits.TMR6IE == 1) && (PIR15bits.TMR6IF == 1)) {
-		TMR6_ISR();
-	}
-	if ((PIE8bits.TMR5IE == 1) && (PIR8bits.TMR5IF == 1)) {
-=======
+
 	if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1) {
 		TMR6_ISR();
 	}
 	if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1) {
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
+
 		TMR5_ISR();
 	}
 
@@ -377,11 +370,9 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							status.restart_delay = 0;
 							S.CATCH = TRUE;
 							if (!ssreport.tohost) {
-<<<<<<< HEAD
-								ssreport.x_cord = ((uint16_t) ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> 4;
-=======
+
 								ssreport.x_cord = (ELO_REV_H - (((uint16_t) ssbuf[3])+(((uint16_t) ssbuf[4]) << 8))) >> (uint16_t) 4;
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
+
 								ssreport.y_cord = (((uint16_t) ssbuf[5])+(((uint16_t) ssbuf[6]) << 8)) >> 4;
 							}
 						} else {
@@ -494,15 +485,11 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 						y_tmp = (y_tmp >> (uint16_t) 4); // rescale y
 						elobuf_in[1] = (uint8_t) x_tmp; // X to 8-bit var
 						elobuf_in[2] = (uint8_t) y_tmp; // Y
-<<<<<<< HEAD
-						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) (uint8_t) >> 6); // stuff into binary 4002 format
-						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
-						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) (uint8_t) >> 6);
-=======
+
 						elobuf_out[0] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into binary 4002 format
 						elobuf_out[1] = 0x80 + (elobuf_in[1]&0x3f);
 						elobuf_out[2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
+
 						elobuf_out[3] = 0x00 + (elobuf_in[2]&0x3f);
 						elobuf_out[4] = 0x00;
 						elobuf_out[5] = 0x0f;
@@ -579,15 +566,11 @@ void rxtx_handler(void) // timer & serial data transform functions are handled h
 							elobuf_in[2] = yl - elobuf_in[2]; // FLIP Y
 							elobuf_in[1] = (uint8_t) ((float) elobuf_in[1]* (float) xs); // X scale
 							elobuf_in[2] = (uint8_t) ((float) elobuf_in[2]* (float) ys); // Y scale
-<<<<<<< HEAD
-							elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) (uint8_t) >> 6); // stuff into binary 4002 format
-							elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
-							elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) (uint8_t) >> 6);
-=======
+
 							elobuf_out[i ] = 0xc0 + ((elobuf_in[1]&0xc0) >> (uint8_t) 6); // stuff into binary 4002 format
 							elobuf_out[i + 1] = 0x80 + (elobuf_in[1]&0x3f);
 							elobuf_out[i + 2] = 0x40 + ((elobuf_in[2]&0xc0) >> (uint8_t) 6);
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
+
 							elobuf_out[i + 3] = 0x00 + (elobuf_in[2]&0x3f);
 							elobuf_out[i + 4] = 0x00;
 							elobuf_out[i + 5] = 0x15; // Z value = 15 "hard touch"
@@ -770,10 +753,7 @@ void setup_lcd(void)
 		if (TS_TYPE == 1) {
 			single_t = FALSE;
 		}
-<<<<<<< HEAD
-=======
 
->>>>>>> 6d8385acb385f9b5b5aadbb7c53eabee2148afd3
 		for (code_count = 0; code_count < ELO_SIZE_V80; code_count++) {
 			if (single_t) {
 				elocmdout(&elocodes_s_e[code_count]);
@@ -822,7 +802,7 @@ void main(void)
 {
 	uint8_t z, check_byte, ts_type = TS_TYPE;
 	uint16_t eep_ptr, update_screen = 0;
-	uint8_t scaled_char, ts_type = TS_TYPE;
+	uint8_t scaled_char;
 	float rez_scale_h = 1.0, rez_parm_h, rez_scale_v = 1.0, rez_parm_v;
 	float rez_scale_h_ss = ELO_SS_H_SCALE, rez_scale_v_ss = ELO_SS_V_SCALE;
 

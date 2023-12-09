@@ -15,12 +15,12 @@
     For individual peripheral handlers please see the peripheral driver for
     all modules selected in the GUI.
     Generation Information :
-	Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.7
+        Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
 	Device            :  PIC18F47Q43
 	Driver Version    :  2.12
     The generated drivers are tested against the following:
-	Compiler          :  XC8 2.31 and above or later
-	MPLAB 	          :  MPLAB X 5.45
+        Compiler          :  XC8 2.36 and above or later
+        MPLAB 	          :  MPLAB X 6.00
  */
 
 /*
@@ -49,7 +49,7 @@
 #include "interrupt_manager.h"
 #include "mcc.h"
 
-void INTERRUPT_Initialize(void)
+void  INTERRUPT_Initialize (void)
 {
 	// Enable Interrupt Priority Vectors
 	INTCON0bits.IPEN = 1;
@@ -87,21 +87,36 @@ void __interrupt() INTERRUPT_InterruptManagerHigh(void)
 	goto done; // bypass MCC routines
 
 	// interrupt handler
-	if (PIE8bits.U2TXIE == 1 && PIR8bits.U2TXIF == 1) {
+    if(PIE8bits.U2TXIE == 1 && PIR8bits.U2TXIF == 1)
+    {
 		UART2_TxInterruptHandler();
-	} else if (PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1) {
+    }
+    else if(PIE8bits.U2RXIE == 1 && PIR8bits.U2RXIF == 1)
+    {
 		UART2_RxInterruptHandler();
-	} else if (PIE4bits.U1TXIE == 1 && PIR4bits.U1TXIF == 1) {
+    }
+    else if(PIE4bits.U1TXIE == 1 && PIR4bits.U1TXIF == 1)
+    {
 		UART1_TxInterruptHandler();
-	} else if (PIE4bits.U1RXIE == 1 && PIR4bits.U1RXIF == 1) {
+    }
+    else if(PIE4bits.U1RXIE == 1 && PIR4bits.U1RXIF == 1)
+    {
 		UART1_RxInterruptHandler();
-	} else if (PIE3bits.TMR0IE == 1 && PIR3bits.TMR0IF == 1) {
+    }
+    else if(PIE3bits.TMR0IE == 1 && PIR3bits.TMR0IF == 1)
+    {
 		TMR0_ISR();
-	} else if (PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1) {
+    }
+    else if(PIE15bits.TMR6IE == 1 && PIR15bits.TMR6IF == 1)
+    {
 		TMR6_ISR();
-	} else if (PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1) {
+    }
+    else if(PIE8bits.TMR5IE == 1 && PIR8bits.TMR5IF == 1)
+    {
 		TMR5_ISR();
-	} else {
+    }
+    else
+    {
 		//Unhandled Interrupt
 	}
 done:
