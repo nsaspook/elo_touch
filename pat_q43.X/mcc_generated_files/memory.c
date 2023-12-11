@@ -275,7 +275,7 @@ uint8_t DATAEE_ReadByte(uint16_t bAdd)
     return NVMDATL;
 }
 
-void MEMORY_ISR(void)
+void __interrupt(irq(NVM),base(8)) MEMORY_ISR()
 {
     /* TODO : Add interrupt handling code */
     PIR15bits.NVMIF = 0;

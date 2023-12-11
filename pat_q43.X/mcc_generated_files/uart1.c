@@ -49,6 +49,7 @@
 */
 #include <xc.h>
 #include "uart1.h"
+#include "interrupt_manager.h"
 
 /**
   Section: Macro Declarations
@@ -120,11 +121,11 @@ void UART1_Initialize(void)
     // TXPOL not inverted; FLO off; C0EN Checksum Mode 0; RXPOL not inverted; RUNOVF RX input shifter stops all activity; STP Transmit 1Stop bit, receiver verifies first Stop bit; 
     U1CON2 = 0x00;
 
-    // BRGL 130; 
-    U1BRGL = 0x82;
+    // BRGL 138; 
+    U1BRGL = 0x8A;
 
-    // BRGH 6; 
-    U1BRGH = 0x06;
+    // BRGH 0; 
+    U1BRGH = 0x00;
 
     // STPMD in middle of first Stop bit; TXWRE No error; 
     U1FIFO = 0x00;
@@ -221,7 +222,21 @@ void UART1_Write(uint8_t txData)
     PIE4bits.U1TXIE = 1;
 }
 
+void __interrupt(irq(U1TX),base(8)) UART1_tx_vect_isr()
+{   
+    if(UART1_TxInterruptHandler)
+    {
+        UART1_TxInterruptHandler();
+    }
+}
 
+void __interrupt(irq(U1RX),base(8)) UART1_rx_vect_isr()
+{
+    if(UART1_RxInterruptHandler)
+    {
+        UART1_RxInterruptHandler();
+    }
+}
 
 
 

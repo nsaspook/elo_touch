@@ -50,6 +50,7 @@
 
 #include <xc.h>
 #include "tmr0.h"
+#include "interrupt_manager.h"
 
 /**
   Section: Global Variables Definitions
@@ -131,7 +132,7 @@ void TMR0_Reload(void)
     TMR0L = (uint8_t) timer0ReloadVal16bit;
 }
 
-void TMR0_ISR(void)
+void __interrupt(irq(TMR0),base(8)) TMR0_ISR()
 {
     // clear the TMR0 interrupt flag
     PIR3bits.TMR0IF = 0;

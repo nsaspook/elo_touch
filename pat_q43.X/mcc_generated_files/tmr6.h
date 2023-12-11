@@ -857,23 +857,6 @@ void TMR6_Period8BitSet(uint8_t periodVal);
 */
 void TMR6_LoadPeriodRegister(uint8_t periodVal);
 
-/**
-  @Summary
-    Timer Interrupt Service Routine
-
-  @Description
-    Timer Interrupt Service Routine is called by the Interrupt Manager.
-
-  @Preconditions
-    Initialize  the TMR6 module with interrupt before calling this isr.
-
-  @Param
-    None
-
-  @Returns
-    None
-*/
-void TMR6_ISR(void);
 
 /**
   @Summary

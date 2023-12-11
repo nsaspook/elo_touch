@@ -49,6 +49,7 @@
 */
 #include <xc.h>
 #include "uart2.h"
+#include "interrupt_manager.h"
 
 /**
   Section: Macro Declarations
@@ -111,11 +112,11 @@ void UART2_Initialize(void)
     // TXPOL not inverted; FLO off; RXPOL not inverted; RUNOVF RX input shifter stops all activity; STP Transmit 1Stop bit, receiver verifies first Stop bit; 
     U2CON2 = 0x00;
 
-    // BRGL 130; 
-    U2BRGL = 0x82;
+    // BRGL 138; 
+    U2BRGL = 0x8A;
 
-    // BRGH 6; 
-    U2BRGH = 0x06;
+    // BRGH 0; 
+    U2BRGH = 0x00;
 
     // STPMD in middle of first Stop bit; TXWRE No error; 
     U2FIFO = 0x00;
@@ -212,7 +213,21 @@ void UART2_Write(uint8_t txData)
     PIE8bits.U2TXIE = 1;
 }
 
+void __interrupt(irq(U2TX),base(8)) UART2_tx_vect_isr()
+{   
+    if(UART2_TxInterruptHandler)
+    {
+        UART2_TxInterruptHandler();
+    }
+}
 
+void __interrupt(irq(U2RX),base(8)) UART2_rx_vect_isr()
+{
+    if(UART2_RxInterruptHandler)
+    {
+        UART2_RxInterruptHandler();
+    }
+}
 
 
 

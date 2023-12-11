@@ -53,6 +53,23 @@
 #define NHD		// 4x20 SPI display
 #define SHOWFOSC
 
+#define SW1		PORTBbits.RB0
+#define SW2		PORTBbits.RB1
+#define SW3		PORTBbits.RB2
+#define SW4		PORTBbits.RB3
+
+#define LED1		LATAbits.LATA0
+#define LED2		LATAbits.LATA1
+#define LED3		LATAbits.LATA2
+#define LED4		LATAbits.LATA3
+
+#define BELL 		LED2_LAT	// sonalert/buzzer output
+#define	BELL_TIME	100
+
+#define	LEDON		1
+#define	LEDOFF		0
+#define	DEBOUNCE	20
+
 struct spi_link_type { // internal SPI state table
 	uint8_t SPI_LCD : 1;
 	uint8_t SPI_AUX : 1;

@@ -325,6 +325,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-1ffff"/>
         <property key="poweroptions.powerenable" value="true"/>
+        <property key="programmerToGoFilePath"
+                  value="/root/elo_touch/pat_q43.X/debug/default/vtouch_8722_ptg"/>
         <property key="programmerToGoImageName" value="vtouch_8722_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>

@@ -50,6 +50,7 @@
 
 #include <xc.h>
 #include "tmr5.h"
+#include "interrupt_manager.h"
 
 /**
   Section: Global Variables Definitions
@@ -161,33 +162,19 @@ uint8_t TMR5_CheckGateValueStatus(void)
     return (T5GCONbits.T5GVAL);
 }
 
-void TMR5_ISR(void)
+void __interrupt(irq(TMR5),base(8)) TMR5_ISR()
 {
-    static volatile unsigned int CountCallBack = 0;
 
     // Clear the TMR5 interrupt flag
     PIR8bits.TMR5IF = 0;
     TMR5_WriteTimer(timer5ReloadVal);
 
-    // callback function - called every 100th pass
-    if (++CountCallBack >= TMR5_INTERRUPT_TICKER_FACTOR)
-    {
-        // ticker function call
-        TMR5_CallBack();
-
-        // reset ticker counter
-        CountCallBack = 0;
-    }
-}
-
-void TMR5_CallBack(void)
-{
-    // Add your custom callback code here
     if(TMR5_InterruptHandler)
     {
         TMR5_InterruptHandler();
     }
 }
+
 
 void TMR5_SetInterruptHandler(void (* InterruptHandler)(void)){
     TMR5_InterruptHandler = InterruptHandler;
