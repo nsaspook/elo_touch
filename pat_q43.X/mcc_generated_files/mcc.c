@@ -57,7 +57,6 @@ void SYSTEM_Initialize(void)
     TMR2_Initialize();
     TMR5_Initialize();
     TMR0_Initialize();
-    UART2_Initialize();
     UART1_Initialize();
     SPI1_Initialize();
 }

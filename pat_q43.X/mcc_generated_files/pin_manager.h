@@ -225,29 +225,85 @@
 #define SW3_SetAnalogMode()      do { ANSELBbits.ANSELB3 = 1; } while(0)
 #define SW3_SetDigitalMode()     do { ANSELBbits.ANSELB3 = 0; } while(0)
 
-// get/set RB6 procedures
-#define RB6_SetHigh()            do { LATBbits.LATB6 = 1; } while(0)
-#define RB6_SetLow()             do { LATBbits.LATB6 = 0; } while(0)
-#define RB6_Toggle()             do { LATBbits.LATB6 = ~LATBbits.LATB6; } while(0)
-#define RB6_GetValue()              PORTBbits.RB6
-#define RB6_SetDigitalInput()    do { TRISBbits.TRISB6 = 1; } while(0)
-#define RB6_SetDigitalOutput()   do { TRISBbits.TRISB6 = 0; } while(0)
-#define RB6_SetPullup()             do { WPUBbits.WPUB6 = 1; } while(0)
-#define RB6_ResetPullup()           do { WPUBbits.WPUB6 = 0; } while(0)
-#define RB6_SetAnalogMode()         do { ANSELBbits.ANSELB6 = 1; } while(0)
-#define RB6_SetDigitalMode()        do { ANSELBbits.ANSELB6 = 0; } while(0)
+// get/set ID0 aliases
+#define ID0_TRIS                 TRISBbits.TRISB4
+#define ID0_LAT                  LATBbits.LATB4
+#define ID0_PORT                 PORTBbits.RB4
+#define ID0_WPU                  WPUBbits.WPUB4
+#define ID0_OD                   ODCONBbits.ODCB4
+#define ID0_ANS                  ANSELBbits.ANSELB4
+#define ID0_SetHigh()            do { LATBbits.LATB4 = 1; } while(0)
+#define ID0_SetLow()             do { LATBbits.LATB4 = 0; } while(0)
+#define ID0_Toggle()             do { LATBbits.LATB4 = ~LATBbits.LATB4; } while(0)
+#define ID0_GetValue()           PORTBbits.RB4
+#define ID0_SetDigitalInput()    do { TRISBbits.TRISB4 = 1; } while(0)
+#define ID0_SetDigitalOutput()   do { TRISBbits.TRISB4 = 0; } while(0)
+#define ID0_SetPullup()          do { WPUBbits.WPUB4 = 1; } while(0)
+#define ID0_ResetPullup()        do { WPUBbits.WPUB4 = 0; } while(0)
+#define ID0_SetPushPull()        do { ODCONBbits.ODCB4 = 0; } while(0)
+#define ID0_SetOpenDrain()       do { ODCONBbits.ODCB4 = 1; } while(0)
+#define ID0_SetAnalogMode()      do { ANSELBbits.ANSELB4 = 1; } while(0)
+#define ID0_SetDigitalMode()     do { ANSELBbits.ANSELB4 = 0; } while(0)
 
-// get/set RB7 procedures
-#define RB7_SetHigh()            do { LATBbits.LATB7 = 1; } while(0)
-#define RB7_SetLow()             do { LATBbits.LATB7 = 0; } while(0)
-#define RB7_Toggle()             do { LATBbits.LATB7 = ~LATBbits.LATB7; } while(0)
-#define RB7_GetValue()              PORTBbits.RB7
-#define RB7_SetDigitalInput()    do { TRISBbits.TRISB7 = 1; } while(0)
-#define RB7_SetDigitalOutput()   do { TRISBbits.TRISB7 = 0; } while(0)
-#define RB7_SetPullup()             do { WPUBbits.WPUB7 = 1; } while(0)
-#define RB7_ResetPullup()           do { WPUBbits.WPUB7 = 0; } while(0)
-#define RB7_SetAnalogMode()         do { ANSELBbits.ANSELB7 = 1; } while(0)
-#define RB7_SetDigitalMode()        do { ANSELBbits.ANSELB7 = 0; } while(0)
+// get/set ID1 aliases
+#define ID1_TRIS                 TRISBbits.TRISB5
+#define ID1_LAT                  LATBbits.LATB5
+#define ID1_PORT                 PORTBbits.RB5
+#define ID1_WPU                  WPUBbits.WPUB5
+#define ID1_OD                   ODCONBbits.ODCB5
+#define ID1_ANS                  ANSELBbits.ANSELB5
+#define ID1_SetHigh()            do { LATBbits.LATB5 = 1; } while(0)
+#define ID1_SetLow()             do { LATBbits.LATB5 = 0; } while(0)
+#define ID1_Toggle()             do { LATBbits.LATB5 = ~LATBbits.LATB5; } while(0)
+#define ID1_GetValue()           PORTBbits.RB5
+#define ID1_SetDigitalInput()    do { TRISBbits.TRISB5 = 1; } while(0)
+#define ID1_SetDigitalOutput()   do { TRISBbits.TRISB5 = 0; } while(0)
+#define ID1_SetPullup()          do { WPUBbits.WPUB5 = 1; } while(0)
+#define ID1_ResetPullup()        do { WPUBbits.WPUB5 = 0; } while(0)
+#define ID1_SetPushPull()        do { ODCONBbits.ODCB5 = 0; } while(0)
+#define ID1_SetOpenDrain()       do { ODCONBbits.ODCB5 = 1; } while(0)
+#define ID1_SetAnalogMode()      do { ANSELBbits.ANSELB5 = 1; } while(0)
+#define ID1_SetDigitalMode()     do { ANSELBbits.ANSELB5 = 0; } while(0)
+
+// get/set ID2 aliases
+#define ID2_TRIS                 TRISBbits.TRISB6
+#define ID2_LAT                  LATBbits.LATB6
+#define ID2_PORT                 PORTBbits.RB6
+#define ID2_WPU                  WPUBbits.WPUB6
+#define ID2_OD                   ODCONBbits.ODCB6
+#define ID2_ANS                  ANSELBbits.ANSELB6
+#define ID2_SetHigh()            do { LATBbits.LATB6 = 1; } while(0)
+#define ID2_SetLow()             do { LATBbits.LATB6 = 0; } while(0)
+#define ID2_Toggle()             do { LATBbits.LATB6 = ~LATBbits.LATB6; } while(0)
+#define ID2_GetValue()           PORTBbits.RB6
+#define ID2_SetDigitalInput()    do { TRISBbits.TRISB6 = 1; } while(0)
+#define ID2_SetDigitalOutput()   do { TRISBbits.TRISB6 = 0; } while(0)
+#define ID2_SetPullup()          do { WPUBbits.WPUB6 = 1; } while(0)
+#define ID2_ResetPullup()        do { WPUBbits.WPUB6 = 0; } while(0)
+#define ID2_SetPushPull()        do { ODCONBbits.ODCB6 = 0; } while(0)
+#define ID2_SetOpenDrain()       do { ODCONBbits.ODCB6 = 1; } while(0)
+#define ID2_SetAnalogMode()      do { ANSELBbits.ANSELB6 = 1; } while(0)
+#define ID2_SetDigitalMode()     do { ANSELBbits.ANSELB6 = 0; } while(0)
+
+// get/set ID3 aliases
+#define ID3_TRIS                 TRISBbits.TRISB7
+#define ID3_LAT                  LATBbits.LATB7
+#define ID3_PORT                 PORTBbits.RB7
+#define ID3_WPU                  WPUBbits.WPUB7
+#define ID3_OD                   ODCONBbits.ODCB7
+#define ID3_ANS                  ANSELBbits.ANSELB7
+#define ID3_SetHigh()            do { LATBbits.LATB7 = 1; } while(0)
+#define ID3_SetLow()             do { LATBbits.LATB7 = 0; } while(0)
+#define ID3_Toggle()             do { LATBbits.LATB7 = ~LATBbits.LATB7; } while(0)
+#define ID3_GetValue()           PORTBbits.RB7
+#define ID3_SetDigitalInput()    do { TRISBbits.TRISB7 = 1; } while(0)
+#define ID3_SetDigitalOutput()   do { TRISBbits.TRISB7 = 0; } while(0)
+#define ID3_SetPullup()          do { WPUBbits.WPUB7 = 1; } while(0)
+#define ID3_ResetPullup()        do { WPUBbits.WPUB7 = 0; } while(0)
+#define ID3_SetPushPull()        do { ODCONBbits.ODCB7 = 0; } while(0)
+#define ID3_SetOpenDrain()       do { ODCONBbits.ODCB7 = 1; } while(0)
+#define ID3_SetAnalogMode()      do { ANSELBbits.ANSELB7 = 1; } while(0)
+#define ID3_SetDigitalMode()     do { ANSELBbits.ANSELB7 = 0; } while(0)
 
 // get/set RS aliases
 #define RS_TRIS                 TRISCbits.TRISC1

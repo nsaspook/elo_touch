@@ -54,8 +54,8 @@
 /**
   Section: Macro Declarations
 */
-#define UART1_TX_BUFFER_SIZE 8
-#define UART1_RX_BUFFER_SIZE 8
+#define UART1_TX_BUFFER_SIZE 64
+#define UART1_RX_BUFFER_SIZE 64
 
 /**
   Section: Global Variables
@@ -220,6 +220,16 @@ void UART1_Write(uint8_t txData)
         uart1TxBufferRemaining--;
     }
     PIE4bits.U1TXIE = 1;
+}
+
+char getch(void)
+{
+    return UART1_Read();
+}
+
+void putch(char txData)
+{
+    UART1_Write(txData);
 }
 
 void __interrupt(irq(U1TX),base(8)) UART1_tx_vect_isr()

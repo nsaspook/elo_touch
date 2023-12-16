@@ -53,18 +53,18 @@
 #define NHD		// 4x20 SPI display
 #define SHOWFOSC
 
-#define SW1		PORTBbits.RB0
+#define SW1		SW0_PORT
 #define SW2		PORTBbits.RB1
 #define SW3		PORTBbits.RB2
 #define SW4		PORTBbits.RB3
 
-#define LED1		LATAbits.LATA0
-#define LED2		LATAbits.LATA1
-#define LED3		LATAbits.LATA2
-#define LED4		LATAbits.LATA3
+#define LED1		ID0_LAT
+#define LED2		LATBbits.LATB5
+#define LED3		LATBbits.LATB6
+#define LED4		LATBbits.LATB7
 
-#define BELL 		LED2_LAT	// sonalert/buzzer output
-#define	BELL_TIME	100
+#define BELL 		K1_LAT	// sonalert/buzzer output
+#define	BELL_TIME	15
 
 #define	LEDON		1
 #define	LEDOFF		0
