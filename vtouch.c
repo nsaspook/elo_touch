@@ -11,18 +11,22 @@
 #include "vtouch.h"
 #include "vtouch_build.h"
 #include "eadog.h"
+#include "pat_q43.X/cjson/cJSON.h"
+#include <string.h>
 
 const char *build_date = __DATE__, *build_time = __TIME__;
+const char *MQTT_ID = "MEDIAROOM";
 
-char buffer[512], opbuffer[256];
-uint32_t count = 0;
+char buffer[MAX_BUFFER], opbuffer[MAX_BUFFER];
 
 volatile bool BUTTON_PRESSED = false, BLINK = false;
-volatile unsigned long button_intcount, sample_intcount, time_intcount, sw_intcount;
+volatile uint32_t button_intcount, sample_intcount, time_intcount, sw_intcount;
+cJSON *json;
 
 void Led_Blink(void);
 void SW_CHECK(void);
 int sw_work(void);
+static void add_mqtt_id(char *);
 
 void wdtdelay(const uint32_t delay)
 {
@@ -73,6 +77,9 @@ void main(void)
 	};
 }
 
+/*
+ * one second interrupt
+ */
 void Led_Blink(void)
 {
 	time_intcount++;
@@ -115,6 +122,9 @@ void Led_Blink(void)
 	}
 }
 
+/*
+ * 10ms interrupt
+ */
 void SW_CHECK(void)
 {
 	static unsigned char debo = DEBOUNCE, bell_count = BELL_TIME;
@@ -143,72 +153,93 @@ void SW_CHECK(void)
 	}
 }
 
+/*
+ * process button presses and other events
+ */
 int sw_work(void)
 {
 	static bool ONCE = true;
-	static uint8_t times = 0;
+	uint8_t pressed = 0;
 
 	if (BUTTON_PRESSED) {
 		if (SW1 == 0) {
 			if (ONCE) {
 				LED1 = LEDOFF;
-				if (UART1_is_tx_ready()) {
-					/*
-					 * format data to JSON
-					 */
-					snprintf(buffer, 510, "{\r\n     \"Qname\": \"%s\",\r\n     \"Qsequence\": %ld,\r\n     \"Qbuild_date\": \"%s\",\r\n     \"Qbuild_time\": \"%s\"\r\n}",
-						build_version, count++, build_date, build_time);
-					//					snprintf(buffer,510,"fred %u",times++);
-					/*
-					 * STDIO redirected to UART1
-					 */
-					printf("%s", buffer);
-				}
+				pressed += 1;
 			}
-			ONCE = false;
+
 		} else {
 			LED1 = LEDON;
 		}
 		if (SW2 == 0) {
 			if (ONCE) {
 				LED2 = LEDOFF;
-				if (UART1_is_tx_ready()) {
-					/*
-					 * format data to JSON
-					 */
-					snprintf(buffer, 510, "{\r\n     \"Qname\": \"%s\",\r\n     \"Qsequence\": %ld,\r\n     \"Qbuild_date\": \"%s\",\r\n     \"Qbuild_time\": \"%s\"\r\n}",
-						build_version, count++, build_date, build_time);
-					/*
-					 * STDIO redirected to UART1
-					 */
-					printf("%s", buffer);
-				}
+				pressed += 2;
 			}
-			ONCE = false;
+
 		} else {
 			LED2 = LEDON;
 		}
 		if (SW3 == 0) {
 			if (ONCE) {
 				LED3 = LEDOFF;
-
+				pressed += 4;
 			}
-			ONCE = false;
+
 		} else {
 			LED3 = LEDON;
 		}
 		if (SW4 == 0) {
 			if (ONCE) {
 				LED4 = LEDOFF;
-
+				pressed += 8;
 			}
-			ONCE = false;
+
 		} else {
 			LED4 = LEDON;
+		}
+		if (ONCE) {
+			if (UART1_is_tx_ready()) {
+				/*
+				 * format data to JSON
+				 */
+				json = cJSON_CreateObject();
+				add_mqtt_id("PAtname"); // results in global buffer variable
+				cJSON_AddStringToObject(json, buffer, build_version);
+				add_mqtt_id("PATsequence");
+				cJSON_AddNumberToObject(json, buffer, time_intcount);
+				add_mqtt_id("PATswitch");
+				cJSON_AddNumberToObject(json, buffer, pressed++);
+				add_mqtt_id("PATbuild_date");
+				cJSON_AddStringToObject(json, buffer, build_date);
+				add_mqtt_id("PATbuild_time");
+				cJSON_AddStringToObject(json, buffer, build_time);
+				/*
+				 * get the data string for publishing
+				 */
+				char *json_str = cJSON_Print(json);
+				/*
+				 * send the string to the external MQTT device
+				 */
+				printf("%s", json_str);
+				cJSON_free(json_str);
+				cJSON_Delete(json);
+				pressed = 0;
+			}
+			ONCE = false;
 		}
 	} else {
 		ONCE = true;
 
 	}
 	return 0;
+}
+
+/*
+ * Append id in front of name string
+ */
+static void add_mqtt_id(char * name)
+{
+	strcpy(buffer, MQTT_ID);
+	strncat(buffer, name, MAX_BUFFER-2);
 }

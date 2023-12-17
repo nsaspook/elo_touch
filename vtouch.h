@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#define MAX_BUFFER	512
 	
 	
 #ifdef	__cplusplus

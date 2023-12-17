@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-	const char build_version[] = "PAT Q43 V0.2";
+	const char build_version[] = "PAT Q43 V0.3";
 
 	void wdtdelay(const uint32_t);
 
