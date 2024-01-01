@@ -159,13 +159,14 @@ void SW_CHECK(void)
 int sw_work(void)
 {
 	static bool ONCE = true;
-	uint8_t pressed = 0;
+	uint8_t pressed = 0, S1 = 0, S2 = 0, S3 = 0, S4 = 0;
 
 	if (BUTTON_PRESSED) {
 		if (SW1 == 0) {
 			if (ONCE) {
 				LED1 = LEDOFF;
 				pressed += 1;
+				S1 = 1;
 			}
 
 		} else {
@@ -175,6 +176,7 @@ int sw_work(void)
 			if (ONCE) {
 				LED2 = LEDOFF;
 				pressed += 2;
+				S2 = 1;
 			}
 
 		} else {
@@ -184,6 +186,7 @@ int sw_work(void)
 			if (ONCE) {
 				LED3 = LEDOFF;
 				pressed += 4;
+				S3 = 1;
 			}
 
 		} else {
@@ -193,6 +196,7 @@ int sw_work(void)
 			if (ONCE) {
 				LED4 = LEDOFF;
 				pressed += 8;
+				S4 = 1;
 			}
 
 		} else {
@@ -208,8 +212,18 @@ int sw_work(void)
 				cJSON_AddStringToObject(json, buffer, build_version);
 				add_mqtt_id("PATsequence");
 				cJSON_AddNumberToObject(json, buffer, time_intcount);
+				add_mqtt_id("PATevent");
+				cJSON_AddNumberToObject(json, buffer, sw_intcount++);
 				add_mqtt_id("PATswitch");
-				cJSON_AddNumberToObject(json, buffer, pressed++);
+				cJSON_AddNumberToObject(json, buffer, pressed);
+				add_mqtt_id("PATs1");
+				cJSON_AddNumberToObject(json, buffer, S1);
+				add_mqtt_id("PATs2");
+				cJSON_AddNumberToObject(json, buffer, S2);
+				add_mqtt_id("PATs3");
+				cJSON_AddNumberToObject(json, buffer, S3);
+				add_mqtt_id("PATs4");
+				cJSON_AddNumberToObject(json, buffer, S4);
 				add_mqtt_id("PATbuild_date");
 				cJSON_AddStringToObject(json, buffer, build_date);
 				add_mqtt_id("PATbuild_time");
@@ -241,5 +255,5 @@ int sw_work(void)
 static void add_mqtt_id(char * name)
 {
 	strcpy(buffer, MQTT_ID);
-	strncat(buffer, name, MAX_BUFFER-2);
+	strncat(buffer, name, MAX_BUFFER - 2);
 }
