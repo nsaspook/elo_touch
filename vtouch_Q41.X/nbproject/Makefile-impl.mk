@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=vtouch_8722.X
+PROJECTNAME=vtouch_Q41.X
 
 # Active Configuration
 DEFAULTCONF=default

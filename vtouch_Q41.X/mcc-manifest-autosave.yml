@@ -2,12 +2,12 @@
 
 manifest_file_version: 1.0.0
 project: vtouch_8722
-creation_date: 2024-12-09T15:34:04.973-08:00[America/Los_Angeles]
+creation_date: 2024-12-09T15:46:41.719-08:00[America/Los_Angeles]
 operating_system: Linux
 mcc_mode: IDE
 mcc_mode_version: v6.20
 device_name: PIC18F14Q41
-compiler: XC8 2.36
+compiler: XC8 2.50
 mcc_version: 5.5.1
 mcc_core_version: 5.7.1
 content_manager_version: 5.0.1

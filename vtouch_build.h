@@ -12,12 +12,12 @@
 extern "C" {
 #endif
 
-#include "vtouch_8722.X/mcc_generated_files/mcc.h"
-#include "vtouch_8722.X/mcc_generated_files/interrupt_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/pin_manager.h"
-#include "vtouch_8722.X/mcc_generated_files/memory.h"
+#include "vtouch_Q41.X/mcc_generated_files/mcc.h"
+#include "vtouch_Q41.X/mcc_generated_files/interrupt_manager.h"
+#include "vtouch_Q41.X/mcc_generated_files/pin_manager.h"
+#include "vtouch_Q41.X/mcc_generated_files/memory.h"
 
-	char build_version[] = "V5.13 Vtouch Q41 ";
+	char build_version[] = "V5.15 Vtouch Q41 ";
 
 	void wdtdelay(const uint32_t);
 	void putc1(const uint8_t);
